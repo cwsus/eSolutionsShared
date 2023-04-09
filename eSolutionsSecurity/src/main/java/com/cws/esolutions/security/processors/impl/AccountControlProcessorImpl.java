@@ -98,7 +98,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setServiceGuid(request.getServiceId());
-            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(reqAccount.getUserRole().toString())));
+            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(reqAccount.getGuid(), reqAccount.getUserRole().toString())));
 
             if (DEBUG)
             {
@@ -389,7 +389,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setServiceGuid(request.getServiceId());
-            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(reqAccount.getUserRole().toString())));
+            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(reqAccount.getGuid(), reqAccount.getUserRole().toString())));
 
             if (DEBUG)
             {
@@ -560,7 +560,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
         }
 
         AccountControlResponse response = new AccountControlResponse();
-
+        
         final RequestHostInfo reqInfo = request.getHostInfo();
         final UserAccount reqAccount = request.getRequestor();
         final UserAccount userAccount = request.getUserAccount();
@@ -577,7 +577,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setServiceGuid(request.getServiceId());
-            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(reqAccount.getUserRole().toString())));
+            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(reqAccount.getGuid(), reqAccount.getUserRole().toString())));
 
             if (DEBUG)
             {
@@ -782,7 +782,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setServiceGuid(request.getServiceId());
-            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(reqAccount.getUserRole().toString())));
+            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(reqAccount.getGuid(), reqAccount.getUserRole().toString())));
 
             if (DEBUG)
             {
@@ -1027,7 +1027,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setServiceGuid(request.getServiceId());
-            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(reqAccount.getUserRole().toString())));
+            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(reqAccount.getGuid(), reqAccount.getUserRole().toString())));
 
             if (DEBUG)
             {
@@ -1274,7 +1274,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setServiceGuid(request.getServiceId());
-            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(reqAccount.getUserRole().toString())));
+            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(reqAccount.getGuid(), reqAccount.getUserRole().toString())));
 
             if (DEBUG)
             {
@@ -1356,7 +1356,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             if ((userData != null) && (userData.size() != 0))
             {
-                boolean isComplete = userManager.modifyUserLock((String) userData.get(1), true, userAccount.getFailedCount());
+                boolean isComplete = userManager.modifyUserLock((String) userData.get(1), ((userAccount.getFailedCount() >= 3) ? true : false), userAccount.getFailedCount());
 
                 if (DEBUG)
                 {
@@ -1479,7 +1479,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setServiceGuid(request.getServiceId());
-            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(reqAccount.getUserRole().toString())));
+            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(reqAccount.getGuid(), reqAccount.getUserRole().toString())));
 
             if (DEBUG)
             {
@@ -1691,7 +1691,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setServiceGuid(request.getServiceId());
-            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(reqAccount.getUserRole().toString())));
+            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(reqAccount.getGuid(), reqAccount.getUserRole().toString())));
 
             if (DEBUG)
             {
@@ -1896,8 +1896,8 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
         AccountControlResponse response = new AccountControlResponse();
 
         final RequestHostInfo reqInfo = request.getHostInfo();
-        final UserAccount reqAccount = request.getUserAccount();
-        final UserAccount userAccount = request.getRequestor();
+        final UserAccount userAccount = request.getUserAccount();
+        final UserAccount reqAccount = request.getRequestor();
 
         if (DEBUG)
         {
@@ -1916,7 +1916,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setServiceGuid(request.getServiceId());
-            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getUserRole().toString())));
+            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(reqAccount.getGuid(), reqAccount.getUserRole().toString())));
 
             if (DEBUG)
             {
@@ -2050,10 +2050,10 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 	                AuditEntry auditEntry = new AuditEntry();
 	                auditEntry.setAuditType(AuditType.SHOWAUDIT);
                     auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
-                    auditEntry.setSessionId(userAccount.getSessionId());
-                    auditEntry.setUserGuid(userAccount.getGuid());
-                    auditEntry.setUserName(userAccount.getUsername());
-                    auditEntry.setUserRole(userAccount.getUserRole().toString());
+                    auditEntry.setSessionId(reqAccount.getSessionId());
+                    auditEntry.setUserGuid(reqAccount.getGuid());
+                    auditEntry.setUserName(reqAccount.getUsername());
+                    auditEntry.setUserRole(reqAccount.getUserRole().toString());
                     auditEntry.setAuthorized(Boolean.TRUE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
