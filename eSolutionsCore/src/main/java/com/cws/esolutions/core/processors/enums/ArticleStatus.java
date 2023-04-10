@@ -15,9 +15,9 @@
  */
 package com.cws.esolutions.core.processors.enums;
 /*
- * Project: eSolutionsAgent
- * Package: com.cws.esolutions.agent.processors.enums
- * File: ListOperationType.java
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.processors.enums
+ * File: AppServerType.java
  *
  * History
  *
@@ -26,15 +26,13 @@ package com.cws.esolutions.core.processors.enums;
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 /**
- * Interface for the Application Data DAO layer. Allows access
- * into the asset management database to obtain, modify and remove
- * application information.
- *
  * @author cws-khuntly
  * @version 1.0
  */
-public enum ListOperationType
+public enum ArticleStatus
 {
-    LISTPLATFORMS,
-    LISTSERVERS;
+    ACTIVE,
+    INACTIVE,
+    APPROVED,
+    UNAPPROVED;
 }
