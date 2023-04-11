@@ -31,6 +31,7 @@ import java.lang.reflect.Field;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
+import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.CoreServicesConstants;
 import com.cws.esolutions.core.processors.enums.ArticleStatus;
 /**
@@ -41,17 +42,20 @@ public class Article implements Serializable
 {
 	private String title = null;
 	private String cause = null;
-	private String author = null;
 	private Date reviewDate = null;
 	private Date modifyDate = null;
 	private Date createDate = null;
 	private String keywords = null;
 	private String symptoms = null;
 	private String articleId = null;
+	private Date approveDate = null;
 	private String resolution = null;
 	private String reviewedBy = null;
-	private String modifiedBy = null;
+	private String searchTerms = null;
+	private UserAccount author = null;
 	private ArticleStatus status = null;
+	private UserAccount modifiedBy = null;
+	private UserAccount approvedBy = null;
 
 	private static final String CNAME = Article.class.getName();
     private static final long serialVersionUID = -4196311827125939234L;
@@ -85,9 +89,9 @@ public class Article implements Serializable
         this.cause = value;
     }
 
-    public final void setAuthor(final String value)
+    public final void setAuthor(final UserAccount value)
     {
-        final String methodName = Article.CNAME + "#setAuthor(final String value)";
+        final String methodName = Article.CNAME + "#setAuthor(final UserAccount value)";
 
         if (DEBUG)
         {
@@ -202,9 +206,9 @@ public class Article implements Serializable
         this.reviewedBy = value;
     }
 
-    public final void setModifiedBy(final String value)
+    public final void setModifiedBy(final UserAccount value)
     {
-        final String methodName = Article.CNAME + "#setModifiedBy(final String value)";
+        final String methodName = Article.CNAME + "#setModifiedBy(final UserAccount value)";
 
         if (DEBUG)
         {
@@ -226,6 +230,45 @@ public class Article implements Serializable
         }
 
         this.status = value;
+    }
+
+    public final void setApprovedBy(final UserAccount value)
+    {
+        final String methodName = Article.CNAME + "#setApprovedBy(final UserAccount value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.approvedBy = value;
+    }
+
+    public final void setApproveDate(final Date value)
+    {
+        final String methodName = Article.CNAME + "#setApproveDate(final Date value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.approveDate = value;
+    }
+
+    public final void setSearchTerms(final String value)
+    {
+        final String methodName = Article.CNAME + "#setSearchTerms(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.searchTerms = value;
     }
 
     public final String getTitle()
@@ -254,7 +297,7 @@ public class Article implements Serializable
         return this.cause;
     }
 
-    public final String getAuthor()
+    public final UserAccount getAuthor()
     {
         final String methodName = Article.CNAME + "#getAuthor()";
 
@@ -371,7 +414,7 @@ public class Article implements Serializable
         return this.reviewedBy;
     }
 
-    public final String getModifiedBy()
+    public final UserAccount getModifiedBy()
     {
         final String methodName = Article.CNAME + "#getModifiedBy()";
 
@@ -384,9 +427,9 @@ public class Article implements Serializable
         return this.modifiedBy;
     }
 
-    public final ArticleStatus getStatus(final ArticleStatus value)
+    public final ArticleStatus getStatus()
     {
-        final String methodName = Article.CNAME + "#getStatus(final ArticleStatus value)";
+        final String methodName = Article.CNAME + "#getStatus()";
 
         if (DEBUG)
         {
@@ -395,6 +438,45 @@ public class Article implements Serializable
         }
 
         return this.status;
+    }
+
+    public final UserAccount getApprovedBy()
+    {
+        final String methodName = Article.CNAME + "#getApprovedBy()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.approvedBy);
+        }
+
+        return this.approvedBy;
+    }
+
+    public final Date getApproveDate()
+    {
+        final String methodName = Article.CNAME + "#getApproveDate()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.approveDate);
+        }
+
+        return this.approveDate;
+    }
+
+    public final String getSearchTerms()
+    {
+        final String methodName = Article.CNAME + "#getSearchTerms()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.searchTerms);
+        }
+
+        return this.searchTerms;
     }
 
     @Override

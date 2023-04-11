@@ -32,7 +32,9 @@ package com.cws.esolutions.core.processors.enums;
 public enum ArticleStatus
 {
     ACTIVE,
+    PENDING,
     INACTIVE,
+    DELETED,
     APPROVED,
     UNAPPROVED;
 }

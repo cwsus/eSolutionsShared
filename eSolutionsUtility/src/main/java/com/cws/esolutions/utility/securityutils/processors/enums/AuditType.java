@@ -148,6 +148,16 @@ public enum AuditType
     GENERATECERT,
     APPLYCERT,
 
+    // knowledge management
+    ADDARTICLE,
+    VIEWARTICLE,
+    SEARCHARTICLES,
+    LISTARTICLES,
+    UPDATEARTICLE,
+    UPDATEARTICLESTATUS,
+    DELETEARTICLE,
+    LISTPENDING,
+
     // added to satisfy service tests
     // DO NOT REMOVE
     JUNIT;

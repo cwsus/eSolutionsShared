@@ -86,7 +86,7 @@
     <resource-config>
         <DataSourceManager>
             <dsName>ApplicationDataSource</dsName>
-            <datasource>jdbc:mysql://localhost/ESOLUTIONS</datasource>
+            <datasource>jdbc:mysql://localhost/ESOLUTIONS?useCompression=true&amp;useSSL=true&amp;requireSSL=true&amp;verifyServerCertificate=true&amp;trustCertificateKeyStoreUrl=file:///C:/cygwin64/home/khuntly/trust.p12&amp;trustCertificateKeyStoreType=PKCS12&amp;trustCertificateKeyStorePassword=twO23w2urkcVh3S4QGrD&amp;autoReconnect=true&amp;autoReconnectForPools=true&amp;paranoid=true&amp;useLocalTransactionState=true&amp;characterEncoding=UTF8&amp;useServerPrepStmts=true&amp;zeroDateTimeBehavior=CONVERT_TO_NULL</datasource>
             <driver>com.mysql.cj.jdbc.Driver</driver>
             <dsUser>appadm</dsUser>
             <dsPass>ALr5lyTkZint7x4bMTCIFA==:m/wuw9yLfzrbN4TbMd9JINeg359H5KHC1bibEwtCJF4=</dsPass>

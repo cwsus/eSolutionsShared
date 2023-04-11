@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package com.cws.esolutions.core.processors.interfaces;
-
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.core.processors.interfaces
@@ -33,7 +32,11 @@ import com.cws.esolutions.core.CoreServicesBean;
 import com.cws.esolutions.core.CoreServicesConstants;
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.core.config.xml.ApplicationConfig;
+import com.cws.esolutions.core.dao.impl.KnowledgeDataDAOImpl;
 import com.cws.esolutions.security.config.xml.SecurityConfig;
+import com.cws.esolutions.security.dao.usermgmt.factory.UserManagerFactory;
+import com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager;
+import com.cws.esolutions.core.dao.interfaces.IKnowledgeDataDAO;
 import com.cws.esolutions.utility.services.impl.AccessControlServiceImpl;
 import com.cws.esolutions.core.processors.dto.KnowledgeManagementRequest;
 import com.cws.esolutions.core.processors.dto.KnowledgeManagementResponse;
@@ -54,6 +57,8 @@ public interface IKnowledgeManagementProcessor
     static final SecurityConfig secConfig = secBean.getConfigData().getSecurityConfig();
     static final ApplicationConfig appConfig = appBean.getConfigData().getAppConfig();
     static final IAuditProcessor auditor = (IAuditProcessor) new AuditProcessorImpl();
+    static final IKnowledgeDataDAO dao = (IKnowledgeDataDAO) new KnowledgeDataDAOImpl();
+    static final UserManager userManager = (UserManager) UserManagerFactory.getUserManager(secConfig.getUserManager());
     static final IAccessControlService accessControl = (IAccessControlService) new AccessControlServiceImpl();
 
     static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);
@@ -79,6 +84,16 @@ public interface IKnowledgeManagementProcessor
      * @throws KnowledgeManagementException {@link com.cws.esolutions.core.processors.exception.KnowledgeManagementException} if an error occurs during processing
      */
     KnowledgeManagementResponse updateArticleData(final KnowledgeManagementRequest request) throws KnowledgeManagementException;
+
+    /**
+     * Allows updates to aa application in the service datastore
+     *
+     * @param request - The {@link com.cws.esolutions.core.processors.dto.KnowledgeManagementRequest}
+     * housing the necessary data to process
+     * @return The {@link com.cws.esolutions.core.processors.dto.KnowledgeManagementResponse} containing the response information, or error code
+     * @throws KnowledgeManagementException {@link com.cws.esolutions.core.processors.exception.KnowledgeManagementException} if an error occurs during processing
+     */
+    KnowledgeManagementResponse updateArticleStatus(final KnowledgeManagementRequest request) throws KnowledgeManagementException;
 
     /**
      * Allows removal of an application in the service datastore
@@ -109,6 +124,8 @@ public interface IKnowledgeManagementProcessor
      * @throws KnowledgeManagementException {@link com.cws.esolutions.core.processors.exception.KnowledgeManagementException} if an error occurs during processing
      */
     KnowledgeManagementResponse listArticlesByAttribute(final KnowledgeManagementRequest request) throws KnowledgeManagementException;
+
+    KnowledgeManagementResponse listPendingArticles(final KnowledgeManagementRequest request) throws KnowledgeManagementException;
 
     /**
      * Obtains detailed information regarding a provided application housed within the service datastore

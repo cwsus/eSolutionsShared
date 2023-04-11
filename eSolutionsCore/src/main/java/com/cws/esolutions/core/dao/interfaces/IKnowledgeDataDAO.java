@@ -52,15 +52,17 @@ public interface IKnowledgeDataDAO
     static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
-    boolean addArticle(final List<String> applicationData) throws SQLException;
+    boolean addArticle(final List<String> articleData) throws SQLException;
 
-    boolean updateArticle(final List<Object> applicationData) throws SQLException;
+    boolean updateArticle(final List<String> articleData) throws SQLException;
 
-    boolean removeArticle(final String appGuid) throws SQLException;
+    boolean updateArticleStatus(final String articleId, final String modifiedBy, final String status) throws SQLException;
+
+    boolean removeArticle(final String articleId, final String userId) throws SQLException;
 
     List<String[]> listArticles(final int startRow) throws SQLException;
 
-    List<Object[]> getArticlesByAttribute(final String attribute, final int startRow) throws SQLException;
+    List<String[]> getArticlesByAttribute(final String attribute, final int startRow) throws SQLException;
 
     List<Object> getArticle(final String appGuid) throws SQLException;
 }
