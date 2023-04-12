@@ -62,7 +62,6 @@ public class SSLEnforcementFilter implements Filter
     private String[] ignoreURIs = null;
     private String[] ignoreHosts = null;
 
-    private static final int SECURE_URL_PORT = 443;
     private static final String SECURE_URL_PREFIX = "https://";
     private static final String IGNORE_URI_LIST = "ignore.uri.list";
     private static final String IGNORE_HOST_LIST = "ignore.host.list";
@@ -300,7 +299,6 @@ public class SSLEnforcementFilter implements Filter
         StringBuilder redirectURL = new StringBuilder()
             .append(SSLEnforcementFilter.SECURE_URL_PREFIX)
             .append(sRequest.getServerName())
-            .append((sRequest.getServerPort() != SSLEnforcementFilter.SECURE_URL_PORT) ? ":" + sRequest.getServerPort() : null)
             .append(hRequest.getRequestURI());
 
         if (StringUtils.isNotBlank(hRequest.getQueryString()))

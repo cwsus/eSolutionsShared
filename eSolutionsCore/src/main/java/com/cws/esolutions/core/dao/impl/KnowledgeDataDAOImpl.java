@@ -234,7 +234,7 @@ public class KnowledgeDataDAOImpl implements IKnowledgeDataDAO
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{ CALL updateArticle(?, ?, ?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt = sqlConn.prepareCall("{ CALL updateArticleStatus(?, ?, ?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, articleId); // articleid
             stmt.setString(2, modifiedBy); // modifiedby
             stmt.setString(3, status); // article status
@@ -406,7 +406,7 @@ public class KnowledgeDataDAOImpl implements IKnowledgeDataDAO
 
             	while (resultSet.next())
             	{
-            		String[] articleData = new String[] { resultSet.getString(1), resultSet.getString(2) };
+            		String[] articleData = new String[] { resultSet.getString(1), resultSet.getString(2), resultSet.getString(3) };
 
             		if (DEBUG)
             		{
@@ -508,7 +508,7 @@ public class KnowledgeDataDAOImpl implements IKnowledgeDataDAO
 
             	while (resultSet.next())
             	{
-            		String[] articleData = new String[] { resultSet.getString(1), resultSet.getString(2) };
+            		String[] articleData = new String[] { resultSet.getString(1), resultSet.getString(2), resultSet.getString(3) };
 
             		if (DEBUG)
             		{
@@ -719,6 +719,106 @@ public class KnowledgeDataDAOImpl implements IKnowledgeDataDAO
             	{
             		DEBUGGER.debug("resultList: {}", resultList);
             	}
+            }
+        }
+        catch (final SQLException sqx)
+        {
+            throw new SQLException(sqx.getMessage(), sqx);
+        }
+        finally
+        {
+        	if (!(Objects.isNull(resultSet)))
+        	{
+        		resultSet.close();
+        	}
+
+            if (!(Objects.isNull(stmt)))
+            {
+                stmt.close();
+            }
+
+            if ((sqlConn != null) && (!(sqlConn.isClosed())))
+            {
+                sqlConn.close();
+            }
+        }
+
+        return resultList;
+	}
+
+	public final synchronized List<String[]> getArticlesForApproval(final int startRow) throws SQLException
+	{
+        final String methodName = IKnowledgeDataDAO.CNAME + "#getArticlesForApproval(final int startRow) throws SQLException";
+        
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", startRow);
+        }
+
+        Connection sqlConn = null;
+        ResultSet resultSet = null;
+        CallableStatement stmt = null;
+        List<String[]> resultList = null;
+
+        if (Objects.isNull(dataSource))
+        {
+        	throw new SQLException("A datasource connection could not be obtained.");
+        }
+
+        try
+        {
+            sqlConn = dataSource.getConnection();
+
+            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
+            {
+                throw new SQLException("Unable to obtain application datasource connection");
+            }
+
+            sqlConn.setAutoCommit(true);
+
+            stmt = sqlConn.prepareCall("{ CALL getArticlesForApproval(?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt.setInt(1, startRow); // startrow
+            
+            if (DEBUG)
+            {
+                DEBUGGER.debug("CallableStatement: {}", stmt);
+            }
+
+            resultSet = stmt.executeQuery();
+
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("ResultSet: {}", resultSet);
+            }
+
+            if ((!(Objects.isNull(resultSet)) && (resultSet.next())))
+            {
+            	resultSet.beforeFirst();
+
+            	resultList = new ArrayList<String[]>();
+
+            	while (resultSet.next())
+            	{
+            		String[] articleData = new String[] { resultSet.getString(1), resultSet.getString(2), resultSet.getString(3) };
+
+            		if (DEBUG)
+            		{
+            			DEBUGGER.debug("articleData: {}", (Object) articleData);
+            		}
+
+            		resultList.add(articleData);
+
+            		if (DEBUG)
+            		{
+            			DEBUGGER.debug("resultList: {}", resultList);
+            		}
+            	}
+
+        		if (DEBUG)
+        		{
+        			DEBUGGER.debug("resultList: {}", resultList);
+        		}
             }
         }
         catch (final SQLException sqx)

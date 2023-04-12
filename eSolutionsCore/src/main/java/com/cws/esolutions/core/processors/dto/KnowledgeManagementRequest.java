@@ -43,6 +43,7 @@ public class KnowledgeManagementRequest implements Serializable
     private int startPage = 0;
     private Article article = null;
     private String serviceId = null;
+    private boolean isApproval = false;
     private String applicationId = null;
     private String applicationName = null;
     private UserAccount userAccount = null;
@@ -145,6 +146,19 @@ public class KnowledgeManagementRequest implements Serializable
         this.article = value;
     }
 
+    public final void setIsApproval(final boolean value)
+    {
+        final String methodName = KnowledgeManagementRequest.CNAME + "#setIsApproval(final boolean value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.isApproval = value;
+    }
+
     public final UserAccount getUserAccount()
     {
         final String methodName = KnowledgeManagementRequest.CNAME + "#getUserAccount()";
@@ -234,6 +248,19 @@ public class KnowledgeManagementRequest implements Serializable
         }
 
         return this.article;
+    }
+
+    public final boolean getIsApproval()
+    {
+        final String methodName = KnowledgeManagementRequest.CNAME + "#getIsApproval()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.isApproval);
+        }
+
+        return this.isApproval;
     }
 
     @Override

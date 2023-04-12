@@ -259,7 +259,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                     auditEntry.setAuthorized(Boolean.TRUE);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
-    
+
                     if (DEBUG)
                     {
                         DEBUGGER.debug("AuditEntry: {}", auditEntry);

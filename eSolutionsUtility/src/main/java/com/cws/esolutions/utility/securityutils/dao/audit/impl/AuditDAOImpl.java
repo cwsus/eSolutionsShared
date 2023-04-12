@@ -89,16 +89,17 @@ public class AuditDAOImpl implements IAuditDAO
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareStatement("{ CALL insertAuditEntry(?, ?, ?, ?, ?, ?, ?, ?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt = sqlConn.prepareStatement("{ CALL insertAuditEntry(?, ?, ?, ?, ?, ?, ?, ?, ?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, auditRequest.get(0)); // session id
             stmt.setString(2, auditRequest.get(1)); // username
             stmt.setString(3, auditRequest.get(2)); // guid
             stmt.setString(4, auditRequest.get(3)); // user role
-            stmt.setString(5, auditRequest.get(4)); // applid
-            stmt.setString(6, auditRequest.get(5)); // applname
-            stmt.setString(7, auditRequest.get(6)); // user action
-            stmt.setString(8, auditRequest.get(7)); // srcaddr
-            stmt.setString(9, auditRequest.get(8)); // srchost
+            stmt.setString(5, auditRequest.get(4)); // user action
+            stmt.setBoolean(6, Boolean.valueOf(auditRequest.get(5))); // is authorized
+            stmt.setString(7, auditRequest.get(6)); // applid
+            stmt.setString(8, auditRequest.get(7)); // applname
+            stmt.setString(9, auditRequest.get(8)); // srcaddr
+            stmt.setString(10, auditRequest.get(9)); // srchost
             
             if (DEBUG)
             {

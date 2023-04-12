@@ -125,6 +125,12 @@ public interface IKnowledgeManagementProcessor
      */
     KnowledgeManagementResponse listArticlesByAttribute(final KnowledgeManagementRequest request) throws KnowledgeManagementException;
 
+    /**
+     * 
+     * @param request
+     * @return
+     * @throws KnowledgeManagementException
+     */
     KnowledgeManagementResponse listPendingArticles(final KnowledgeManagementRequest request) throws KnowledgeManagementException;
 
     /**
@@ -136,4 +142,12 @@ public interface IKnowledgeManagementProcessor
      * @throws KnowledgeManagementException {@link com.cws.esolutions.core.processors.exception.KnowledgeManagementException} if an error occurs during processing
      */
     KnowledgeManagementResponse getArticleData(final KnowledgeManagementRequest request) throws KnowledgeManagementException;
+
+    /**
+     * 
+     * @param request
+     * @return
+     * @throws KnowledgeManagementException
+     */
+    KnowledgeManagementResponse getArticleForApproval(final KnowledgeManagementRequest request) throws KnowledgeManagementException;
 }

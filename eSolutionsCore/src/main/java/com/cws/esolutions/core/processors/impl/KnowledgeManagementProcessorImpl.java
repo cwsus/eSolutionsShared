@@ -28,6 +28,9 @@ package com.cws.esolutions.core.processors.impl;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.Arrays;
 import java.util.Objects;
 import java.sql.Timestamp;
@@ -967,16 +970,43 @@ public class KnowledgeManagementProcessorImpl implements IKnowledgeManagementPro
 
             	for (int x = 0; x < articleData.size(); x++)
             	{
-            		Article resArticle = new Article();
-            		resArticle.setArticleId(articleData.get(x)[0]);
-            		resArticle.setTitle(articleData.get(x)[1]);
-
-            		if (DEBUG)
+            		try
             		{
-            			DEBUGGER.debug("Article: {}", resArticle);
-            		}
+            			List<Object> authorData = userManager.loadUserAccount(articleData.get(x)[2]);
 
-            		responseArticles.add(resArticle);
+                		if (DEBUG)
+                		{
+                			DEBUGGER.debug("List<Object>: authorData: {}", authorData);
+                		}
+
+                		UserAccount authorAccount = new UserAccount();
+                    	authorAccount.setGuid((String) authorData.get(1));
+                    	authorAccount.setUsername((String) authorData.get(0));
+                    	authorAccount.setDisplayName((String) authorData.get(11));
+
+                    	if (DEBUG)
+                    	{
+                    		DEBUGGER.debug("UserAccount: authorAccount: {}", authorAccount);
+                    	}
+
+                		Article resArticle = new Article();
+                		resArticle.setArticleId(articleData.get(x)[0]);
+                		resArticle.setTitle(articleData.get(x)[1]);
+                		resArticle.setAuthor(authorAccount);
+
+                		if (DEBUG)
+                		{
+                			DEBUGGER.debug("Article: {}", resArticle);
+                		}
+
+                		responseArticles.add(resArticle);
+            		}
+            		catch (UserManagementException umx)
+            		{
+            			ERROR_RECORDER.error(umx.getMessage(), umx);
+
+            			continue;
+            		}
             	}
 
             	response.setArticleList(responseArticles);
@@ -1173,9 +1203,43 @@ public class KnowledgeManagementProcessorImpl implements IKnowledgeManagementPro
 
             	for (int x = 0; x < articleData.size(); x++)
             	{
+            		List<Object> authorData = null;
+
+            		try
+            		{
+            			authorData = userManager.loadUserAccount(articleData.get(x)[2]);
+
+	                	if (DEBUG)
+	                	{
+	                		DEBUGGER.debug("UserData: {}", authorData);
+	                	}
+
+	                	if ((Objects.isNull(authorData)) || (authorData.size() == 0))
+	                	{
+	                		throw new KnowledgeManagementException("No author information could be found. Unable to load article.");
+	                	}
+            		}
+            		catch (UserManagementException umx)
+            		{
+            			ERROR_RECORDER.error(umx.getMessage(), umx);
+
+            			throw new KnowledgeManagementException("No author information could be found. Unable to load article.");
+            		}
+
+                	UserAccount authorAccount = new UserAccount();
+                	authorAccount.setGuid((String) authorData.get(1));
+                	authorAccount.setUsername((String) authorData.get(0));
+                	authorAccount.setDisplayName((String) authorData.get(11));
+
+                	if (DEBUG)
+                	{
+                		DEBUGGER.debug("UserAccount: {}", authorAccount);
+                	}
+
             		Article resArticle = new Article();
             		resArticle.setArticleId(articleData.get(x)[0]);
             		resArticle.setTitle(articleData.get(x)[1]);
+            		resArticle.setAuthor(authorAccount);
 
             		if (DEBUG)
             		{
@@ -1361,7 +1425,7 @@ public class KnowledgeManagementProcessorImpl implements IKnowledgeManagementPro
                 return response;
             }
 
-            List<String[]> articleData = dao.getArticlesByAttribute(article.getStatus().toString(), 0);
+            List<String[]> articleData = dao.getArticlesForApproval(request.getStartPage());
 
             if (DEBUG)
             {
@@ -1567,7 +1631,16 @@ public class KnowledgeManagementProcessorImpl implements IKnowledgeManagementPro
                 return response;
             }
 
-            List<Object> articleData = dao.getArticle(article.getArticleId());
+            List<Object> articleData = null;
+
+            if (request.getIsApproval())
+            {
+            	articleData = dao.getArticleForApproval(article.getArticleId());
+            }
+            else
+            {
+            	articleData = dao.getArticle(article.getArticleId());
+            }
 
             if (DEBUG)
             {
@@ -1576,20 +1649,36 @@ public class KnowledgeManagementProcessorImpl implements IKnowledgeManagementPro
 
             if ((Objects.isNull(articleData)) || (articleData.size() == 0))
             {
-            	System.out.println(articleData);
             	response.setRequestStatus(CoreServicesStatus.SUCCESS);
             }
             else
             {
+            	UserAccount authorAccount = null;
+            	UserAccount approveAccount = null;
+            	UserAccount modifiedAccount = null;
+            	UserAccount reviewedBy = null;
+
             	List<Object> authorData = userManager.loadUserAccount((String) articleData.get(2));
             	List<Object> modifyData = userManager.loadUserAccount((String) articleData.get(10));
             	List<Object> approveData = userManager.loadUserAccount((String) articleData.get(13));
+            	List<Object> reviewData = userManager.loadUserAccount((String) articleData.get(8));
 
             	if (DEBUG)
             	{
             		DEBUGGER.debug("UserData: {}", authorData);
             		DEBUGGER.debug("UserData: {}", modifyData);
             		DEBUGGER.debug("UserData: {}", approveData);
+            		DEBUGGER.debug("reviewData: {}", approveData);
+            	}
+
+            	authorAccount = new UserAccount();
+            	authorAccount.setGuid((String) authorData.get(1));
+            	authorAccount.setUsername((String) authorData.get(0));
+            	authorAccount.setDisplayName((String) authorData.get(11));
+
+            	if (DEBUG)
+            	{
+            		DEBUGGER.debug("UserAccount: authorAccount: {}", authorAccount);
             	}
 
             	if ((Objects.isNull(authorData)) || (authorData.size() == 0))
@@ -1597,44 +1686,43 @@ public class KnowledgeManagementProcessorImpl implements IKnowledgeManagementPro
             		throw new KnowledgeManagementException("No author information could be found. Unable to load article.");
             	}
 
-            	if ((Objects.isNull(modifyData)) || (modifyData.size() == 0))
+            	if (!(Objects.isNull(modifyData) || (modifyData.size() != 0)))
             	{
-            		throw new KnowledgeManagementException("No modifier information could be found. Unable to load article.");
+                	modifiedAccount = new UserAccount();
+                	modifiedAccount.setGuid((String) modifyData.get(1));
+                	modifiedAccount.setUsername((String) modifyData.get(0));
+                	modifiedAccount.setDisplayName((String) modifyData.get(11));
+
+                	if (DEBUG)
+                	{
+                		DEBUGGER.debug("UserAccount: modifiedAccount {}", modifiedAccount);
+                	}
             	}
 
-            	if ((Objects.isNull(approveData)) || (approveData.size() == 0))
+            	if (!(Objects.isNull(approveData) || (approveData.size() != 0)))
             	{
-            		throw new KnowledgeManagementException("No approval information could be found. Unable to load article.");
+                	approveAccount = new UserAccount();
+                	approveAccount.setGuid((String) modifyData.get(1));
+                	approveAccount.setUsername((String) modifyData.get(0));
+                	approveAccount.setDisplayName((String) modifyData.get(11));
+
+                	if (DEBUG)
+                	{
+                		DEBUGGER.debug("UserAccount: approveAccount: {}", approveAccount);
+                	}
             	}
 
-            	UserAccount authorAccount = new UserAccount();
-            	authorAccount.setGuid((String) authorData.get(1));
-            	authorAccount.setUsername((String) authorData.get(0));
-            	authorAccount.setDisplayName((String) authorData.get(11));
-
-            	if (DEBUG)
+            	if (!(Objects.isNull(reviewData) || (reviewData.size() != 0)))
             	{
-            		DEBUGGER.debug("UserAccount: {}", authorAccount);
-            	}
+                	reviewedBy = new UserAccount();
+                	reviewedBy.setGuid((String) reviewData.get(1));
+                	reviewedBy.setUsername((String) reviewData.get(0));
+                	reviewedBy.setDisplayName((String) reviewData.get(11));
 
-            	UserAccount modifiedAccount = new UserAccount();
-            	modifiedAccount.setGuid((String) modifyData.get(1));
-            	modifiedAccount.setUsername((String) modifyData.get(0));
-            	modifiedAccount.setDisplayName((String) modifyData.get(11));
-
-            	if (DEBUG)
-            	{
-            		DEBUGGER.debug("UserAccount: {}", modifiedAccount);
-            	}
-
-            	UserAccount approveAccount = new UserAccount();
-            	approveAccount.setGuid((String) approveData.get(1));
-            	approveAccount.setUsername((String) approveData.get(0));
-            	approveAccount.setDisplayName((String) approveData.get(11));
-
-            	if (DEBUG)
-            	{
-            		DEBUGGER.debug("UserAccount: {}", approveAccount);
+                	if (DEBUG)
+                	{
+                		DEBUGGER.debug("UserAccount: modifiedAccount {}", modifiedAccount);
+                	}
             	}
 
             	Article responseArticle = new Article();
@@ -1646,12 +1734,288 @@ public class KnowledgeManagementProcessorImpl implements IKnowledgeManagementPro
             	responseArticle.setSymptoms((String) articleData.get(5));
             	responseArticle.setCause((String) articleData.get(6));
             	responseArticle.setResolution((String) articleData.get(7));
-            	responseArticle.setReviewedBy((String) articleData.get(8));
+            	responseArticle.setReviewedBy(reviewedBy);
             	responseArticle.setReviewDate(new Date(((Timestamp) articleData.get(9)).getTime()));
             	responseArticle.setModifiedBy(modifiedAccount);
             	responseArticle.setModifyDate(new Date(((Timestamp) articleData.get(11)).getTime()));
-            	responseArticle.setApproveDate(new Date(((Timestamp) articleData.get(12)).getTime()));
-            	responseArticle.setApprovedBy(approveAccount);
+
+            	if (!(request.getIsApproval()))
+            	{
+            		responseArticle.setApproveDate(new Date(((Timestamp) articleData.get(12)).getTime()));
+            		responseArticle.setApprovedBy(approveAccount);
+            	}
+
+            	if (DEBUG)
+            	{
+            		DEBUGGER.debug("responseArticle: {}", responseArticle);
+            	}
+
+            	response.setArticle(responseArticle);
+            	response.setRequestStatus(CoreServicesStatus.SUCCESS);
+            }
+
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("KnowledgeManagementResponse: {}", response);
+            }
+        }
+        catch (final SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new KnowledgeManagementException(sqx.getMessage(), sqx);
+        }
+        catch (final AccessControlServiceException acsx)
+        {
+            ERROR_RECORDER.error(acsx.getMessage(), acsx);
+            
+            throw new KnowledgeManagementException(acsx.getMessage(), acsx);
+        }
+        catch (UserManagementException umx)
+        {
+            ERROR_RECORDER.error(umx.getMessage(), umx);
+            
+            throw new KnowledgeManagementException(umx.getMessage(), umx);
+		}
+        finally
+        {
+            // audit
+            if (secConfig.getPerformAudit())
+            {
+                // audit if a valid account. if not valid we cant audit much,
+                // but we should try anyway. not sure how thats going to work
+                try
+                {
+                    AuditEntry auditEntry = new AuditEntry();
+                    auditEntry.setAuditType(AuditType.VIEWARTICLE);
+                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                    auditEntry.setSessionId(userAccount.getSessionId());
+                    auditEntry.setUserGuid(userAccount.getGuid());
+                    auditEntry.setUserName(userAccount.getUsername());
+                    auditEntry.setUserRole(userAccount.getUserRole().toString());
+                    auditEntry.setAuthorized(Boolean.TRUE);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
+    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    }
+    
+                    List<String> auditHostInfo = new ArrayList<String>(
+                    		Arrays.asList(
+                    				reqInfo.getHostAddress(),
+                    				reqInfo.getHostName()));
+
+                    if (DEBUG)
+                    {
+                    	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                    }
+
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+                    auditRequest.setHostInfo(auditHostInfo);
+    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    }
+
+                    auditor.auditRequest(auditRequest);
+                }
+                catch (final AuditServiceException asx)
+                {
+                    ERROR_RECORDER.error(asx.getMessage(), asx);
+                }
+            }
+        }
+
+        return response;
+	}
+
+	public final KnowledgeManagementResponse getArticleForApproval(final KnowledgeManagementRequest request) throws KnowledgeManagementException
+	{
+        final String methodName = KnowledgeManagementProcessorImpl.CNAME + "#getArticleForApproval(final KnowledgeManagementRequest request) throws KnowledgeManagementException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("KnowledgeManagementRequest: {}", request);
+        }
+
+        KnowledgeManagementResponse response = new KnowledgeManagementResponse();
+
+        final Article article = request.getArticle();
+        final UserAccount userAccount = request.getUserAccount();
+        final RequestHostInfo reqInfo = request.getRequestInfo();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("Article: {}", article);
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+        }
+
+        try
+        {
+            // this will require admin and service authorization
+            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid(), userAccount.getUserRole().toString())));
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+            }
+
+            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+            }
+
+            if (!(accessResponse.getIsUserAuthorized()))
+            {
+                // unauthorized
+                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+
+                // audit
+                if (secConfig.getPerformAudit())
+                {
+                    // audit if a valid account. if not valid we cant audit much,
+                    // but we should try anyway. not sure how thats going to work
+                    try
+                    {
+                        AuditEntry auditEntry = new AuditEntry();
+                        auditEntry.setAuditType(AuditType.VIEWARTICLE);
+                        auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                        auditEntry.setSessionId(userAccount.getSessionId());
+                        auditEntry.setUserGuid(userAccount.getGuid());
+                        auditEntry.setUserName(userAccount.getUsername());
+                        auditEntry.setUserRole(userAccount.getUserRole().toString());
+                        auditEntry.setAuthorized(Boolean.FALSE);
+                        auditEntry.setApplicationId(request.getApplicationId());
+                        auditEntry.setApplicationName(request.getApplicationName());
+        
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                        }
+        
+                        List<String> auditHostInfo = new ArrayList<String>(
+                        		Arrays.asList(
+                        				reqInfo.getHostAddress(),
+                        				reqInfo.getHostName()));
+
+                        if (DEBUG)
+                        {
+                        	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                        }
+
+                        AuditRequest auditRequest = new AuditRequest();
+                        auditRequest.setAuditEntry(auditEntry);
+                        auditRequest.setHostInfo(auditHostInfo);
+        
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                        }
+
+                        auditor.auditRequest(auditRequest);
+                    }
+                    catch (final AuditServiceException asx)
+                    {
+                        ERROR_RECORDER.error(asx.getMessage(), asx);
+                    }
+                }
+
+                return response;
+            }
+
+            List<Object> articleData = null;
+
+        	articleData = dao.getArticleForApproval(article.getArticleId());
+
+        	if (DEBUG)
+            {
+            	DEBUGGER.debug("List<String>: {}", articleData);
+            }
+
+            if ((Objects.isNull(articleData)) || (articleData.size() == 0))
+            {
+            	response.setRequestStatus(CoreServicesStatus.SUCCESS);
+            }
+            else
+            {
+            	UserAccount authorAccount = null;
+            	UserAccount modifiedAccount = null;
+            	UserAccount reviewedBy = null;
+
+            	List<Object> authorData = userManager.loadUserAccount((String) articleData.get(2));
+            	List<Object> modifyData = userManager.loadUserAccount((String) articleData.get(10));
+            	List<Object> reviewData = userManager.loadUserAccount((String) articleData.get(8));
+    			
+            	if (DEBUG)
+            	{
+            		DEBUGGER.debug("UserData: {}", authorData);
+            		DEBUGGER.debug("UserData: {}", modifyData);
+            		DEBUGGER.debug("UserData: {}", reviewData);
+            	}
+
+            	authorAccount = new UserAccount();
+            	authorAccount.setGuid((String) authorData.get(1));
+            	authorAccount.setUsername((String) authorData.get(0));
+            	authorAccount.setDisplayName((String) authorData.get(11));
+
+            	if (DEBUG)
+            	{
+            		DEBUGGER.debug("UserAccount: authorAccount: {}", authorAccount);
+            	}
+
+            	if ((Objects.isNull(authorData)) || (authorData.size() == 0))
+            	{
+            		throw new KnowledgeManagementException("No author information could be found. Unable to load article.");
+            	}
+
+            	if (!(Objects.isNull(modifyData) || (modifyData.size() != 0)))
+            	{
+                	modifiedAccount = new UserAccount();
+                	modifiedAccount.setGuid((String) modifyData.get(1));
+                	modifiedAccount.setUsername((String) modifyData.get(0));
+                	modifiedAccount.setDisplayName((String) modifyData.get(11));
+
+                	if (DEBUG)
+                	{
+                		DEBUGGER.debug("UserAccount: modifiedAccount {}", modifiedAccount);
+                	}
+            	}
+
+            	if (!(Objects.isNull(reviewData) || (reviewData.size() != 0)))
+            	{
+                	reviewedBy = new UserAccount();
+                	reviewedBy.setGuid((String) reviewData.get(1));
+                	reviewedBy.setUsername((String) reviewData.get(0));
+                	reviewedBy.setDisplayName((String) reviewData.get(11));
+
+                	if (DEBUG)
+                	{
+                		DEBUGGER.debug("UserAccount: modifiedAccount {}", modifiedAccount);
+                	}
+            	}
+
+            	Article responseArticle = new Article();
+            	responseArticle.setArticleId((String) articleData.get(0));
+            	responseArticle.setCreateDate(new Date(((Timestamp) articleData.get(1)).getTime()));
+            	responseArticle.setAuthor(authorAccount);
+            	responseArticle.setKeywords((String) articleData.get(3));
+            	responseArticle.setTitle((String) articleData.get(4));
+            	responseArticle.setSymptoms((String) articleData.get(5));
+            	responseArticle.setCause((String) articleData.get(6));
+            	responseArticle.setResolution((String) articleData.get(7));
+            	responseArticle.setReviewedBy(reviewedBy);
+            	responseArticle.setReviewDate((Objects.isNull(articleData.get(9))) ? null : new Date(((Timestamp) articleData.get(9)).getTime()));
+            	responseArticle.setModifiedBy(modifiedAccount);
+            	responseArticle.setModifyDate((Objects.isNull(articleData.get(11))) ? null : new Date(((Timestamp) articleData.get(11)).getTime()));
 
             	if (DEBUG)
             	{

@@ -726,7 +726,7 @@ public class SQLUserManager implements UserManager
     /**
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#listUserAccounts()
      */
-    public synchronized List<String[]> listUserAccounts() throws UserManagementException
+    public synchronized List<Object[]> listUserAccounts() throws UserManagementException
     {
         final String methodName = SQLUserManager.CNAME + "#listUserAccounts() throws UserManagementException";
 
@@ -738,7 +738,7 @@ public class SQLUserManager implements UserManager
         Connection sqlConn = null;
         ResultSet resultSet = null;
         PreparedStatement stmt = null;
-        List<String[]> results = null;
+        List<Object[]> results = null;
 
         if (Objects.isNull(authDataSource))
         {
@@ -775,21 +775,17 @@ public class SQLUserManager implements UserManager
                 if (resultSet.next())
                 {
                     resultSet.beforeFirst();
-                    results = new ArrayList<String[]>();
+                    results = new ArrayList<Object[]>();
 
                     while (resultSet.next())
                     {
-                        String[] userData = new String[]
-                        {
-                            resultSet.getString("cn"),
-                            resultSet.getString("uid")
-                        };
+                        Object[] userData = new Object[] { resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getTimestamp(4) };
 
                         if (DEBUG)
                         {
-                            for (String str : userData)
+                            for (Object obj : userData)
                             {
-                                DEBUGGER.debug(str);
+                                DEBUGGER.debug(obj);
                             }
                         }
 

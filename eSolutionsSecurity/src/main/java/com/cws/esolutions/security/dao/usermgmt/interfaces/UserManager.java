@@ -155,7 +155,7 @@ public interface UserManager
      * @return <code>ArrayList</code> - A list of all user accounts currently housed in the repository
      * @throws UserManagementException if an exception occurs during processing
      */
-    List<String[]> listUserAccounts() throws UserManagementException;
+    List<Object[]> listUserAccounts() throws UserManagementException;
 
     /**
      * Allows an authenticated user or administrator to modify the email address of a provided

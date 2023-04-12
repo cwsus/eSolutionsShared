@@ -80,9 +80,10 @@ public class AuditProcessorImpl implements IAuditProcessor
             auditList.add((StringUtils.isEmpty(auditEntry.getUserName())) ? "WEBUSR" : auditEntry.getUserName()); // username
             auditList.add((StringUtils.isEmpty(auditEntry.getUserGuid())) ? "918671b2-662e-4499-9fd3-1e4e88e0fba2" : auditEntry.getUserGuid()); // userguid
             auditList.add((Objects.isNull(auditEntry.getUserRole())) ? "WEBROLE" : auditEntry.getUserRole()); // userrole
+            auditList.add((StringUtils.isEmpty(auditEntry.getAuditType().toString())) ? "NONE" : String.valueOf(auditEntry.getAuditType())); // useraction
+            auditList.add((Objects.isNull(auditEntry.getAuthorized())) ? "FALSE" : String.valueOf(auditEntry.getAuthorized()));// userrole
             auditList.add((StringUtils.isEmpty(auditEntry.getApplicationId())) ? "SecurityServicesDefault" : auditEntry.getApplicationId()); // applid
             auditList.add((StringUtils.isEmpty(auditEntry.getApplicationName())) ? "SecurityServicesDefault" : auditEntry.getApplicationName()); // applname
-            auditList.add((StringUtils.isEmpty(auditEntry.getAuditType().toString())) ? "NONE" : auditEntry.getAuditType().toString()); // useraction
             auditList.add((StringUtils.isEmpty(reqInfo.get(0))) ? InetAddress.getLocalHost().getHostAddress() : reqInfo.get(0)); // srcaddr
             auditList.add((StringUtils.isEmpty(reqInfo.get(1))) ? InetAddress.getLocalHost().getHostName() : reqInfo.get(1)); // srchost
 
@@ -92,7 +93,7 @@ public class AuditProcessorImpl implements IAuditProcessor
             }
 
             // log it ..
-            AUDIT_RECORDER.info("AUDIT: User: " + auditEntry.getUserName() + ", Requested Action: " + auditEntry.getAuditType() + ", Host: " + reqInfo);
+            AUDIT_RECORDER.info("AUDIT: AuditEntry: " + auditEntry + ", Host: " + reqInfo);
 
             // .. and stuff in in the db
             auditDAO.auditRequestedOperation(auditList);

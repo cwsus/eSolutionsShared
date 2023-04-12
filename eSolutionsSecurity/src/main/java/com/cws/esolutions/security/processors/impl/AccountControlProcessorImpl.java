@@ -1763,7 +1763,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 return response;
             }
 
-            List<String[]> userList = userManager.listUserAccounts();
+            List<Object[]> userList = userManager.listUserAccounts();
 
             if (DEBUG)
             {
@@ -1774,14 +1774,15 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             {
                 List<UserAccount> userAccounts = new ArrayList<UserAccount>();
 
-                for (String[] userData : userList)
+                for (Object[] userData : userList)
                 {
-                    if (!(StringUtils.equals(reqAccount.getGuid(), userData[0])))
+                    if (!(StringUtils.equals(reqAccount.getGuid(), (String) userData[0])))
                     {
                         UserAccount userInfo = new UserAccount();
-                        userInfo.setGuid(userData[0]);
-                        userInfo.setUsername(userData[1]);
-                        userInfo.setDisplayName(userData[2]);
+                        userInfo.setGuid((String) userData[0]);
+                        userInfo.setUsername((String) userData[1]);
+                        userInfo.setUserRole(SecurityUserRole.valueOf((String) userData[2]));
+                        userInfo.setLastLogin(new Date(((Timestamp) userData[3]).getTime()));
 
                         if (DEBUG)
                         {

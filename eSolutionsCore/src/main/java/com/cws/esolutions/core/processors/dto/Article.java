@@ -50,10 +50,10 @@ public class Article implements Serializable
 	private String articleId = null;
 	private Date approveDate = null;
 	private String resolution = null;
-	private String reviewedBy = null;
 	private String searchTerms = null;
 	private UserAccount author = null;
 	private ArticleStatus status = null;
+	private UserAccount reviewedBy = null;
 	private UserAccount modifiedBy = null;
 	private UserAccount approvedBy = null;
 
@@ -193,17 +193,17 @@ public class Article implements Serializable
         this.resolution = value;
     }
 
-    public final void setReviewedBy(final String value)
+    public final void setReviewedBy(final UserAccount reviewedBy2)
     {
         final String methodName = Article.CNAME + "#setReviewedBy(final String value)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
+            DEBUGGER.debug("Value: {}", reviewedBy2);
         }
 
-        this.reviewedBy = value;
+        this.reviewedBy = reviewedBy2;
     }
 
     public final void setModifiedBy(final UserAccount value)
@@ -401,7 +401,7 @@ public class Article implements Serializable
         return this.resolution;
     }
 
-    public final String getReviewedBy()
+    public final UserAccount getReviewedBy()
     {
         final String methodName = Article.CNAME + "#getReviewedBy()";
 
