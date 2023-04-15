@@ -32,6 +32,8 @@ import com.cws.esolutions.utility.UtilityConstants;
 import com.cws.esolutions.utility.services.dto.AccessControlServiceRequest;
 import com.cws.esolutions.utility.services.dto.AccessControlServiceResponse;
 import com.cws.esolutions.utility.services.exception.AccessControlServiceException;
+import com.cws.esolutions.utility.securityutils.dao.accesscontrol.dao.impl.AccessControlServiceDAOImpl;
+import com.cws.esolutions.utility.securityutils.dao.accesscontrol.dao.interfaces.IAccessControlServiceDAO;
 /**
  * API allowing access control to functionality for role-based
  * or group-based functions.
@@ -41,6 +43,8 @@ import com.cws.esolutions.utility.services.exception.AccessControlServiceExcepti
  */
 public interface IAccessControlService
 {
+	static final IAccessControlServiceDAO dao = (IAccessControlServiceDAO) new AccessControlServiceDAOImpl();
+
 	static final String CNAME = IAccessControlService.class.getName();
 
     static final Logger DEBUGGER = LogManager.getLogger(UtilityConstants.DEBUGGER);

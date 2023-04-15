@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 - 2020 CaspersBox Web Services
+ * Copyright (c) 2009 - 2020 CaspersBox Web Services]
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,9 @@ package com.cws.esolutions.core.processors.impl;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
+import java.util.Arrays;
+import java.util.Random;
+import java.util.ArrayList;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -32,17 +35,18 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.TestInstance;
 import org.apache.commons.lang3.RandomStringUtils;
 
+import com.cws.esolutions.security.dto.UserGroup;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.esolutions.core.enums.CoreServicesStatus;
+import com.cws.esolutions.core.processors.dto.Datacenter;
 import com.cws.esolutions.security.enums.SecurityUserRole;
 import com.cws.esolutions.core.processors.enums.ServerType;
 import com.cws.esolutions.core.processors.enums.ServerStatus;
 import com.cws.esolutions.core.processors.enums.ServiceRegion;
-import com.cws.esolutions.security.processors.dto.RequestHostInfo;
-import com.cws.esolutions.security.processors.enums.LoginStatus;
 import com.cws.esolutions.core.listeners.CoreServicesInitializer;
 import com.cws.esolutions.core.processors.enums.NetworkPartition;
+import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.dto.ServerManagementRequest;
 import com.cws.esolutions.core.processors.dto.ServerManagementResponse;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
@@ -52,20 +56,29 @@ import com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class ServerManagementProcessorImplTest
 {
-    private static UserAccount userAccount = new UserAccount();
-    private static RequestHostInfo hostInfo = new RequestHostInfo();
+	private static Datacenter datacenter = new Datacenter();
+    private static UserAccount account = new UserAccount();
+    private static RequestHostInfo reqInfo = new RequestHostInfo();
 
     private static final IServerManagementProcessor processor = (IServerManagementProcessor) new ServerManagementProcessorImpl();
 
     @BeforeAll public void setUp()
     {
-        hostInfo.setHostAddress("junit");
-        hostInfo.setHostName("junit");
+    	reqInfo = new RequestHostInfo();
+    	reqInfo.setHostAddress("junit");
+    	reqInfo.setHostName("junit");
 
-        userAccount.setStatus(LoginStatus.SUCCESS);
-        userAccount.setGuid("f42fb0ba-4d1e-1126-986f-800cd2650000");
-        userAccount.setUsername("khuntly");
-        userAccount.setUserRole(SecurityUserRole.SITE_ADMIN);
+    	UserGroup group = new UserGroup();
+    	group.setGuid("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
+
+        datacenter = new Datacenter();
+        datacenter.setGuid("703c7e3f-d4cb-4f52-9b20-4ee08733115b");
+
+    	account = new UserAccount();
+    	account.setGuid("68c26c4a-33db-453c-a2f9-0a9190573dd8");
+    	account.setUsername("khuntly");
+    	account.setUserRole(SecurityUserRole.SITE_ADMIN);
+    	account.setUserGroups(new ArrayList<UserGroup>(Arrays.asList(group)));
 
         try
         {
@@ -82,20 +95,20 @@ public class ServerManagementProcessorImplTest
 
     @Test public void addNewServer()
     {
-        for (int x = 0; x < 3; x++)
+    	for (int x = 0; x < 3; x++)
         {
             String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
             Server server = new Server();
             server.setOsName("CentOS");
             server.setDomainName("caspersbox.corp");
-            server.setOperIpAddress("192.168.10.60");
+            server.setOperIpAddress(createRandom());
             server.setOperHostName(name);
-            server.setMgmtIpAddress("192.168.10.160");
+            server.setMgmtIpAddress(createRandom());
             server.setMgmtHostName(name + "-mgt");
-            server.setBkIpAddress("172.16.10.60");
+            server.setBkIpAddress(createRandom());
             server.setBkHostName(name + "-dmgr-bak");
-            server.setNasIpAddress("172.15.10.61");
+            server.setNasIpAddress(createRandom());
             server.setNasHostName(name + "-dmgr-nas");
             
             if (x == 0)
@@ -111,23 +124,25 @@ public class ServerManagementProcessorImplTest
                 server.setServerRegion(ServiceRegion.PRD);
             }
 
-            server.setDatacenter("703c7e3f-d4cb-4f52-9b20-4ee08733115b");
+            server.setDatacenter(datacenter);
             server.setServerStatus(ServerStatus.ONLINE);
             server.setServerType(ServerType.DMGRSERVER);
             server.setServerComments("dmgr server");
-            server.setAssignedEngineer(userAccount);
+            server.setAssignedEngineer(account);
             server.setCpuType("AMD 1.0 GHz");
             server.setCpuCount(1);
             server.setServerModel("Virtual Server");
-            server.setSerialNumber("1YU341");
+            server.setSerialNumber(RandomStringUtils.randomAlphanumeric(8));
             server.setInstalledMemory(4096);
             server.setMgrUrl("https://dmgr.myserver.org:18003/console");
             server.setDmgrPort(18003);
             server.setNetworkPartition(NetworkPartition.DRN);
+            server.setServerRack(RandomStringUtils.randomNumeric(2));
+            server.setRackPosition(RandomStringUtils.randomNumeric(2));
 
             ServerManagementRequest request = new ServerManagementRequest();
-            request.setRequestInfo(hostInfo);
-            request.setUserAccount(userAccount);
+            request.setRequestInfo(reqInfo);
+            request.setUserAccount(account);
             request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
             request.setTargetServer(server);
             request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
@@ -158,30 +173,33 @@ public class ServerManagementProcessorImplTest
             Server server = new Server();
             server.setOsName("CentOS");
             server.setDomainName("caspersbox.corp");
-            server.setOperIpAddress("192.168.10.55");
-            server.setOperHostName(RandomStringUtils.randomAlphanumeric(8).toLowerCase());
-            server.setMgmtIpAddress("192.168.10.155");
+            server.setOperIpAddress(createRandom());
+            server.setOperHostName(name);
+            server.setMgmtIpAddress(createRandom());
             server.setMgmtHostName(name + "-mgt");
-            server.setBkIpAddress("172.16.10.55");
+            server.setBkIpAddress(createRandom());
             server.setBkHostName(name + "-bak");
-            server.setNasIpAddress("172.15.10.55");
+            server.setNasIpAddress(createRandom());
             server.setNasHostName(name + "-nas");
             server.setServerRegion(ServiceRegion.DEV);
             server.setServerStatus(ServerStatus.ONLINE);
             server.setServerType(ServerType.APPSERVER);
             server.setServerComments("app server");
-            server.setAssignedEngineer(userAccount);
+            server.setAssignedEngineer(account);
             server.setCpuType("AMD 1.0 GHz");
             server.setCpuCount(1);
             server.setServerModel("Virtual Server");
-            server.setSerialNumber("1YU391");
+            server.setSerialNumber(RandomStringUtils.randomAlphanumeric(8));
             server.setInstalledMemory(4096);
             server.setOwningDmgr(dmgrServer);
             server.setNetworkPartition(NetworkPartition.DRN);
+            server.setDatacenter(datacenter);
+            server.setServerRack(RandomStringUtils.randomNumeric(2));
+            server.setRackPosition(RandomStringUtils.randomNumeric(2));
 
             ServerManagementRequest request = new ServerManagementRequest();
-            request.setRequestInfo(hostInfo);
-            request.setUserAccount(userAccount);
+            request.setRequestInfo(reqInfo);
+            request.setUserAccount(account);
             request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
             request.setTargetServer(server);
             request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
@@ -209,29 +227,32 @@ public class ServerManagementProcessorImplTest
             Server server = new Server();
             server.setOsName("CentOS");
             server.setDomainName("caspersbox.corp");
-            server.setOperIpAddress("192.168.10.55");
-            server.setOperHostName(RandomStringUtils.randomAlphanumeric(8).toLowerCase());
-            server.setMgmtIpAddress("192.168.10.155");
+            server.setOperIpAddress(createRandom());
+            server.setOperHostName(name);
+            server.setMgmtIpAddress(createRandom());
             server.setMgmtHostName(name + "-mgt");
-            server.setBkIpAddress("172.16.10.55");
+            server.setBkIpAddress(createRandom());
             server.setBkHostName(name + "-bak");
-            server.setNasIpAddress("172.15.10.55");
+            server.setNasIpAddress(createRandom());
             server.setNasHostName(name + "-nas");
             server.setServerRegion(ServiceRegion.DEV);
             server.setServerStatus(ServerStatus.ONLINE);
             server.setServerType(ServerType.WEBSERVER);
             server.setServerComments("app server");
-            server.setAssignedEngineer(userAccount);
+            server.setAssignedEngineer(account);
             server.setCpuType("AMD 1.0 GHz");
             server.setCpuCount(1);
             server.setServerModel("Virtual Server");
-            server.setSerialNumber("1YU391");
+            server.setSerialNumber(RandomStringUtils.randomAlphanumeric(8));
             server.setInstalledMemory(4096);
             server.setNetworkPartition(NetworkPartition.DRN);
+            server.setDatacenter(datacenter);
+            server.setServerRack(RandomStringUtils.randomNumeric(2));
+            server.setRackPosition(RandomStringUtils.randomNumeric(2));
 
             ServerManagementRequest request = new ServerManagementRequest();
-            request.setRequestInfo(hostInfo);
-            request.setUserAccount(userAccount);
+            request.setRequestInfo(reqInfo);
+            request.setUserAccount(account);
             request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
             request.setTargetServer(server);
             request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
@@ -262,30 +283,33 @@ public class ServerManagementProcessorImplTest
             Server server = new Server();
             server.setOsName("CentOS");
             server.setDomainName("caspersbox.corp");
-            server.setOperIpAddress("192.168.10.55");
-            server.setOperHostName(RandomStringUtils.randomAlphanumeric(8).toLowerCase());
-            server.setMgmtIpAddress("192.168.10.155");
+            server.setOperIpAddress(createRandom());
+            server.setOperHostName(name);
+            server.setMgmtIpAddress(createRandom());
             server.setMgmtHostName(name + "-mgt");
-            server.setBkIpAddress("172.16.10.55");
+            server.setBkIpAddress(createRandom());
             server.setBkHostName(name + "-bak");
-            server.setNasIpAddress("172.15.10.55");
+            server.setNasIpAddress(createRandom());
             server.setNasHostName(name + "-nas");
             server.setServerRegion(ServiceRegion.QA);
             server.setServerStatus(ServerStatus.ONLINE);
             server.setServerType(ServerType.APPSERVER);
             server.setServerComments("app server");
-            server.setAssignedEngineer(userAccount);
+            server.setAssignedEngineer(account);
             server.setCpuType("AMD 1.0 GHz");
             server.setCpuCount(1);
             server.setServerModel("Virtual Server");
-            server.setSerialNumber("1YU391");
+            server.setSerialNumber(RandomStringUtils.randomAlphanumeric(8));
             server.setInstalledMemory(4096);
             server.setOwningDmgr(dmgrServer);
             server.setNetworkPartition(NetworkPartition.DRN);
+            server.setDatacenter(datacenter);
+            server.setServerRack(RandomStringUtils.randomNumeric(2));
+            server.setRackPosition(RandomStringUtils.randomNumeric(2));
 
             ServerManagementRequest request = new ServerManagementRequest();
-            request.setRequestInfo(hostInfo);
-            request.setUserAccount(userAccount);
+            request.setRequestInfo(reqInfo);
+            request.setUserAccount(account);
             request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
             request.setTargetServer(server);
             request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
@@ -313,29 +337,32 @@ public class ServerManagementProcessorImplTest
             Server server = new Server();
             server.setOsName("CentOS");
             server.setDomainName("caspersbox.corp");
-            server.setOperIpAddress("192.168.10.55");
-            server.setOperHostName(RandomStringUtils.randomAlphanumeric(8).toLowerCase());
-            server.setMgmtIpAddress("192.168.10.155");
+            server.setOperIpAddress(createRandom());
+            server.setOperHostName(name);
+            server.setMgmtIpAddress(createRandom());
             server.setMgmtHostName(name + "-mgt");
-            server.setBkIpAddress("172.16.10.55");
+            server.setBkIpAddress(createRandom());
             server.setBkHostName(name + "-bak");
-            server.setNasIpAddress("172.15.10.55");
+            server.setNasIpAddress(createRandom());
             server.setNasHostName(name + "-nas");
             server.setServerRegion(ServiceRegion.QA);
             server.setServerStatus(ServerStatus.ONLINE);
             server.setServerType(ServerType.WEBSERVER);
             server.setServerComments("app server");
-            server.setAssignedEngineer(userAccount);
+            server.setAssignedEngineer(account);
             server.setCpuType("AMD 1.0 GHz");
             server.setCpuCount(1);
             server.setServerModel("Virtual Server");
-            server.setSerialNumber("1YU391");
+            server.setSerialNumber(RandomStringUtils.randomAlphanumeric(8));
             server.setInstalledMemory(4096);
             server.setNetworkPartition(NetworkPartition.DRN);
+            server.setDatacenter(datacenter);
+            server.setServerRack(RandomStringUtils.randomNumeric(2));
+            server.setRackPosition(RandomStringUtils.randomNumeric(2));
 
             ServerManagementRequest request = new ServerManagementRequest();
-            request.setRequestInfo(hostInfo);
-            request.setUserAccount(userAccount);
+            request.setRequestInfo(reqInfo);
+            request.setUserAccount(account);
             request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
             request.setTargetServer(server);
             request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
@@ -366,30 +393,33 @@ public class ServerManagementProcessorImplTest
             Server server = new Server();
             server.setOsName("CentOS");
             server.setDomainName("caspersbox.corp");
-            server.setOperIpAddress("192.168.10.55");
-            server.setOperHostName(RandomStringUtils.randomAlphanumeric(8).toLowerCase());
-            server.setMgmtIpAddress("192.168.10.155");
+            server.setOperIpAddress(createRandom());
+            server.setOperHostName(name);
+            server.setMgmtIpAddress(createRandom());
             server.setMgmtHostName(name + "-mgt");
-            server.setBkIpAddress("172.16.10.55");
+            server.setBkIpAddress(createRandom());
             server.setBkHostName(name + "-bak");
-            server.setNasIpAddress("172.15.10.55");
+            server.setNasIpAddress(createRandom());
             server.setNasHostName(name + "-nas");
             server.setServerRegion(ServiceRegion.PRD);
             server.setServerStatus(ServerStatus.ONLINE);
             server.setServerType(ServerType.APPSERVER);
             server.setServerComments("app server");
-            server.setAssignedEngineer(userAccount);
+            server.setAssignedEngineer(account);
             server.setCpuType("AMD 1.0 GHz");
             server.setCpuCount(1);
             server.setServerModel("Virtual Server");
-            server.setSerialNumber("1YU391");
+            server.setSerialNumber(RandomStringUtils.randomAlphanumeric(8));
             server.setInstalledMemory(4096);
             server.setOwningDmgr(dmgrServer);
             server.setNetworkPartition(NetworkPartition.DRN);
+            server.setDatacenter(datacenter);
+            server.setServerRack(RandomStringUtils.randomNumeric(2));
+            server.setRackPosition(RandomStringUtils.randomNumeric(2));
 
             ServerManagementRequest request = new ServerManagementRequest();
-            request.setRequestInfo(hostInfo);
-            request.setUserAccount(userAccount);
+            request.setRequestInfo(reqInfo);
+            request.setUserAccount(account);
             request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
             request.setTargetServer(server);
             request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
@@ -417,29 +447,32 @@ public class ServerManagementProcessorImplTest
             Server server = new Server();
             server.setOsName("CentOS");
             server.setDomainName("caspersbox.corp");
-            server.setOperIpAddress("192.168.10.55");
+            server.setOperIpAddress(createRandom());
             server.setOperHostName(RandomStringUtils.randomAlphanumeric(8).toLowerCase());
-            server.setMgmtIpAddress("192.168.10.155");
+            server.setMgmtIpAddress(createRandom());
             server.setMgmtHostName(name + "-mgt");
-            server.setBkIpAddress("172.16.10.55");
+            server.setBkIpAddress(createRandom());
             server.setBkHostName(name + "-bak");
-            server.setNasIpAddress("172.15.10.55");
+            server.setNasIpAddress(createRandom());
             server.setNasHostName(name + "-nas");
             server.setServerRegion(ServiceRegion.PRD);
             server.setServerStatus(ServerStatus.ONLINE);
             server.setServerType(ServerType.WEBSERVER);
             server.setServerComments("app server");
-            server.setAssignedEngineer(userAccount);
+            server.setAssignedEngineer(account);
             server.setCpuType("AMD 1.0 GHz");
             server.setCpuCount(1);
             server.setServerModel("Virtual Server");
-            server.setSerialNumber("1YU391");
+            server.setSerialNumber(RandomStringUtils.randomAlphanumeric(8));
             server.setInstalledMemory(4096);
             server.setNetworkPartition(NetworkPartition.DRN);
+            server.setDatacenter(datacenter);
+            server.setServerRack(RandomStringUtils.randomNumeric(2));
+            server.setRackPosition(RandomStringUtils.randomNumeric(2));
 
             ServerManagementRequest request = new ServerManagementRequest();
-            request.setRequestInfo(hostInfo);
-            request.setUserAccount(userAccount);
+            request.setRequestInfo(reqInfo);
+            request.setUserAccount(account);
             request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
             request.setTargetServer(server);
             request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
@@ -465,29 +498,32 @@ public class ServerManagementProcessorImplTest
         Server server = new Server();
         server.setOsName("CentOS");
         server.setDomainName("caspersbox.corp");
-        server.setOperIpAddress("192.168.10.55");
+        server.setOperIpAddress(createRandom());
         server.setOperHostName(RandomStringUtils.randomAlphanumeric(8).toLowerCase());
-        server.setMgmtIpAddress("192.168.10.155");
+        server.setMgmtIpAddress(createRandom());
         server.setMgmtHostName(name + "-mgt");
-        server.setBkIpAddress("172.16.10.55");
+        server.setBkIpAddress(createRandom());
         server.setBkHostName(name + "-bak");
-        server.setNasIpAddress("172.15.10.55");
+        server.setNasIpAddress(createRandom());
         server.setNasHostName(name + "-nas");
         server.setServerRegion(ServiceRegion.DEV);
         server.setServerStatus(ServerStatus.ONLINE);
         server.setServerType(ServerType.DNSMASTER);
         server.setServerComments("app server");
-        server.setAssignedEngineer(userAccount);
+        server.setAssignedEngineer(account);
         server.setCpuType("AMD 1.0 GHz");
         server.setCpuCount(1);
         server.setServerModel("Virtual Server");
-        server.setSerialNumber("1YU391");
+        server.setSerialNumber(RandomStringUtils.randomAlphanumeric(8));
         server.setInstalledMemory(4096);
         server.setNetworkPartition(NetworkPartition.DRN);
+        server.setDatacenter(datacenter);
+        server.setServerRack(RandomStringUtils.randomNumeric(2));
+        server.setRackPosition(RandomStringUtils.randomNumeric(2));
 
         ServerManagementRequest request = new ServerManagementRequest();
-        request.setRequestInfo(hostInfo);
-        request.setUserAccount(userAccount);
+        request.setRequestInfo(reqInfo);
+        request.setUserAccount(account);
         request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
         request.setTargetServer(server);
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
@@ -512,29 +548,32 @@ public class ServerManagementProcessorImplTest
         Server server = new Server();
         server.setOsName("CentOS");
         server.setDomainName("caspersbox.corp");
-        server.setOperIpAddress("192.168.10.55");
+        server.setOperIpAddress(createRandom());
         server.setOperHostName(RandomStringUtils.randomAlphanumeric(8).toLowerCase());
-        server.setMgmtIpAddress("192.168.10.155");
+        server.setMgmtIpAddress(createRandom());
         server.setMgmtHostName(name + "-mgt");
-        server.setBkIpAddress("172.16.10.55");
+        server.setBkIpAddress(createRandom());
         server.setBkHostName(name + "-bak");
-        server.setNasIpAddress("172.15.10.55");
+        server.setNasIpAddress(createRandom());
         server.setNasHostName(name + "-nas");
         server.setServerRegion(ServiceRegion.QA);
         server.setServerStatus(ServerStatus.ONLINE);
         server.setServerType(ServerType.DNSMASTER);
         server.setServerComments("app server");
-        server.setAssignedEngineer(userAccount);
+        server.setAssignedEngineer(account);
         server.setCpuType("AMD 1.0 GHz");
         server.setCpuCount(1);
         server.setServerModel("Virtual Server");
-        server.setSerialNumber("1YU391");
+        server.setSerialNumber(RandomStringUtils.randomAlphanumeric(8));
         server.setInstalledMemory(4096);
         server.setNetworkPartition(NetworkPartition.DRN);
+        server.setDatacenter(datacenter);
+        server.setServerRack(RandomStringUtils.randomNumeric(2));
+        server.setRackPosition(RandomStringUtils.randomNumeric(2));
 
         ServerManagementRequest request = new ServerManagementRequest();
-        request.setRequestInfo(hostInfo);
-        request.setUserAccount(userAccount);
+        request.setRequestInfo(reqInfo);
+        request.setUserAccount(account);
         request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
         request.setTargetServer(server);
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
@@ -559,29 +598,32 @@ public class ServerManagementProcessorImplTest
         Server server = new Server();
         server.setOsName("CentOS");
         server.setDomainName("caspersbox.corp");
-        server.setOperIpAddress("192.168.10.55");
+        server.setOperIpAddress(createRandom());
         server.setOperHostName(RandomStringUtils.randomAlphanumeric(8).toLowerCase());
-        server.setMgmtIpAddress("192.168.10.155");
+        server.setMgmtIpAddress(createRandom());
         server.setMgmtHostName(name + "-mgt");
-        server.setBkIpAddress("172.16.10.55");
+        server.setBkIpAddress(createRandom());
         server.setBkHostName(name + "-bak");
-        server.setNasIpAddress("172.15.10.55");
+        server.setNasIpAddress(createRandom());
         server.setNasHostName(name + "-nas");
         server.setServerRegion(ServiceRegion.PRD);
         server.setServerStatus(ServerStatus.ONLINE);
         server.setServerType(ServerType.DNSMASTER);
         server.setServerComments("app server");
-        server.setAssignedEngineer(userAccount);
+        server.setAssignedEngineer(account);
         server.setCpuType("AMD 1.0 GHz");
         server.setCpuCount(1);
         server.setServerModel("Virtual Server");
-        server.setSerialNumber("1YU391");
+        server.setSerialNumber(RandomStringUtils.randomAlphanumeric(8));
         server.setInstalledMemory(4096);
         server.setNetworkPartition(NetworkPartition.DRN);
+        server.setDatacenter(datacenter);
+        server.setServerRack(RandomStringUtils.randomNumeric(2));
+        server.setRackPosition(RandomStringUtils.randomNumeric(2));
 
         ServerManagementRequest request = new ServerManagementRequest();
-        request.setRequestInfo(hostInfo);
-        request.setUserAccount(userAccount);
+        request.setRequestInfo(reqInfo);
+        request.setUserAccount(account);
         request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
         request.setTargetServer(server);
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
@@ -608,29 +650,32 @@ public class ServerManagementProcessorImplTest
             Server server = new Server();
             server.setOsName("CentOS");
             server.setDomainName("caspersbox.corp");
-            server.setOperIpAddress("192.168.10.55");
+            server.setOperIpAddress(createRandom());
             server.setOperHostName(RandomStringUtils.randomAlphanumeric(8).toLowerCase());
-            server.setMgmtIpAddress("192.168.10.155");
+            server.setMgmtIpAddress(createRandom());
             server.setMgmtHostName(name + "-mgt");
-            server.setBkIpAddress("172.16.10.55");
+            server.setBkIpAddress(createRandom());
             server.setBkHostName(name + "-bak");
-            server.setNasIpAddress("172.15.10.55");
+            server.setNasIpAddress(createRandom());
             server.setNasHostName(name + "-nas");
             server.setServerRegion(ServiceRegion.DEV);
             server.setServerStatus(ServerStatus.ONLINE);
             server.setServerType(ServerType.DNSSLAVE);
             server.setServerComments("app server");
-            server.setAssignedEngineer(userAccount);
+            server.setAssignedEngineer(account);
             server.setCpuType("AMD 1.0 GHz");
             server.setCpuCount(1);
             server.setServerModel("Virtual Server");
-            server.setSerialNumber("1YU391");
+            server.setSerialNumber(RandomStringUtils.randomAlphanumeric(8));
             server.setInstalledMemory(4096);
             server.setNetworkPartition(NetworkPartition.DRN);
+            server.setDatacenter(datacenter);
+            server.setServerRack(RandomStringUtils.randomNumeric(2));
+            server.setRackPosition(RandomStringUtils.randomNumeric(2));
 
             ServerManagementRequest request = new ServerManagementRequest();
-            request.setRequestInfo(hostInfo);
-            request.setUserAccount(userAccount);
+            request.setRequestInfo(reqInfo);
+            request.setUserAccount(account);
             request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
             request.setTargetServer(server);
             request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
@@ -658,29 +703,32 @@ public class ServerManagementProcessorImplTest
             Server server = new Server();
             server.setOsName("CentOS");
             server.setDomainName("caspersbox.corp");
-            server.setOperIpAddress("192.168.10.55");
+            server.setOperIpAddress(createRandom());
             server.setOperHostName(RandomStringUtils.randomAlphanumeric(8).toLowerCase());
-            server.setMgmtIpAddress("192.168.10.155");
+            server.setMgmtIpAddress(createRandom());
             server.setMgmtHostName(name + "-mgt");
-            server.setBkIpAddress("172.16.10.55");
+            server.setBkIpAddress(createRandom());
             server.setBkHostName(name + "-bak");
-            server.setNasIpAddress("172.15.10.55");
+            server.setNasIpAddress(createRandom());
             server.setNasHostName(name + "-nas");
             server.setServerRegion(ServiceRegion.QA);
             server.setServerStatus(ServerStatus.ONLINE);
             server.setServerType(ServerType.DNSSLAVE);
             server.setServerComments("app server");
-            server.setAssignedEngineer(userAccount);
+            server.setAssignedEngineer(account);
             server.setCpuType("AMD 1.0 GHz");
             server.setCpuCount(1);
             server.setServerModel("Virtual Server");
-            server.setSerialNumber("1YU391");
+            server.setSerialNumber(RandomStringUtils.randomAlphanumeric(8));
             server.setInstalledMemory(4096);
             server.setNetworkPartition(NetworkPartition.DRN);
+            server.setDatacenter(datacenter);
+            server.setServerRack(RandomStringUtils.randomNumeric(2));
+            server.setRackPosition(RandomStringUtils.randomNumeric(2));
 
             ServerManagementRequest request = new ServerManagementRequest();
-            request.setRequestInfo(hostInfo);
-            request.setUserAccount(userAccount);
+            request.setRequestInfo(reqInfo);
+            request.setUserAccount(account);
             request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
             request.setTargetServer(server);
             request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
@@ -708,29 +756,32 @@ public class ServerManagementProcessorImplTest
             Server server = new Server();
             server.setOsName("CentOS");
             server.setDomainName("caspersbox.corp");
-            server.setOperIpAddress("192.168.10.55");
+            server.setOperIpAddress(createRandom());
             server.setOperHostName(RandomStringUtils.randomAlphanumeric(8).toLowerCase());
-            server.setMgmtIpAddress("192.168.10.155");
+            server.setMgmtIpAddress(createRandom());
             server.setMgmtHostName(name + "-mgt");
-            server.setBkIpAddress("172.16.10.55");
+            server.setBkIpAddress(createRandom());
             server.setBkHostName(name + "-bak");
-            server.setNasIpAddress("172.15.10.55");
+            server.setNasIpAddress(createRandom());
             server.setNasHostName(name + "-nas");
             server.setServerRegion(ServiceRegion.PRD);
             server.setServerStatus(ServerStatus.ONLINE);
             server.setServerType(ServerType.DNSSLAVE);
             server.setServerComments("app server");
-            server.setAssignedEngineer(userAccount);
+            server.setAssignedEngineer(account);
             server.setCpuType("AMD 1.0 GHz");
             server.setCpuCount(1);
             server.setServerModel("Virtual Server");
-            server.setSerialNumber("1YU391");
+            server.setSerialNumber(RandomStringUtils.randomAlphanumeric(8));
             server.setInstalledMemory(4096);
             server.setNetworkPartition(NetworkPartition.DRN);
+            server.setDatacenter(datacenter);
+            server.setServerRack(RandomStringUtils.randomNumeric(2));
+            server.setRackPosition(RandomStringUtils.randomNumeric(2));
 
             ServerManagementRequest request = new ServerManagementRequest();
-            request.setRequestInfo(hostInfo);
-            request.setUserAccount(userAccount);
+            request.setRequestInfo(reqInfo);
+            request.setUserAccount(account);
             request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
             request.setTargetServer(server);
             request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
@@ -758,29 +809,32 @@ public class ServerManagementProcessorImplTest
             Server server = new Server();
             server.setOsName("CentOS");
             server.setDomainName("caspersbox.corp");
-            server.setOperIpAddress("192.168.10.55");
+            server.setOperIpAddress(createRandom());
             server.setOperHostName(RandomStringUtils.randomAlphanumeric(8).toLowerCase());
-            server.setMgmtIpAddress("192.168.10.155");
+            server.setMgmtIpAddress(createRandom());
             server.setMgmtHostName(name + "-mgt");
-            server.setBkIpAddress("172.16.10.55");
+            server.setBkIpAddress(createRandom());
             server.setBkHostName(name + "-bak");
-            server.setNasIpAddress("172.15.10.55");
+            server.setNasIpAddress(createRandom());
             server.setNasHostName(name + "-nas");
             server.setServerRegion(ServiceRegion.DEV);
             server.setServerStatus(ServerStatus.ONLINE);
             server.setServerType(ServerType.MQSERVER);
             server.setServerComments("app server");
-            server.setAssignedEngineer(userAccount);
+            server.setAssignedEngineer(account);
             server.setCpuType("AMD 1.0 GHz");
             server.setCpuCount(1);
             server.setServerModel("Virtual Server");
-            server.setSerialNumber("1YU391");
+            server.setSerialNumber(RandomStringUtils.randomAlphanumeric(8));
             server.setInstalledMemory(4096);
             server.setNetworkPartition(NetworkPartition.DRN);
+            server.setDatacenter(datacenter);
+            server.setServerRack(RandomStringUtils.randomNumeric(2));
+            server.setRackPosition(RandomStringUtils.randomNumeric(2));
     
             ServerManagementRequest request = new ServerManagementRequest();
-            request.setRequestInfo(hostInfo);
-            request.setUserAccount(userAccount);
+            request.setRequestInfo(reqInfo);
+            request.setUserAccount(account);
             request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
             request.setTargetServer(server);
             request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
@@ -808,29 +862,32 @@ public class ServerManagementProcessorImplTest
             Server server = new Server();
             server.setOsName("CentOS");
             server.setDomainName("caspersbox.corp");
-            server.setOperIpAddress("192.168.10.55");
+            server.setOperIpAddress(createRandom());
             server.setOperHostName(RandomStringUtils.randomAlphanumeric(8).toLowerCase());
-            server.setMgmtIpAddress("192.168.10.155");
+            server.setMgmtIpAddress(createRandom());
             server.setMgmtHostName(name + "-mgt");
-            server.setBkIpAddress("172.16.10.55");
+            server.setBkIpAddress(createRandom());
             server.setBkHostName(name + "-bak");
-            server.setNasIpAddress("172.15.10.55");
+            server.setNasIpAddress(createRandom());
             server.setNasHostName(name + "-nas");
             server.setServerRegion(ServiceRegion.QA);
             server.setServerStatus(ServerStatus.ONLINE);
             server.setServerType(ServerType.MQSERVER);
             server.setServerComments("app server");
-            server.setAssignedEngineer(userAccount);
+            server.setAssignedEngineer(account);
             server.setCpuType("AMD 1.0 GHz");
             server.setCpuCount(1);
             server.setServerModel("Virtual Server");
-            server.setSerialNumber("1YU391");
+            server.setSerialNumber(RandomStringUtils.randomAlphanumeric(8));
             server.setInstalledMemory(4096);
             server.setNetworkPartition(NetworkPartition.DRN);
+            server.setDatacenter(datacenter);
+            server.setServerRack(RandomStringUtils.randomNumeric(2));
+            server.setRackPosition(RandomStringUtils.randomNumeric(2));
 
             ServerManagementRequest request = new ServerManagementRequest();
-            request.setRequestInfo(hostInfo);
-            request.setUserAccount(userAccount);
+            request.setRequestInfo(reqInfo);
+            request.setUserAccount(account);
             request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
             request.setTargetServer(server);
             request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
@@ -858,29 +915,32 @@ public class ServerManagementProcessorImplTest
             Server server = new Server();
             server.setOsName("CentOS");
             server.setDomainName("caspersbox.corp");
-            server.setOperIpAddress("192.168.10.55");
-            server.setOperHostName(RandomStringUtils.randomAlphanumeric(8).toLowerCase());
-            server.setMgmtIpAddress("192.168.10.155");
+            server.setOperIpAddress(createRandom());
+            server.setOperHostName(name);
+            server.setMgmtIpAddress(createRandom());
             server.setMgmtHostName(name + "-mgt");
-            server.setBkIpAddress("172.16.10.55");
+            server.setBkIpAddress(createRandom());
             server.setBkHostName(name + "-bak");
-            server.setNasIpAddress("172.15.10.55");
+            server.setNasIpAddress(createRandom());
             server.setNasHostName(name + "-nas");
             server.setServerRegion(ServiceRegion.PRD);
             server.setServerStatus(ServerStatus.ONLINE);
             server.setServerType(ServerType.MQSERVER);
             server.setServerComments("app server");
-            server.setAssignedEngineer(userAccount);
+            server.setAssignedEngineer(account);
             server.setCpuType("AMD 1.0 GHz");
             server.setCpuCount(1);
             server.setServerModel("Virtual Server");
-            server.setSerialNumber("1YU391");
+            server.setSerialNumber(RandomStringUtils.randomAlphanumeric(8));
             server.setInstalledMemory(4096);
             server.setNetworkPartition(NetworkPartition.DRN);
+            server.setDatacenter(datacenter);
+            server.setServerRack(RandomStringUtils.randomNumeric(2));
+            server.setRackPosition(RandomStringUtils.randomNumeric(2));
     
             ServerManagementRequest request = new ServerManagementRequest();
-            request.setRequestInfo(hostInfo);
-            request.setUserAccount(userAccount);
+            request.setRequestInfo(reqInfo);
+            request.setUserAccount(account);
             request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
             request.setTargetServer(server);
             request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
@@ -906,30 +966,33 @@ public class ServerManagementProcessorImplTest
         Server server = new Server();
         server.setOsName("CentOS");
         server.setDomainName("caspersbox.corp");
-        server.setOperIpAddress("192.168.10.250");
+        server.setOperIpAddress(createRandom());
         server.setOperHostName(hostname);
-        server.setMgmtIpAddress("192.168.11.250");
+        server.setMgmtIpAddress(createRandom());
         server.setMgmtHostName(hostname + "-mgt");
-        server.setBkIpAddress("172.16.10.55");
+        server.setBkIpAddress(createRandom());
         server.setBkHostName(hostname + "bak");
-        server.setNasIpAddress("172.15.10.55");
+        server.setNasIpAddress(createRandom());
         server.setNasHostName(hostname + "- nas");
         server.setServerRegion(ServiceRegion.DEV);
         server.setServerStatus(ServerStatus.ONLINE);
         server.setServerType(ServerType.VIRTUALHOST);
         server.setServerComments("app server");
-        server.setAssignedEngineer(userAccount);
+        server.setAssignedEngineer(account);
         server.setCpuType("AMD 1.0 GHz");
         server.setCpuCount(1);
         server.setServerModel("Virtual Server");
-        server.setSerialNumber("1YU391");
+        server.setSerialNumber(RandomStringUtils.randomAlphanumeric(8));
         server.setMgrUrl("https://192.168.10.250:10981/index.html");
         server.setInstalledMemory(4096);
         server.setNetworkPartition(NetworkPartition.DRN);
+        server.setDatacenter(datacenter);
+        server.setServerRack(RandomStringUtils.randomNumeric(2));
+        server.setRackPosition(RandomStringUtils.randomNumeric(2));
 
         ServerManagementRequest request = new ServerManagementRequest();
-        request.setRequestInfo(hostInfo);
-        request.setUserAccount(userAccount);
+        request.setRequestInfo(reqInfo);
+        request.setUserAccount(account);
         request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
         request.setTargetServer(server);
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
@@ -954,30 +1017,33 @@ public class ServerManagementProcessorImplTest
         Server server = new Server();
         server.setOsName("CentOS");
         server.setDomainName("caspersbox.corp");
-        server.setOperIpAddress("192.168.10.250");
+        server.setOperIpAddress(createRandom());
         server.setOperHostName(hostname);
-        server.setMgmtIpAddress("192.168.11.250");
+        server.setMgmtIpAddress(createRandom());
         server.setMgmtHostName(hostname + "-mgt");
-        server.setBkIpAddress("172.16.10.55");
+        server.setBkIpAddress(createRandom());
         server.setBkHostName(hostname + "bak");
-        server.setNasIpAddress("172.15.10.55");
+        server.setNasIpAddress(createRandom());
         server.setNasHostName(hostname + "- nas");
         server.setServerRegion(ServiceRegion.QA);
         server.setServerStatus(ServerStatus.ONLINE);
         server.setServerType(ServerType.VIRTUALHOST);
         server.setServerComments("app server");
-        server.setAssignedEngineer(userAccount);
+        server.setAssignedEngineer(account);
         server.setCpuType("AMD 1.0 GHz");
         server.setCpuCount(1);
         server.setServerModel("Virtual Server");
-        server.setSerialNumber("1YU391");
+        server.setSerialNumber(RandomStringUtils.randomAlphanumeric(8));
         server.setMgrUrl("https://192.168.10.250:10981/index.html");
         server.setInstalledMemory(4096);
         server.setNetworkPartition(NetworkPartition.DRN);
+        server.setDatacenter(datacenter);
+        server.setServerRack(RandomStringUtils.randomNumeric(2));
+        server.setRackPosition(RandomStringUtils.randomNumeric(2));
 
         ServerManagementRequest request = new ServerManagementRequest();
-        request.setRequestInfo(hostInfo);
-        request.setUserAccount(userAccount);
+        request.setRequestInfo(reqInfo);
+        request.setUserAccount(account);
         request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
         request.setTargetServer(server);
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
@@ -1002,30 +1068,33 @@ public class ServerManagementProcessorImplTest
         Server server = new Server();
         server.setOsName("CentOS");
         server.setDomainName("caspersbox.corp");
-        server.setOperIpAddress("192.168.10.250");
+        server.setOperIpAddress(createRandom());
         server.setOperHostName(hostname);
-        server.setMgmtIpAddress("192.168.11.250");
+        server.setMgmtIpAddress(createRandom());
         server.setMgmtHostName(hostname + "-mgt");
-        server.setBkIpAddress("172.16.10.55");
+        server.setBkIpAddress(createRandom());
         server.setBkHostName(hostname + "bak");
-        server.setNasIpAddress("172.15.10.55");
+        server.setNasIpAddress(createRandom());
         server.setNasHostName(hostname + "- nas");
         server.setServerRegion(ServiceRegion.PRD);
         server.setServerStatus(ServerStatus.ONLINE);
         server.setServerType(ServerType.VIRTUALHOST);
         server.setServerComments("app server");
-        server.setAssignedEngineer(userAccount);
+        server.setAssignedEngineer(account);
         server.setCpuType("AMD 1.0 GHz");
         server.setCpuCount(1);
         server.setServerModel("Virtual Server");
-        server.setSerialNumber("1YU391");
+        server.setSerialNumber(RandomStringUtils.randomAlphanumeric(8));
         server.setMgrUrl("https://192.168.10.250:10981/index.html");
         server.setInstalledMemory(4096);
         server.setNetworkPartition(NetworkPartition.DRN);
+        server.setDatacenter(datacenter);
+        server.setServerRack(RandomStringUtils.randomNumeric(2));
+        server.setRackPosition(RandomStringUtils.randomNumeric(2));
 
         ServerManagementRequest request = new ServerManagementRequest();
-        request.setRequestInfo(hostInfo);
-        request.setUserAccount(userAccount);
+        request.setRequestInfo(reqInfo);
+        request.setUserAccount(account);
         request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
         request.setTargetServer(server);
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
@@ -1047,7 +1116,7 @@ public class ServerManagementProcessorImplTest
     @Test public void updateServerData()
     {
         Server server = new Server();
-        server.setAssignedEngineer(userAccount);
+        server.setAssignedEngineer(account);
         server.setBkHostName("bak.myserver.org");
         server.setBkIpAddress("1.2.3.4");
         server.setMgmtHostName("mgmt.myserver.org");
@@ -1065,8 +1134,8 @@ public class ServerManagementProcessorImplTest
         server.setServerGuid("9EADCA3A-A1A3-4986-A71C-6FE8924C9443");
 
         ServerManagementRequest request = new ServerManagementRequest();
-        request.setRequestInfo(hostInfo);
-        request.setUserAccount(userAccount);
+        request.setRequestInfo(reqInfo);
+        request.setUserAccount(account);
         request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
         request.setTargetServer(server);
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
@@ -1087,8 +1156,8 @@ public class ServerManagementProcessorImplTest
     @Test public void listServersByAttribute()
     {
         ServerManagementRequest request = new ServerManagementRequest();
-        request.setRequestInfo(hostInfo);
-        request.setUserAccount(userAccount);
+        request.setRequestInfo(reqInfo);
+        request.setUserAccount(account);
         request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
         request.setAttribute("DRN DEV");
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
@@ -1112,8 +1181,8 @@ public class ServerManagementProcessorImplTest
         server.setServerGuid("85ab3069-fd3c-4490-a4ba-0c59b7cebab2");
 
         ServerManagementRequest request = new ServerManagementRequest();
-        request.setRequestInfo(hostInfo);
-        request.setUserAccount(userAccount);
+        request.setRequestInfo(reqInfo);
+        request.setUserAccount(account);
         request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
         request.setTargetServer(server);
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
@@ -1131,6 +1200,14 @@ public class ServerManagementProcessorImplTest
         }
     }
     */
+
+    public static String createRandom() {
+    	return randomNumber() + "." + randomNumber() + "." + randomNumber() + "." + randomNumber();
+    }
+
+    public static int randomNumber() {
+    	return new Random().nextInt((255 - 1) + 1) + 1;
+    }
 
     @AfterAll public void tearDown()
     {

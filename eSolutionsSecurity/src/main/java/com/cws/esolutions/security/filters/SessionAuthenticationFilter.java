@@ -28,7 +28,6 @@ package com.cws.esolutions.security.filters;
 import java.util.Arrays;
 import java.io.IOException;
 import javax.servlet.Filter;
-import java.sql.SQLException;
 import java.util.Enumeration;
 import java.util.ResourceBundle;
 import javax.servlet.FilterChain;
@@ -39,32 +38,22 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpSession;
 import org.apache.logging.log4j.Logger;
 import javax.servlet.UnavailableException;
-import javax.servlet.annotation.WebFilter;
 import java.util.MissingResourceException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.commons.lang3.StringUtils;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.annotation.WebInitParam;
 import javax.servlet.http.HttpServletResponse;
-import org.springframework.web.servlet.FlashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.SecurityServiceBean;
-import com.cws.esolutions.security.config.xml.SystemConfig;
 import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.config.xml.SecurityConfig;
-import com.cws.esolutions.security.processors.enums.SaltType;
-import com.cws.esolutions.utility.securityutils.PasswordUtils;
 import com.cws.esolutions.security.dao.userauth.interfaces.Authenticator;
 import com.cws.esolutions.security.dao.userauth.factory.AuthenticatorFactory;
 import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException;
-import com.cws.esolutions.security.dao.reference.impl.SQLUserSecurityInformationDAOImpl;
-import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO;
 /**
  * @see javax.servlet.Filter
  */
-@WebFilter(filterName = "SessionAuthenticationFilter", urlPatterns = {"/*"}, initParams = @WebInitParam(name = "filter-config", value = "SecurityService/filters/SessionAuthenticationFilter"))
 public class SessionAuthenticationFilter implements Filter
 {
 	private String loginURI = null;
@@ -83,9 +72,7 @@ public class SessionAuthenticationFilter implements Filter
     private static final String FILTER_CONFIG_FILE_NAME = "config/FilterConfig";
     private static final String CNAME = SessionAuthenticationFilter.class.getName();
     private static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
-    private static final SystemConfig sysConfig = secBean.getConfigData().getSystemConfig();
     private static final SecurityConfig secConfig = secBean.getConfigData().getSecurityConfig();
-    private static final IUserSecurityInformationDAO userSec = (IUserSecurityInformationDAO) new SQLUserSecurityInformationDAOImpl();
     private static final Authenticator authenticator = (Authenticator) AuthenticatorFactory.getAuthenticator(secConfig.getAuthManager());
 
     private static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
@@ -156,7 +143,7 @@ public class SessionAuthenticationFilter implements Filter
 
         final HttpServletRequest hRequest = (HttpServletRequest) sRequest;
         final HttpServletResponse hResponse = (HttpServletResponse) sResponse;
-        final HttpSession hSession = hRequest.getSession(false);
+        final HttpSession hSession = hRequest.getSession();
         final String requestURI = hRequest.getRequestURI();
 
         if (DEBUG)
@@ -261,7 +248,7 @@ public class SessionAuthenticationFilter implements Filter
             hSession.removeAttribute(SessionAuthenticationFilter.USER_ACCOUNT);
             hSession.invalidate();
 
-            hResponse.sendRedirect(this.loginURI);
+            hResponse.sendRedirect(hResponse.encodeRedirectURL(hRequest.getContextPath() + this.logoutURI));
 
             return;
         }
@@ -290,158 +277,8 @@ public class SessionAuthenticationFilter implements Filter
 	            {
 	                DEBUGGER.debug("sessionValue: {}", value);
 	            }
-	
-	            if (value instanceof CopyOnWriteArrayList)
-	            {
-	            	CopyOnWriteArrayList<?> flashAttribs = (CopyOnWriteArrayList<?>) value;
-	
-	            	if (DEBUG)
-	            	{
-	            		DEBUGGER.debug("CopyOnWriteArrayList<Object>: {}", flashAttribs);
-	            	}
-	
-	            	FlashMap flashMap = (FlashMap) flashAttribs.get(0);
-	
-	            	if (DEBUG)
-	            	{
-	            		DEBUGGER.debug("FlashMap: {}", flashMap);
-	            	}
-	
-	            	for (Object flashObject : flashMap.values())
-	            	{
-	                	if (DEBUG)
-	                	{
-	                		DEBUGGER.debug("flashObject: {}", flashObject);
-	                	}
-	
-	            		if (flashObject instanceof UserAccount)
-	            		{
-	            			UserAccount userAccount = (UserAccount) flashObject;
-	
-	                        if (DEBUG)
-	                        {
-	                            DEBUGGER.debug("UserAccount: {}", userAccount);
-	                        }
-	
-	                        if (userAccount.getStatus() != null)
-	                        {
-	                            switch (userAccount.getStatus())
-	                            {
-	        	                    case SUCCESS:
-	                                    try
-	                                    {
-	                                    	String tokenSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.AUTHTOKEN.toString());
-	                                    	String authToken = PasswordUtils.encryptText(userAccount.getGuid().toCharArray(), tokenSalt,
-	                                    			secConfig.getSecretKeyAlgorithm(),
-	                                    			secConfig.getIterations(), secConfig.getKeyLength(),
-	                                    			sysConfig.getEncoding());
-	
-	                                    	if (DEBUG)
-	                                    	{
-	                                    		DEBUGGER.debug("tokenSalt: {}", tokenSalt);
-	                                    		DEBUGGER.debug("authToken: {}", authToken);
-	                                    	}
-	
-	                                    	boolean isAuthenticated = authenticator.validateAuthToken(userAccount.getGuid(), userAccount.getUsername(), userAccount.getAuthToken());
-	
-	                                    	if (!(isAuthenticated))
-	                                    	{
-	                                    		ERROR_RECORDER.error("No valid authentication token was presented. Returning to login page !");
-	
-	                                    		hResponse.sendRedirect(hRequest.getContextPath() + this.passwordURI);
-	
-	                                    		return;
-	                                    	}
-	
-	                                    	filterChain.doFilter(sRequest, sResponse);
-	
-	                                    	return;
-	                                    }
-	                                    catch (SQLException sqx)
-	                                    {
-	                                    	ERROR_RECORDER.error(sqx.getMessage(), sqx);
-	
-	                                		hResponse.sendRedirect(hRequest.getContextPath() + this.logoutURI);
-	
-	                                		return;
-	                                    }
-	                                    catch (AuthenticatorException ax)
-	                                    {
-	                                    	ERROR_RECORDER.error(ax.getMessage(), ax);
-	
-	                                		hResponse.sendRedirect(hRequest.getContextPath() + this.logoutURI);
-	
-	                                		return;
-	                                    }
-	        	                    case FAILURE:
-	                                    if ((!(StringUtils.equals(requestURI, this.passwordURI))))
-	                                    {
-	                                        ERROR_RECORDER.error("Account has a status of FAILURE. Redirecting !");
-	
-	                                        hResponse.sendRedirect(hRequest.getContextPath() + this.logoutURI);
-	
-	                                        return;
-	                                    }
-	
-	                                    return;
-	        	                    case LOCKOUT:
-	                                    ERROR_RECORDER.error("Account has a status of LOCKOUT. Redirecting !");
-	
-	                                    hResponse.sendRedirect(hRequest.getContextPath() + this.passwordURI);
-	
-	                                    return;
-	        	                    case OLRSETUP:
-	                                    if ((!(StringUtils.equals(requestURI, hRequest.getContextPath() + this.questionsURI))))
-	                                    {
-	                                        ERROR_RECORDER.error("Account has a status of OLRSETUP. Redirecting !");
-	
-	                                        hResponse.sendRedirect(hRequest.getContextPath() + this.questionsURI);
-	
-	                                        return;
-	                                    }
-	
-	                                    filterChain.doFilter(sRequest, sResponse);
-	
-	                                    return;
-	        	                    case SUSPENDED:
-	                                    ERROR_RECORDER.error("Account has a status of SUSPENDED. Redirecting !");
-	
-	                                    hResponse.sendRedirect(hRequest.getContextPath() + this.logoutURI);
-	
-	                                    return;
-	        	                    case EXPIRED:
-	                                    if ((!(StringUtils.equals(requestURI, hRequest.getContextPath() + this.passwordURI))))
-	                                    {
-	                                        ERROR_RECORDER.error("Account is expired and this request is not for the password page. Redirecting !");
-	
-	                                        hResponse.sendRedirect(hRequest.getContextPath() + "/" +this.logoutURI);
-	
-	                                        return;
-	                                    }
-	
-	                                    filterChain.doFilter(sRequest, sResponse);
-	
-	                                    return;
-	        	                    default:
-	                                    ERROR_RECORDER.error("An unspecified error occurred during processing. Please review logs.");
-	
-	                                    hResponse.sendRedirect(hRequest.getContextPath() + this.logoutURI);
-	
-	                                    return;
-	                            }
-	                        }
-	                        else
-	                        {
-	                            ERROR_RECORDER.error("The account presented is incomplete. Please login again.");
-	
-	                            hResponse.sendRedirect(hRequest.getContextPath() + this.logoutURI);
-	
-	                            return;
-	                        }
-	            		}
-	            	}
-	            }
-	            else if (value instanceof UserAccount)
+
+	            if (value instanceof UserAccount)
 	            {
 	                UserAccount userAccount = (UserAccount) value;
 	
@@ -457,46 +294,31 @@ public class SessionAuthenticationFilter implements Filter
 		                    case SUCCESS:
 	                            try
 	                            {
-	                            	String tokenSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.AUTHTOKEN.toString());
-	                            	String authToken = PasswordUtils.encryptText(userAccount.getGuid().toCharArray(), tokenSalt,
-	                            			secConfig.getSecretKeyAlgorithm(),
-	                            			secConfig.getIterations(), secConfig.getKeyLength(),
-	                            			sysConfig.getEncoding());
-	
+	                            	boolean isAuthenticated = authenticator.validateAuthToken(userAccount.getGuid(), userAccount.getUsername(), userAccount.getAuthToken());
+
 	                            	if (DEBUG)
 	                            	{
-	                            		DEBUGGER.debug("tokenSalt: {}", tokenSalt);
-	                            		DEBUGGER.debug("authToken: {}", authToken);
+	                            		DEBUGGER.debug("isAuthenticated: {}", isAuthenticated);
 	                            	}
-	
-	                            	boolean isAuthenticated = authenticator.validateAuthToken(userAccount.getGuid(), userAccount.getUsername(), userAccount.getAuthToken());
-	
+
 	                            	if (!(isAuthenticated))
 	                            	{
 	                            		ERROR_RECORDER.error("No valid authentication token was presented. Returning to login page !");
 	
-	                            		hResponse.sendRedirect(hRequest.getContextPath() + this.passwordURI);
+	                            		hResponse.sendRedirect(hResponse.encodeRedirectURL(hRequest.getContextPath() + this.logoutURI));
 	
 	                            		return;
 	                            	}
-	
+
 	                            	filterChain.doFilter(sRequest, sResponse);
 	
 	                            	return;
-	                            }
-	                            catch (SQLException sqx)
-	                            {
-	                            	ERROR_RECORDER.error(sqx.getMessage(), sqx);
-	
-	                        		hResponse.sendRedirect(hRequest.getContextPath() + this.logoutURI);
-	
-	                        		return;
 	                            }
 	                            catch (AuthenticatorException ax)
 	                            {
 	                            	ERROR_RECORDER.error(ax.getMessage(), ax);
 	
-	                        		hResponse.sendRedirect(hRequest.getContextPath() + this.logoutURI);
+	                            	hResponse.sendRedirect(hResponse.encodeRedirectURL(hRequest.getContextPath() + this.logoutURI));
 	
 	                        		return;
 	                            }
@@ -505,7 +327,7 @@ public class SessionAuthenticationFilter implements Filter
 	                            {
 	                                ERROR_RECORDER.error("Account has a status of FAILURE. Redirecting !");
 	
-	                                hResponse.sendRedirect(hRequest.getContextPath() + this.logoutURI);
+	                                hResponse.sendRedirect(hResponse.encodeRedirectURL(hRequest.getContextPath() + this.logoutURI));
 	
 	                                return;
 	                            }
@@ -514,7 +336,7 @@ public class SessionAuthenticationFilter implements Filter
 		                    case LOCKOUT:
 	                            ERROR_RECORDER.error("Account has a status of LOCKOUT. Redirecting !");
 	
-	                            hResponse.sendRedirect(hRequest.getContextPath() + this.logoutURI);
+	                            hResponse.sendRedirect(hResponse.encodeRedirectURL(hRequest.getContextPath() + this.logoutURI));
 	
 	                            return;
 		                    case OLRSETUP:
@@ -522,7 +344,7 @@ public class SessionAuthenticationFilter implements Filter
 	                            {
 	                                ERROR_RECORDER.error("Account has a status of OLRSETUP. Redirecting !");
 	
-	                                hResponse.sendRedirect(hRequest.getContextPath() + this.questionsURI);
+	                                hResponse.sendRedirect(hResponse.encodeRedirectURL(hRequest.getContextPath() + this.questionsURI));
 	
 	                                return;
 	                            }
@@ -533,7 +355,7 @@ public class SessionAuthenticationFilter implements Filter
 		                    case SUSPENDED:
 	                            ERROR_RECORDER.error("Account has a status of SUSPENDED. Redirecting !");
 	
-	                            hResponse.sendRedirect(hRequest.getContextPath() + this.passwordURI);
+	                            hResponse.sendRedirect(hRequest.getContextPath() + this.logoutURI);
 	
 	                            return;
 		                    case EXPIRED:
@@ -541,7 +363,7 @@ public class SessionAuthenticationFilter implements Filter
 	                            {
 	                                ERROR_RECORDER.error("Account is expired and this request is not for the password page. Redirecting !");
 	
-	                                hResponse.sendRedirect(hRequest.getContextPath() + this.passwordURI);
+	                                hResponse.sendRedirect(hResponse.encodeRedirectURL(hRequest.getContextPath() + this.passwordURI));
 	
 	                                return;
 	                            }
@@ -552,7 +374,7 @@ public class SessionAuthenticationFilter implements Filter
 		                    default:
 	                            ERROR_RECORDER.error("An unspecified error occurred during processing. Please review logs.");
 	
-	                            hResponse.sendRedirect(hRequest.getContextPath() + this.logoutURI);
+	                            hResponse.sendRedirect(hResponse.encodeRedirectURL(hRequest.getContextPath() + this.logoutURI));
 	
 	                            return;
 	                    }
@@ -562,7 +384,7 @@ public class SessionAuthenticationFilter implements Filter
 	                    // no user account in the session
 	                    ERROR_RECORDER.error("Session contains no existing user account. Redirecting request to " + hRequest.getContextPath() + this.logoutURI);
 	
-	                    hResponse.sendRedirect(hRequest.getContextPath() + this.logoutURI);
+	                    hResponse.sendRedirect(hResponse.encodeRedirectURL(hRequest.getContextPath() + this.logoutURI));
 	
 	                    return;
 	                }
@@ -572,7 +394,7 @@ public class SessionAuthenticationFilter implements Filter
 	                // no user account in the session
 	                ERROR_RECORDER.error("Session contains no existing user account. Redirecting request to " + hRequest.getContextPath() + this.logoutURI);
 	
-	                hResponse.sendRedirect(hRequest.getContextPath() + this.logoutURI);
+	                hResponse.sendRedirect(hResponse.encodeRedirectURL(hRequest.getContextPath() + this.logoutURI));
 	
 	                return;
 	            }
@@ -582,7 +404,7 @@ public class SessionAuthenticationFilter implements Filter
         {
             ERROR_RECORDER.error("The found session contained no attributes. Redirecting to " + hRequest.getContextPath() + this.logoutURI);
 
-            hResponse.sendRedirect(hRequest.getContextPath() + this.logoutURI);
+            hResponse.sendRedirect(hResponse.encodeRedirectURL(hRequest.getContextPath() + this.logoutURI));
 
             return;
         }
@@ -590,7 +412,7 @@ public class SessionAuthenticationFilter implements Filter
         // i dont know how we got here but we did
         ERROR_RECORDER.error("An unknown error occurred. Redirecting request to " + hRequest.getContextPath() + this.logoutURI);
 
-        hResponse.sendRedirect(hRequest.getContextPath() + this.logoutURI);
+        hResponse.sendRedirect(hResponse.encodeRedirectURL(hRequest.getContextPath() + this.logoutURI));
 
         return;
     }

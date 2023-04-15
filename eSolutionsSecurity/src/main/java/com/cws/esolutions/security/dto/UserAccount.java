@@ -51,12 +51,12 @@ public class UserAccount implements Serializable
     private String givenName = null;
     private String sessionId = null;
     private String authToken = null;
-    private boolean accepted = false;
     private String pagerNumber = null;
     private String displayName = null;
     private boolean suspended = false;
     private LoginStatus status = null;
     private Integer failedCount = null;
+    private boolean acceptedTerms = false;
     private String telephoneNumber = null;
     private SecurityUserRole userRole = null;
     private List<UserGroup> userGroups = null;
@@ -150,9 +150,9 @@ public class UserAccount implements Serializable
     /**
      * @param value - The OLR setup flag associated with the account
      */
-    public final void setAccepted(final boolean value)
+    public final void setAcceptedTerms(final boolean value)
     {
-        final String methodName = UserAccount.CNAME + "#setAccepted(final boolean value)";
+        final String methodName = UserAccount.CNAME + "#setAcceptedTerms(final boolean value)";
 
         if (DEBUG)
         {
@@ -160,7 +160,7 @@ public class UserAccount implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.accepted = value;
+        this.acceptedTerms = value;
     }
 
     /**
@@ -471,17 +471,33 @@ public class UserAccount implements Serializable
     /**
      * @return The suspension flag associated with the account
      */
-    public final boolean isAccepted()
+    public final boolean getAcceptedTerms()
     {
-        final String methodName = UserAccount.CNAME + "#isAccepted()";
+        final String methodName = UserAccount.CNAME + "#getAcceptedTerms()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.accepted);
+            DEBUGGER.debug("Value: {}", this.acceptedTerms);
         }
 
-        return this.accepted;
+        return this.acceptedTerms;
+    }
+
+    /**
+     * @return The suspension flag associated with the account
+     */
+    public final boolean hasAcceptedTerms()
+    {
+        final String methodName = UserAccount.CNAME + "#hasAcceptedTerms()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.acceptedTerms);
+        }
+
+        return this.acceptedTerms;
     }
 
     /**

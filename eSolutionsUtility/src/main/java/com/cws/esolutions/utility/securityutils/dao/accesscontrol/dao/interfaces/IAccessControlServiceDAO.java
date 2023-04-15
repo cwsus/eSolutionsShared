@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.utility.securityutils.dao.audit.interfaces;
+package com.cws.esolutions.utility.securityutils.dao.accesscontrol.dao.interfaces;
 /*
  * Project: eSolutionsSecurity
- * Package: com.cws.esolutions.security.dao.audit.interfaces
- * File: IAuditDAO.java
+ * Package: com.cws.esolutions.security.dao.reference.interfaces
+ * File: IAccessControlServiceDAO.java
  *
  * History
  *
@@ -33,36 +33,38 @@ import org.apache.logging.log4j.LogManager;
 import com.cws.esolutions.utility.UtilityBean;
 import com.cws.esolutions.utility.UtilityConstants;
 /**
- * API allowing audit management tasks - storing audit requests and retrieving
- * for provided user accounts on demand.
- *
  * @author cws-khuntly
  * @version 1.0
  */
-public interface IAuditDAO
+public interface IAccessControlServiceDAO
 {
 	static final UtilityBean bean = UtilityBean.getInstance();
 
-    static final Logger DEBUGGER = LogManager.getLogger(UtilityConstants.DEBUGGER);
+	static final Logger DEBUGGER = LogManager.getLogger(UtilityConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     static final Logger AUDIT_RECORDER = LogManager.getLogger(UtilityConstants.AUDIT_LOGGER);
 
     /**
-     * Inserts audit-related data into the audit datastore
-     *
-     * @param auditRequest - A <code>List</code> of the audit data to insert
-     * @throws SQLException {@link java.sql.SQLException} if an exception occurs during processing
+     * 
+     * @return
+     * @throws SQLException
      */
-    void auditRequestedOperation(final List<String> auditRequest) throws SQLException;
+    List<String> getAccessGroups() throws SQLException;
 
     /**
-     * Inserts audit-related data into the audit datastore
-     *
-     * @param username - The username to obtain data for
-     * @param startRow - A limit of rows to obtain, if there are more than this limit the remainder
-     * will be paged
-     * @return A <code>List</code> of the associated audit data for the account 
-     * @throws SQLException {@link java.sql.SQLException} if an exception occurs during processing
+     * 
+     * @param commonName
+     * @param userId
+     * @return
+     * @throws SQLException
      */
-    List<Object> getAuditInterval(final String username, final int startRow) throws SQLException;
+    String getUserGroups(final String commonName) throws SQLException;
+
+    /**
+     * 
+     * @param commonName
+     * @return
+     * @throws SQLException
+     */
+    boolean isGroupEnabled(final String commonName) throws SQLException;
 }

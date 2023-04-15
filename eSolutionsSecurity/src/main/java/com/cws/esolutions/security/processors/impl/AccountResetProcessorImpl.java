@@ -261,14 +261,14 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
                 {
                 	// build a user account object here
                     // load the user account here
-                    List<Object> authObject = userManager.loadUserAccount(reqAccount.getGuid());
+                    List<Object> userData = userManager.loadUserAccount(reqAccount.getGuid());
 
                     if (DEBUG)
                     {
-                    	DEBUGGER.debug("authObject: {}", authObject);
+                    	DEBUGGER.debug("authObject: {}", userData);
                     }
 
-                    if (Objects.isNull(authObject))
+                    if (Objects.isNull(userData))
                     {
                     	ERROR_RECORDER.error("Attempted to load user account but got no response data");
 
@@ -278,11 +278,11 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
                     }
 
                     UserAccount resAccount = new UserAccount();
-                    resAccount.setGuid((String) authObject.get(1));
-                    resAccount.setUsername((String) authObject.get(0));
-                    resAccount.setUserRole(SecurityUserRole.valueOf((String) authObject.get(2)));
+                    resAccount.setGuid((String) userData.get(1));
+                    resAccount.setUsername((String) userData.get(0));
+                    resAccount.setUserRole(SecurityUserRole.valueOf((String) userData.get(2)));
 
-                    if ((Integer) authObject.get(3) >= secConfig.getMaxAttempts())
+                    if ((Integer) userData.get(3) >= secConfig.getMaxAttempts())
                     {
                         // user locked
                     	resAccount.setStatus(LoginStatus.LOCKOUT);
@@ -519,24 +519,24 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
             }
 
             // good, now we have something we can look for
-            List<Object> userList = userManager.loadUserAccount(commonName);
+            List<Object> userData = userManager.loadUserAccount(commonName);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("userList: {}", userList);
+                DEBUGGER.debug("userList: {}", userData);
             }
 
             // we expect back only one
-            if ((Objects.isNull(userList)) || (userList.size() == 0))
+            if ((Objects.isNull(userData)) || (userData.size() == 0))
             {
                 throw new AccountResetException("Unable to load user account information. Cannot continue.");
             }
 
             UserAccount foundAccount = new UserAccount();
-            foundAccount.setGuid((String) userList.get(1)); // CN
-            foundAccount.setUsername((String) userList.get(0)); // UID
-            foundAccount.setUserRole(SecurityUserRole.valueOf((String) userList.get(2))); //cwsrole
-            foundAccount.setSuspended((Boolean) userList.get(8));  // SUSPENDED
+            foundAccount.setGuid((String) userData.get(1)); // CN
+            foundAccount.setUsername((String) userData.get(0)); // UID
+            foundAccount.setUserRole(SecurityUserRole.valueOf((String) userData.get(2))); //cwsrole
+            foundAccount.setSuspended((Boolean) userData.get(8));  // SUSPENDED
 
             if (DEBUG)
             {

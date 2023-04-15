@@ -37,7 +37,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpSession;
 import org.apache.logging.log4j.Logger;
-import javax.servlet.annotation.WebFilter;
 import org.apache.logging.log4j.LogManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -46,7 +45,6 @@ import com.cws.esolutions.security.SecurityServiceConstants;
 /**
  * @see javax.servlet.Filter
  */
-@WebFilter(filterName = "SessionFixationFilter", urlPatterns = {"/*"})
 public class SessionFixationFilter implements Filter
 {
     private static final String CNAME = SessionFixationFilter.class.getName();
@@ -156,7 +154,7 @@ public class SessionFixationFilter implements Filter
                     DEBUGGER.debug("Map<String, Object>: {}", currentSession);
                 }
             }
-            
+
             hSession.invalidate();
 
             HttpSession nSession = hRequest.getSession(true);

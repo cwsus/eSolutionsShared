@@ -87,7 +87,7 @@ public interface Authenticator
      * @param authToken
      * @throws AuthenticatorException
      */
-    void performLogoff(final String userGuid, final String userName, final String authToken) throws AuthenticatorException;
+    void performLogoff(final String userGuid, final String userName, final String tokenSalt, final String authToken) throws AuthenticatorException;
 
     /**
      * Processes an agent logon request via an LDAP user datastore. If the

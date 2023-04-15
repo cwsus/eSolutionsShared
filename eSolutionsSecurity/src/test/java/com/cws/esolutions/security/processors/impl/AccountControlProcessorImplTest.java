@@ -105,6 +105,7 @@ public class AccountControlProcessorImplTest
         }
         catch (final AccountControlException acx)
         {
+        	acx.printStackTrace();
             Assertions.fail(acx.getMessage());
         }
     }
@@ -192,8 +193,8 @@ public class AccountControlProcessorImplTest
     {
     	UserAccount account = new UserAccount();
     	account.setUsername("khuntly");
-    	account.setGuid("567e3182-f38b-4f62-a804-e619dab8e9df");
-        account.setUserRole(SecurityUserRole.USER_ADMIN);
+    	account.setGuid("68c26c4a-33db-453c-a2f9-0a9190573dd8");
+        account.setUserRole(SecurityUserRole.SITE_ADMIN);
 
         AuthenticationData authData = new AuthenticationData();
         authData.setUsername("khuntly");

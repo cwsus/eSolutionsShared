@@ -602,6 +602,96 @@ public class SQLUserManager implements UserManager
     }
 
     /**
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#listUserAccounts()
+     */
+    public synchronized String loadUserGroups(final String guid) throws UserManagementException
+    {
+        final String methodName = SQLUserManager.CNAME + "#loadUserGroups(final String guid) throws UserManagementException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", guid);
+        }
+
+        String results = null;
+        Connection sqlConn = null;
+        ResultSet resultSet = null;
+        PreparedStatement stmt = null;
+
+        if (Objects.isNull(authDataSource))
+        {
+        	throw new UserManagementException("A datasource connection could not be obtained.");
+        }
+
+        try
+        {
+            sqlConn = authDataSource.getConnection();
+
+            if (DEBUG)
+            {
+            	DEBUGGER.debug("sqlConn: {}", sqlConn);
+            }
+
+            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
+            {
+                throw new SQLException("Unable to obtain application datasource connection");
+            }
+
+            sqlConn.setAutoCommit(true);
+
+            stmt = sqlConn.prepareStatement("{ CALL getUserGroups(?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt.setString(1, guid);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("PreparedStatement: {}", stmt);
+            }
+
+            if (stmt.execute())
+            {
+                resultSet = stmt.getResultSet();
+
+                if (resultSet.next())
+                {
+                    resultSet.first();
+                    results = resultSet.getString(1);
+                }
+            }
+        }
+        catch (final SQLException sqx)
+        {
+            throw new UserManagementException(sqx.getMessage(), sqx);
+        }
+        finally
+        {
+            try
+            {
+                if (!(Objects.isNull(resultSet)))
+                {
+                    resultSet.close();
+                }
+            
+                if (!(Objects.isNull(stmt)))
+                {
+                    stmt.close();
+                }
+
+                if (!(Objects.isNull(sqlConn)) && (!(sqlConn.isClosed())))
+                {
+                    sqlConn.close();
+                }
+            }
+            catch (final SQLException sqx)
+            {
+                throw new UserManagementException(sqx.getMessage(), sqx);
+            }
+        }
+
+        return results;
+    }
+
+    /**
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#getUserByEmailAddress(java.lang.String)
      */
     public synchronized List<String> getUserByUsername(final String searchData) throws UserManagementException

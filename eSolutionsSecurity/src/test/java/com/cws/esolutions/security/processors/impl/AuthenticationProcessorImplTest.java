@@ -71,7 +71,7 @@ public class AuthenticationProcessorImplTest
         account.setUsername("khuntly");
 
         AuthenticationData userSecurity = new AuthenticationData();
-        userSecurity.setPassword("ANIBbuKHiGkyGANLOjawFZ9cZGXuCVRd".toCharArray());
+        userSecurity.setPassword("RyKoEjMlxahdjqTb2IK6p7Xg4acD6vDR".toCharArray());
 
         AuthenticationRequest request = new AuthenticationRequest();
         request.setApplicationName("esolutions");
@@ -84,10 +84,12 @@ public class AuthenticationProcessorImplTest
         {
             AuthenticationResponse response = processor.processAgentLogon(request);
 
+            System.out.println(response);
             Assertions.assertThat(response.getRequestStatus()).isEqualTo(SecurityRequestStatus.SUCCESS);
         }
         catch (final AuthenticationException ax)
         {
+        	ax.printStackTrace();
             Assertions.fail(ax.getMessage());
         }
     }

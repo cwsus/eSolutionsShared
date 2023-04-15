@@ -43,7 +43,10 @@ public class AuthenticationData implements Serializable
     private char[] password = null;
     private String resetKey = null;
     private String sessionId = null;
+    private boolean isReset = false;
     private char[] newPassword = null;
+    private char[] currentPassword = null;
+    private char[] confirmPassword = null;
 
     private static final long serialVersionUID = 1920284352649895644L;
     private static final String CNAME = AuthenticationData.class.getName();
@@ -129,6 +132,45 @@ public class AuthenticationData implements Serializable
         this.resetKey = value;
     }
 
+    public final void setIsReset(final boolean value)
+    {
+        final String methodName = AuthenticationData.CNAME + "#setIsReset(final boolean value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.isReset = value;
+    }
+
+    public final void setCurrentPassword(final char[] value)
+    {
+        final String methodName = AuthenticationData.CNAME + "#setCurrentPassword(final char[] value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.currentPassword = value;
+    }
+
+    public final void setConfirmPassword(final char[] value)
+    {
+        final String methodName = AuthenticationData.CNAME + "#setConfirmPassword(final char[] value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.confirmPassword = value;
+    }
+
     public final String getUsername()
     {
         final String methodName = AuthenticationData.CNAME + "#getUsername()";
@@ -205,6 +247,58 @@ public class AuthenticationData implements Serializable
         }
 
         return this.resetKey;
+    }
+
+    public final boolean getIsReset()
+    {
+        final String methodName = AuthenticationData.CNAME + "#getIsReset()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.isReset);
+        }
+
+        return this.isReset;
+    }
+
+    public final boolean isReset()
+    {
+        final String methodName = AuthenticationData.CNAME + "#isReset()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.isReset);
+        }
+
+        return this.isReset;
+    }
+
+    public final char[] getCurrentPassword()
+    {
+        final String methodName = AuthenticationData.CNAME + "#getCurrentPassword()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.newPassword);
+        }
+
+        return this.currentPassword;
+    }
+
+    public final char[] getConfirmPassword()
+    {
+        final String methodName = AuthenticationData.CNAME + "#getConfirmPassword()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.confirmPassword);
+        }
+
+        return this.confirmPassword;
     }
 
     @Override

@@ -25,22 +25,26 @@ package com.cws.esolutions.core.processors.impl;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
+import java.util.List;
+import java.util.ArrayList;
 import org.junit.jupiter.api.Test;
+import org.assertj.core.util.Arrays;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.TestInstance;
 
+import com.cws.esolutions.security.dto.UserGroup;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.processors.dto.Article;
 import com.cws.esolutions.core.enums.CoreServicesStatus;
 import com.cws.esolutions.security.enums.SecurityUserRole;
+import com.cws.esolutions.core.processors.enums.ArticleStatus;
 import com.cws.esolutions.core.listeners.CoreServicesInitializer;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.core.processors.dto.KnowledgeManagementRequest;
 import com.cws.esolutions.core.processors.dto.KnowledgeManagementResponse;
-import com.cws.esolutions.core.processors.enums.ArticleStatus;
 import com.cws.esolutions.core.processors.exception.KnowledgeManagementException;
 import com.cws.esolutions.core.processors.interfaces.IKnowledgeManagementProcessor;
 /**
@@ -79,14 +83,21 @@ class KnowledgeManagementProcessorImplTest
 		reqInfo.setHostAddress("junit");
 		reqInfo.setHostAddress("junit");
 
+		UserGroup userGroup = new UserGroup();
+		userGroup.setGuid("4B081972-92C3-455B-9403-B81E68C538B6");
+
+		List<UserGroup> userGroups = new ArrayList<UserGroup>();
+		userGroups.add(userGroup);
+		
 		UserAccount userAccount = new UserAccount();
 		userAccount.setGuid("e1006d6d-e815-4b27-9a8c-fb91227cc2b5");
 		userAccount.setUsername("khuntly");
-		userAccount.setUserRole(SecurityUserRole.SITE_ADMIN);
+		userAccount.setUserRole(SecurityUserRole.USER);
+		userAccount.setUserGroups(userGroups);
 
 		Article article = new Article();
 		article.setAuthor(userAccount);
-		article.setCause("There is a test");
+		article.setCause("There is another a test");
 		article.setKeywords("test");
 		article.setResolution("Some kind of testing was tested and testy mctesterson");
 		article.setSymptoms("Testy");

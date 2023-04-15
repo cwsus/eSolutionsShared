@@ -290,15 +290,16 @@ public class SQLAuthenticator implements Authenticator
     /**
      * 
      */
-    public synchronized void performLogoff(final String userGuid, final String userName, final String authToken) throws AuthenticatorException
+    public synchronized void performLogoff(final String userGuid, final String userName, final String tokenSalt, final String authToken) throws AuthenticatorException
     {
-        final String methodName = SQLAuthenticator.CNAME + "#performLogoff(final String userGuid, final String userName, final String authToken) throws AuthenticatorException";
+        final String methodName = SQLAuthenticator.CNAME + "#performLogoff(final String userGuid, final String userName, final String tokenSalt, final String authToken) throws AuthenticatorException";
         
         if(DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", userGuid);
             DEBUGGER.debug("Value: {}", userName);
+            DEBUGGER.debug("Value: {}", tokenSalt);
             DEBUGGER.debug("Value: {}", authToken);
         }
 
@@ -329,7 +330,7 @@ public class SQLAuthenticator implements Authenticator
             sqlConn.setAutoCommit(true);
             stmt = sqlConn.prepareStatement("{ CALL removeSessionData(?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, userGuid);
-            stmt.setString(2, authToken);
+            stmt.setString(2, tokenSalt);
 
             if (DEBUG)
             {
@@ -362,7 +363,6 @@ public class SQLAuthenticator implements Authenticator
             }
         }
     }
-
 
     /**
      * 
@@ -475,7 +475,6 @@ public class SQLAuthenticator implements Authenticator
         return isComplete;
     }
 
-
     /**
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.Authenticator#performSuccessfulLogin(String, String, int, Long)
      */
@@ -563,7 +562,6 @@ public class SQLAuthenticator implements Authenticator
 
         return isComplete;
     }
-
 
     /**
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.Authenticator#getOlrStatus(java.lang.String, java.lang.String)

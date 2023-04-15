@@ -17,7 +17,7 @@ package com.cws.esolutions.security.dao.reference.interfaces;
 /*
  * Project: eSolutionsSecurity
  * Package: com.cws.esolutions.security.dao.reference.interfaces
- * File: IUserSecurityInformationDAO.java
+ * File: IAccessControlServiceDAO.java
  *
  * History
  *
@@ -33,7 +33,6 @@ import org.apache.logging.log4j.LogManager;
 
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.SecurityServiceConstants;
-import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
 /**
  * API allowing data access for user security information, such as salt
  * or reset data.
@@ -132,7 +131,7 @@ public interface IUserSecurityInformationDAO
      * @return <code>true</code> if the process completes, <code>false</code> otherwise
      * @throws UserManagementException if an exception occurs during processing
      */
-    boolean modifyUserPassword(final String userGuid, final String userId, final String newPass, final boolean isReset) throws UserManagementException;
+    boolean modifyUserPassword(final String userGuid, final String userId, final String newPass, final boolean isReset) throws SQLException;
 
     /**
      * 
@@ -144,5 +143,5 @@ public interface IUserSecurityInformationDAO
      * @return <code>true</code> if the process completes, <code>false</code> otherwise
      * @throws UserManagementException if an exception occurs during processing
      */
-    boolean modifyUserSecurity(final String userId, final List<String> values) throws UserManagementException;
+    boolean modifyUserSecurity(final String userId, final List<String> values) throws SQLException;
 }

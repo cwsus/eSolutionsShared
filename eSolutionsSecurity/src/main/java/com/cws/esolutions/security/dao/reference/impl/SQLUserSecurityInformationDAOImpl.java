@@ -17,7 +17,7 @@ package com.cws.esolutions.security.dao.reference.impl;
 /*
  * Project: eSolutionsSecurity
  * Package: com.cws.esolutions.security.dao.reference.impl
- * File: SQLUserSecurityInformationDAOImpl.java
+ * File: AccessControlServiceDAOImpl.java
  *
  * History
  *
@@ -36,7 +36,6 @@ import java.sql.SQLException;
 import java.sql.PreparedStatement;
 import java.sql.CallableStatement;
 
-import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
 import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO;
 /**
  * @see com.cws.esolutions.security.dao.reference.interfaces.ISecurityReferenceDAO
@@ -634,9 +633,9 @@ public class SQLUserSecurityInformationDAOImpl implements IUserSecurityInformati
     /**
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#modifyUserPassword(java.lang.String, java.lang.String)
      */
-    public synchronized boolean modifyUserPassword(final String userGuid, final String userId, final String newPass, final boolean isReset) throws UserManagementException
+    public synchronized boolean modifyUserPassword(final String userGuid, final String userId, final String newPass, final boolean isReset) throws SQLException
     {
-        final String methodName = SQLUserSecurityInformationDAOImpl.CNAME + "#modifyUserPassword(final String userGuid, final String userId, final String newPass, final boolean isReset) throws UserManagementException";
+        final String methodName = SQLUserSecurityInformationDAOImpl.CNAME + "#modifyUserPassword(final String userGuid, final String userId, final String newPass, final boolean isReset) throws SQLException";
 
         if (DEBUG)
         {
@@ -652,7 +651,7 @@ public class SQLUserSecurityInformationDAOImpl implements IUserSecurityInformati
 
         if (Objects.isNull(dataSource))
         {
-        	throw new UserManagementException("A datasource connection could not be obtained.");
+        	throw new SQLException("A datasource connection could not be obtained.");
         }
 
         try
@@ -699,25 +698,18 @@ public class SQLUserSecurityInformationDAOImpl implements IUserSecurityInformati
         }
         catch (final SQLException sqx)
         {
-            throw new UserManagementException(sqx.getMessage(), sqx);
+            throw new SQLException(sqx.getMessage(), sqx);
         }
         finally
         {
-            try
+            if (!(Objects.isNull(stmt)))
             {
-                if (!(Objects.isNull(stmt)))
-                {
-                    stmt.close();
-                }
-
-                if (!(Objects.isNull(sqlConn)) && (!(sqlConn.isClosed())))
-                {
-                    sqlConn.close();
-                }
+                stmt.close();
             }
-            catch (final SQLException sqx)
+
+            if (!(Objects.isNull(sqlConn)) && (!(sqlConn.isClosed())))
             {
-                throw new UserManagementException(sqx.getMessage(), sqx);
+                sqlConn.close();
             }
         }
 
@@ -727,9 +719,9 @@ public class SQLUserSecurityInformationDAOImpl implements IUserSecurityInformati
     /**
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#modifyUserSecurity(java.lang.String, java.util.List)
      */
-    public synchronized boolean modifyUserSecurity(final String userGuid, final List<String> values) throws UserManagementException
+    public synchronized boolean modifyUserSecurity(final String userGuid, final List<String> values) throws SQLException
     {
-        final String methodName = SQLUserSecurityInformationDAOImpl.CNAME + "#modifyUserSecurity(final String userGuid, final List<String> values) throws UserManagementException";
+        final String methodName = SQLUserSecurityInformationDAOImpl.CNAME + "#modifyUserSecurity(final String userGuid, final List<String> values) throws SQLException";
 
         if (DEBUG)
         {
@@ -744,7 +736,7 @@ public class SQLUserSecurityInformationDAOImpl implements IUserSecurityInformati
 
         if (Objects.isNull(dataSource))
         {
-        	throw new UserManagementException("A datasource connection could not be obtained.");
+        	throw new SQLException("A datasource connection could not be obtained.");
         }
 
         try
@@ -791,26 +783,18 @@ public class SQLUserSecurityInformationDAOImpl implements IUserSecurityInformati
         }
         catch (final SQLException sqx)
         {
-        	sqx.printStackTrace();
-            throw new UserManagementException(sqx.getMessage(), sqx);
+            throw new SQLException(sqx.getMessage(), sqx);
         }
         finally
         {
-            try
+            if (!(Objects.isNull(stmt)))
             {
-                if (!(Objects.isNull(stmt)))
-                {
-                    stmt.close();
-                }
-
-                if (!(Objects.isNull(sqlConn)) && (!(sqlConn.isClosed())))
-                {
-                    sqlConn.close();
-                }
+                stmt.close();
             }
-            catch (final SQLException sqx)
+
+            if (!(Objects.isNull(sqlConn)) && (!(sqlConn.isClosed())))
             {
-                throw new UserManagementException(sqx.getMessage(), sqx);
+                sqlConn.close();
             }
         }
 

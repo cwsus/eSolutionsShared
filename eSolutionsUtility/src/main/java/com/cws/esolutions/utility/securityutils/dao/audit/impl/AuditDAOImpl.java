@@ -64,16 +64,7 @@ public class AuditDAOImpl implements IAuditDAO
 
         try
         {
-            Context initContext = new InitialContext();
-            Context envContext = (Context) initContext.lookup(UtilityConstants.DS_CONTEXT);
-            DataSource dataSource = (DataSource) envContext.lookup(IAuditDAO.INIT_AUDITDS_MANAGER);
-
-            if (DEBUG)
-            {
-            	DEBUGGER.debug("Context: {}", initContext);
-            	DEBUGGER.debug("Context: {}", envContext);
-            	DEBUGGER.debug("DataSource: {}", dataSource);
-            }
+        	DataSource dataSource = (DataSource) bean.getAuditDataSource();
 
             if (Objects.isNull(dataSource))
             {
@@ -112,15 +103,11 @@ public class AuditDAOImpl implements IAuditDAO
         {
             throw new SQLException(sqx.getMessage(), sqx);
         }
-        catch (NamingException nx)
-        {
-        	throw new SQLException(nx.getMessage(), nx);
-		}
         finally
         {
             try
             {
-                if (!(Objects.isNull(stmt)))
+            	if (!(Objects.isNull(stmt)))
                 {
                     stmt.close();
                 }
@@ -158,16 +145,7 @@ public class AuditDAOImpl implements IAuditDAO
 
         try
         {
-            Context initContext = new InitialContext();
-            Context envContext = (Context) initContext.lookup(UtilityConstants.DS_CONTEXT);
-            DataSource dataSource = (DataSource) envContext.lookup(IAuditDAO.INIT_AUDITDS_MANAGER);
-
-            if (DEBUG)
-            {
-            	DEBUGGER.debug("Context: {}", initContext);
-            	DEBUGGER.debug("Context: {}", envContext);
-            	DEBUGGER.debug("DataSource: {}", dataSource);
-            }
+        	DataSource dataSource = (DataSource) bean.getAuditDataSource();
 
             sqlConn = dataSource.getConnection();
 
@@ -237,10 +215,7 @@ public class AuditDAOImpl implements IAuditDAO
         catch (final SQLException sqx)
         {
             throw new SQLException(sqx.getMessage(), sqx);
-        } 
-        catch (NamingException nx) {
-        	throw new SQLException(nx.getMessage(), nx);
-		}
+        }
         finally
         {
             try

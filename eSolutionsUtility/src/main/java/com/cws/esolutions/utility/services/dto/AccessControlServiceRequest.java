@@ -41,7 +41,7 @@ import com.cws.esolutions.utility.UtilityConstants;
 public class AccessControlServiceRequest implements Serializable
 {
 	private String serviceGuid = null;
-	private List<String> userAccount = null;
+	private List<Object> userAccount = null;
 
     private static final long serialVersionUID = -4023063417915572531L;
     private static final String CNAME = AccessControlServiceRequest.class.getName();
@@ -62,9 +62,9 @@ public class AccessControlServiceRequest implements Serializable
         this.serviceGuid = value;
     }
 
-    public final void setUserAccount(final List<String> value)
+    public final void setUserAccount(final List<Object> value)
     {
-        final String methodName = AccessControlServiceRequest.CNAME + "#setUserAccount(final List<String value)";
+        final String methodName = AccessControlServiceRequest.CNAME + "#setUserAccount(final List<Object> value)";
 
         if (DEBUG)
         {
@@ -88,7 +88,7 @@ public class AccessControlServiceRequest implements Serializable
         return this.serviceGuid;
     }
 
-    public final List<String> getUserAccount()
+    public final List<Object> getUserAccount()
     {
         final String methodName = AccessControlServiceRequest.CNAME + "#getUserAccount()";
 

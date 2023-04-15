@@ -96,7 +96,13 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid(), userAccount.getUserRole().toString())));
+            accessRequest.setServiceGuid(request.getServiceId());
+            accessRequest.setUserAccount(
+            		new ArrayList<Object>(
+            				Arrays.asList(
+            						userAccount.getGuid(),
+            						userAccount.getUserRole().toString(),
+            						userAccount.getUserGroups())));
 
             if (DEBUG)
             {
@@ -193,7 +199,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                             requestServer.getServerStatus().name(),
                             requestServer.getServerRegion().name(),
                             requestServer.getNetworkPartition().name(),
-                            requestServer.getDatacenter(),
+                            requestServer.getDatacenter().getGuid(),
                             requestServer.getServerType().name(),
                             requestServer.getDomainName(),
                             requestServer.getCpuType(),
@@ -341,7 +347,13 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid(), userAccount.getUserRole().toString())));
+            accessRequest.setServiceGuid(request.getServiceId());
+            accessRequest.setUserAccount(
+            		new ArrayList<Object>(
+            				Arrays.asList(
+            						userAccount.getGuid(),
+            						userAccount.getUserRole().toString(),
+            						userAccount.getUserGroups())));
 
             if (DEBUG)
             {
@@ -578,7 +590,13 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid(), userAccount.getUserRole().toString())));
+            accessRequest.setServiceGuid(request.getServiceId());
+            accessRequest.setUserAccount(
+            		new ArrayList<Object>(
+            				Arrays.asList(
+            						userAccount.getGuid(),
+            						userAccount.getUserRole().toString(),
+            						userAccount.getUserGroups())));
 
             if (DEBUG)
             {
@@ -760,7 +778,13 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid(), userAccount.getUserRole().toString())));
+            accessRequest.setServiceGuid(request.getServiceId());
+            accessRequest.setUserAccount(
+            		new ArrayList<Object>(
+            				Arrays.asList(
+            						userAccount.getGuid(),
+            						userAccount.getUserRole().toString(),
+            						userAccount.getUserGroups())));
 
             if (DEBUG)
             {
@@ -968,7 +992,13 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid(), userAccount.getUserRole().toString())));
+            accessRequest.setServiceGuid(request.getServiceId());
+            accessRequest.setUserAccount(
+            		new ArrayList<Object>(
+            				Arrays.asList(
+            						userAccount.getGuid(),
+            						userAccount.getUserRole().toString(),
+            						userAccount.getUserGroups())));
 
             if (DEBUG)
             {
@@ -1181,7 +1211,13 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid(), userAccount.getUserRole().toString())));
+            accessRequest.setServiceGuid(request.getServiceId());
+            accessRequest.setUserAccount(
+            		new ArrayList<Object>(
+            				Arrays.asList(
+            						userAccount.getGuid(),
+            						userAccount.getUserRole().toString(),
+            						userAccount.getUserGroups())));
 
             if (DEBUG)
             {

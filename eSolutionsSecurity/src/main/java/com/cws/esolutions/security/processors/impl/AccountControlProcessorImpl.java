@@ -37,14 +37,14 @@ import java.sql.SQLException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 
+import com.cws.esolutions.security.dto.UserGroup;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.enums.SecurityUserRole;
-import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.processors.enums.SaltType;
 import com.cws.esolutions.utility.securityutils.PasswordUtils;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
-import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
+import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.processors.dto.AccountControlRequest;
 import com.cws.esolutions.security.processors.dto.AccountControlResponse;
 import com.cws.esolutions.utility.securityutils.processors.dto.AuditEntry;
@@ -98,7 +98,12 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setServiceGuid(request.getServiceId());
-            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(reqAccount.getGuid(), reqAccount.getUserRole().toString())));
+            accessRequest.setUserAccount(
+            		new ArrayList<Object>(
+            				Arrays.asList(
+            						reqAccount.getGuid(),
+            						reqAccount.getUserRole().toString(),
+            						reqAccount.getUserGroups())));
 
             if (DEBUG)
             {
@@ -389,7 +394,12 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setServiceGuid(request.getServiceId());
-            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(reqAccount.getGuid(), reqAccount.getUserRole().toString())));
+            accessRequest.setUserAccount(
+            		new ArrayList<Object>(
+            				Arrays.asList(
+            						reqAccount.getGuid(),
+            						reqAccount.getUserRole().toString(),
+            						reqAccount.getUserGroups())));
 
             if (DEBUG)
             {
@@ -577,7 +587,12 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setServiceGuid(request.getServiceId());
-            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(reqAccount.getGuid(), reqAccount.getUserRole().toString())));
+            accessRequest.setUserAccount(
+            		new ArrayList<Object>(
+            				Arrays.asList(
+            						reqAccount.getGuid(),
+            						reqAccount.getUserRole().toString(),
+            						reqAccount.getUserGroups())));
 
             if (DEBUG)
             {
@@ -782,7 +797,12 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setServiceGuid(request.getServiceId());
-            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(reqAccount.getGuid(), reqAccount.getUserRole().toString())));
+            accessRequest.setUserAccount(
+            		new ArrayList<Object>(
+            				Arrays.asList(
+            						reqAccount.getGuid(),
+            						reqAccount.getUserRole().toString(),
+            						reqAccount.getUserGroups())));
 
             if (DEBUG)
             {
@@ -882,19 +902,51 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
                     if ((resData != null) && (!(resData.isEmpty())))
                     {
+                    	List<UserGroup> userGroups = new ArrayList<UserGroup>();
+
+                    	for (String groupId : (String[]) userData.get(13).toString().split(","))
+                    	{
+                    		if (DEBUG)
+                    		{
+                    			DEBUGGER.debug("String: groupId: {}", groupId);
+                    		}
+
+                    		UserGroup group = new UserGroup();
+                    		group.setGuid(groupId);
+
+                    		if (DEBUG)
+                    		{
+                    			DEBUGGER.debug("UserGroup: group: {}", group);
+                    		}
+
+                    		userGroups.add(group);
+
+                    		if (DEBUG)
+                    		{
+                    			DEBUGGER.debug("List<UserGroup>: userGroups: {}", userGroups);
+                    		}
+                    	}
+
+                		if (DEBUG)
+                		{
+                			DEBUGGER.debug("List<UserGroup>: userGroups: {}", userGroups);
+                		}
+
                         UserAccount resAccount = new UserAccount();
-                        resAccount.setGuid((String) userData.get(0));
-                        resAccount.setUsername((String) userData.get(1));
-                        resAccount.setGivenName((String) userData.get(2));
-                        resAccount.setSurname((String) userData.get(3));
-                        resAccount.setDisplayName((String) userData.get(4));
-                        resAccount.setEmailAddr((String) userData.get(5));
-                        resAccount.setPagerNumber((Objects.isNull(userData.get(6))) ? SecurityServiceConstants.TEL_NOT_SET : (String) userData.get(6));
-                        resAccount.setTelephoneNumber((Objects.isNull(userData.get(7))) ? SecurityServiceConstants.TEL_NOT_SET : (String) userData.get(7));
-                        resAccount.setFailedCount(((Objects.isNull(userData.get(9))) ? 0 : (Integer) userData.get(9)));
-                        resAccount.setLastLogin(((Objects.isNull(userData.get(10))) ? new Timestamp(System.currentTimeMillis()) : (Timestamp) userData.get(10)));
-                        resAccount.setExpiryDate(((Objects.isNull(userData.get(11))) ? new Timestamp(System.currentTimeMillis()) : (Timestamp) userData.get(11)));
-                        resAccount.setSuspended(((Objects.isNull(userData.get(12))) ? Boolean.FALSE : (Boolean) userData.get(12)));
+                        resAccount.setUsername((String) userData.get(0));
+                        resAccount.setGuid((String) userData.get(1));
+                        resAccount.setUserRole(SecurityUserRole.valueOf((String) userData.get(2)));
+                        resAccount.setFailedCount(((Objects.isNull(userData.get(9))) ? 0 : (Integer) userData.get(3)));
+                        resAccount.setLastLogin(((Objects.isNull(userData.get(4))) ? new Date(System.currentTimeMillis()) : new Date(((Timestamp) userData.get(4)).getTime()))); // fix
+                        resAccount.setSurname((String) userData.get(5));
+                        resAccount.setGivenName((String) userData.get(6));
+                        resAccount.setExpiryDate(((Objects.isNull(userData.get(7))) ? new Date(System.currentTimeMillis()) : new Date(((Timestamp) userData.get(7)).getTime()))); // fix
+                        resAccount.setSuspended(((Objects.isNull(userData.get(8))) ? Boolean.FALSE : (Boolean) userData.get(8)));
+                        resAccount.setDisplayName((String) userData.get(11));
+                        resAccount.setEmailAddr((String) userData.get(14));
+                        resAccount.setTelephoneNumber((String) userData.get(15));
+                        resAccount.setPagerNumber((String) userData.get(16));
+                        resAccount.setUserGroups(userGroups);
 
                         if (DEBUG)
                         {
@@ -1027,7 +1079,12 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setServiceGuid(request.getServiceId());
-            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(reqAccount.getGuid(), reqAccount.getUserRole().toString())));
+            accessRequest.setUserAccount(
+            		new ArrayList<Object>(
+            				Arrays.asList(
+            						reqAccount.getGuid(),
+            						reqAccount.getUserRole().toString(),
+            						reqAccount.getUserGroups())));
 
             if (DEBUG)
             {
@@ -1169,12 +1226,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             throw new AccountControlException(acsx.getMessage(), acsx);
         }
-        catch (final UserManagementException umx)
-        {
-            ERROR_RECORDER.error(umx.getMessage(), umx);
-
-            throw new AccountControlException(umx.getMessage(), umx);
-        }
         catch (final SecurityException sx)
         {
             ERROR_RECORDER.error(sx.getMessage(), sx);
@@ -1274,7 +1325,12 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setServiceGuid(request.getServiceId());
-            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(reqAccount.getGuid(), reqAccount.getUserRole().toString())));
+            accessRequest.setUserAccount(
+            		new ArrayList<Object>(
+            				Arrays.asList(
+            						reqAccount.getGuid(),
+            						reqAccount.getUserRole().toString(),
+            						reqAccount.getUserGroups())));
 
             if (DEBUG)
             {
@@ -1479,7 +1535,12 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setServiceGuid(request.getServiceId());
-            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(reqAccount.getGuid(), reqAccount.getUserRole().toString())));
+            accessRequest.setUserAccount(
+            		new ArrayList<Object>(
+            				Arrays.asList(
+            						reqAccount.getGuid(),
+            						reqAccount.getUserRole().toString(),
+            						reqAccount.getUserGroups())));
 
             if (DEBUG)
             {
@@ -1571,7 +1632,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             	loadedAccount.setExpiryDate((Date) userData.get(7)); // T1.CWSEXPIRYDATE,
             	loadedAccount.setSuspended((Boolean) userData.get(8)); // T1.CWSISSUSPENDED,
             	loadedAccount.setDisplayName((String) userData.get(11)); // T1.DISPLAYNAME,
-            	loadedAccount.setAccepted((Boolean) userData.get(12)); // T1.CWSISTCACCEPTED,
+            	loadedAccount.setAcceptedTerms((Boolean) userData.get(12)); // T1.CWSISTCACCEPTED,
             	loadedAccount.setEmailAddr((String) userData.get(13)); // T2.EMAIL
 
                 if (DEBUG)
@@ -1691,7 +1752,12 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setServiceGuid(request.getServiceId());
-            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(reqAccount.getGuid(), reqAccount.getUserRole().toString())));
+            accessRequest.setUserAccount(
+            		new ArrayList<Object>(
+            				Arrays.asList(
+            						reqAccount.getGuid(),
+            						reqAccount.getUserRole().toString(),
+            						reqAccount.getUserGroups())));
 
             if (DEBUG)
             {
@@ -1917,7 +1983,12 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
             accessRequest.setServiceGuid(request.getServiceId());
-            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(reqAccount.getGuid(), reqAccount.getUserRole().toString())));
+            accessRequest.setUserAccount(
+            		new ArrayList<Object>(
+            				Arrays.asList(
+            						reqAccount.getGuid(),
+            						reqAccount.getUserRole().toString(),
+            						reqAccount.getUserGroups())));
 
             if (DEBUG)
             {

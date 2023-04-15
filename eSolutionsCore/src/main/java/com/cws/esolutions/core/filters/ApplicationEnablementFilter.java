@@ -219,7 +219,7 @@ public class ApplicationEnablementFilter implements Filter
 	        switch (enableResponse.getRequestStatus())
 	        {
 				case FAILURE:
-					hResponse.sendRedirect(hRequest.getContextPath() + this.svcFailureRedir);
+					hResponse.sendRedirect(hResponse.encodeRedirectURL(hRequest.getContextPath() + this.svcFailureRedir));
 
 					return;
 				case SUCCESS:
@@ -229,16 +229,16 @@ public class ApplicationEnablementFilter implements Filter
 					}
 					else
 					{
-						hResponse.sendRedirect(hRequest.getContextPath() + this.svcNotEnabledRedir);
+						hResponse.sendRedirect(hResponse.encodeRedirectURL(hRequest.getContextPath() + this.svcNotEnabledRedir));
 					}
 
 					break;
 				case UNAUTHORIZED:
-					hResponse.sendRedirect(hRequest.getContextPath() + this.svcUnauthorizedRedir);
+					hResponse.sendRedirect(hResponse.encodeRedirectURL(hRequest.getContextPath() + this.svcUnauthorizedRedir));
 
 					break;
 				default:
-					hResponse.sendRedirect(hRequest.getContextPath() + this.svcNotEnabledRedir);
+					hResponse.sendRedirect(hResponse.encodeRedirectURL(hRequest.getContextPath() + this.svcNotEnabledRedir));
 					
 					return;
 	        }
@@ -247,7 +247,7 @@ public class ApplicationEnablementFilter implements Filter
         {
         	ERROR_RECORDER.error(aex.getMessage(), aex);
 
-        	hResponse.sendRedirect(hRequest.getContextPath() + this.svcFailureRedir);
+			hResponse.sendRedirect(hResponse.encodeRedirectURL(hRequest.getContextPath() + this.svcFailureRedir));
 
         	return;
         }

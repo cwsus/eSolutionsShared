@@ -438,12 +438,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
             throw new AccountChangeException(sqx.getMessage(), sqx);
         }
-        catch (final UserManagementException umx)
-        {
-            ERROR_RECORDER.error(umx.getMessage(), umx);
-
-            throw new AccountChangeException(umx.getMessage(), umx);
-        }
         catch (final SecurityException sx)
         {
             ERROR_RECORDER.error(sx.getMessage(), sx);
@@ -622,12 +616,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
             throw new AccountChangeException(sqx.getMessage(), sqx);
-        }
-        catch (final UserManagementException umx)
-        {
-            ERROR_RECORDER.error(umx.getMessage(), umx);
-
-            throw new AccountChangeException(umx.getMessage(), umx);
         }
         catch (final SecurityException sx)
         {

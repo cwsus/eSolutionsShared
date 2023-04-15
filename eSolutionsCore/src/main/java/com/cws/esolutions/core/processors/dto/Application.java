@@ -51,7 +51,6 @@ public class Application implements Serializable
     private String version = "1.0";
     private Date onlineDate = null;
     private Date offlineDate = null;
-    private Platform platform = null;
     private String clusterName = null;
     private File installPath = null;
     private String platformGuid = null;
@@ -67,19 +66,6 @@ public class Application implements Serializable
 
     private static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-
-    public final void setPlatform(final Platform value)
-    {
-        final String methodName = Application.CNAME + "#setPlatform(final Platform value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.platform = value;
-    }
 
     public final void setBinaries(final File value)
     {
@@ -417,19 +403,6 @@ public class Application implements Serializable
         }
 
         return this.offlineDate;
-    }
-
-    public final Platform getPlatform()
-    {
-        final String methodName = Application.CNAME + "#getPlatform()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.platform);
-        }
-
-        return this.platform;
     }
 
     public final File getBinaries()

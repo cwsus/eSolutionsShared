@@ -147,6 +147,14 @@ public interface UserManager
     List<Object> loadUserAccount(final String userId) throws UserManagementException;
 
     /**
+     * 
+     * @param guid
+     * @return
+     * @throws UserManagementException
+     */
+    String loadUserGroups(final String guid) throws UserManagementException;
+
+    /**
      * Returns a list of ALL user accounts stored in the authentication datastore. This is
      * ONLY to be used with the reapers.
      *

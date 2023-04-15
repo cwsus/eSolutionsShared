@@ -39,6 +39,7 @@ import com.cws.esolutions.security.SecurityServiceConstants;
  */
 public class AccountSearchRequest implements Serializable
 {
+	private String serviceId = null;
 	private boolean isReset = false;
 	private String searchTerms = null;
     private String applicationId = null;
@@ -51,6 +52,19 @@ public class AccountSearchRequest implements Serializable
 
     private static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
+
+    public final void setServiceId(final String value)
+    {
+        final String methodName = AccountSearchRequest.CNAME + "#setServiceId(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.serviceId = value;
+    }
 
     public final void setHostInfo(final RequestHostInfo value)
     {
@@ -128,6 +142,19 @@ public class AccountSearchRequest implements Serializable
         }
 
         this.isReset = value;
+    }
+
+    public final String getServiceId()
+    {
+        final String methodName = AccountSearchRequest.CNAME + "#getServiceId()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.serviceId);
+        }
+
+        return this.serviceId;
     }
 
     public final RequestHostInfo getHostInfo()

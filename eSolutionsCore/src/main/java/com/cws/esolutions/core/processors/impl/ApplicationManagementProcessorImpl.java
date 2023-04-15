@@ -95,8 +95,13 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid(), userAccount.getUserRole().toString())));
-
+            accessRequest.setServiceGuid(request.getServiceId());
+            accessRequest.setUserAccount(
+            		new ArrayList<Object>(
+            				Arrays.asList(
+            						userAccount.getGuid(),
+            						userAccount.getUserRole().toString(),
+            						userAccount.getUserGroups())));
             if (DEBUG)
             {
                 DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
@@ -326,8 +331,13 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid(), userAccount.getUserRole().toString())));
-
+            accessRequest.setServiceGuid(request.getServiceId());
+            accessRequest.setUserAccount(
+            		new ArrayList<Object>(
+            				Arrays.asList(
+            						userAccount.getGuid(),
+            						userAccount.getUserRole().toString(),
+            						userAccount.getUserGroups())));
             if (DEBUG)
             {
                 DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
@@ -521,7 +531,13 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid(), userAccount.getUserRole().toString())));
+            accessRequest.setServiceGuid(request.getServiceId());
+            accessRequest.setUserAccount(
+            		new ArrayList<Object>(
+            				Arrays.asList(
+            						userAccount.getGuid(),
+            						userAccount.getUserRole().toString(),
+            						userAccount.getUserGroups())));
 
             if (DEBUG)
             {
@@ -700,7 +716,13 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid(), userAccount.getUserRole().toString())));
+            accessRequest.setServiceGuid(request.getServiceId());
+            accessRequest.setUserAccount(
+            		new ArrayList<Object>(
+            				Arrays.asList(
+            						userAccount.getGuid(),
+            						userAccount.getUserRole().toString(),
+            						userAccount.getUserGroups())));
 
             if (DEBUG)
             {
@@ -912,7 +934,13 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid(), userAccount.getUserRole().toString())));
+            accessRequest.setServiceGuid(request.getServiceId());
+            accessRequest.setUserAccount(
+            		new ArrayList<Object>(
+            				Arrays.asList(
+            						userAccount.getGuid(),
+            						userAccount.getUserRole().toString(),
+            						userAccount.getUserGroups())));
 
             if (DEBUG)
             {
@@ -1124,7 +1152,13 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid(), userAccount.getUserRole().toString())));
+            accessRequest.setServiceGuid(request.getServiceId());
+            accessRequest.setUserAccount(
+            		new ArrayList<Object>(
+            				Arrays.asList(
+            						userAccount.getGuid(),
+            						userAccount.getUserRole().toString(),
+            						userAccount.getUserGroups())));
 
             if (DEBUG)
             {
@@ -1369,7 +1403,13 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid(), userAccount.getUserRole().toString())));
+            accessRequest.setServiceGuid(request.getServiceId());
+            accessRequest.setUserAccount(
+            		new ArrayList<Object>(
+            				Arrays.asList(
+            						userAccount.getGuid(),
+            						userAccount.getUserRole().toString(),
+            						userAccount.getUserGroups())));
 
             if (DEBUG)
             {
@@ -1643,7 +1683,13 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid(), userAccount.getUserRole().toString())));
+            accessRequest.setServiceGuid(request.getServiceId());
+            accessRequest.setUserAccount(
+            		new ArrayList<Object>(
+            				Arrays.asList(
+            						userAccount.getGuid(),
+            						userAccount.getUserRole().toString(),
+            						userAccount.getUserGroups())));
 
             if (DEBUG)
             {

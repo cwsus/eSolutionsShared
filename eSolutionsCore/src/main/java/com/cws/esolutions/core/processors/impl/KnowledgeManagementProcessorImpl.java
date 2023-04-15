@@ -28,9 +28,6 @@ package com.cws.esolutions.core.processors.impl;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.Arrays;
 import java.util.Objects;
 import java.sql.Timestamp;
@@ -88,7 +85,13 @@ public class KnowledgeManagementProcessorImpl implements IKnowledgeManagementPro
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid(), userAccount.getUserRole().toString())));
+            accessRequest.setServiceGuid(request.getServiceId());
+            accessRequest.setUserAccount(
+            		new ArrayList<Object>(
+            				Arrays.asList(
+            						userAccount.getGuid(),
+            						userAccount.getUserRole().toString(),
+            						userAccount.getUserGroups())));
 
             if (DEBUG)
             {
@@ -299,7 +302,13 @@ public class KnowledgeManagementProcessorImpl implements IKnowledgeManagementPro
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid(), userAccount.getUserRole().toString())));
+            accessRequest.setServiceGuid(request.getServiceId());
+            accessRequest.setUserAccount(
+            		new ArrayList<Object>(
+            				Arrays.asList(
+            						userAccount.getGuid(),
+            						userAccount.getUserRole().toString(),
+            						userAccount.getUserGroups())));
 
             if (DEBUG)
             {
@@ -502,7 +511,13 @@ public class KnowledgeManagementProcessorImpl implements IKnowledgeManagementPro
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid(), userAccount.getUserRole().toString())));
+            accessRequest.setServiceGuid(request.getServiceId());
+            accessRequest.setUserAccount(
+            		new ArrayList<Object>(
+            				Arrays.asList(
+            						userAccount.getGuid(),
+            						userAccount.getUserRole().toString(),
+            						userAccount.getUserGroups())));
 
             if (DEBUG)
             {
@@ -691,7 +706,13 @@ public class KnowledgeManagementProcessorImpl implements IKnowledgeManagementPro
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid(), userAccount.getUserRole().toString())));
+            accessRequest.setServiceGuid(request.getServiceId());
+            accessRequest.setUserAccount(
+            		new ArrayList<Object>(
+            				Arrays.asList(
+            						userAccount.getGuid(),
+            						userAccount.getUserRole().toString(),
+            						userAccount.getUserGroups())));
 
             if (DEBUG)
             {
@@ -880,7 +901,13 @@ public class KnowledgeManagementProcessorImpl implements IKnowledgeManagementPro
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid(), userAccount.getUserRole().toString())));
+            accessRequest.setServiceGuid(request.getServiceId());
+            accessRequest.setUserAccount(
+            		new ArrayList<Object>(
+            				Arrays.asList(
+            						userAccount.getGuid(),
+            						userAccount.getUserRole().toString(),
+            						userAccount.getUserGroups())));
 
             if (DEBUG)
             {
@@ -972,6 +999,7 @@ public class KnowledgeManagementProcessorImpl implements IKnowledgeManagementPro
             	{
             		try
             		{
+            			UserAccount authorAccount = null;
             			List<Object> authorData = userManager.loadUserAccount(articleData.get(x)[2]);
 
                 		if (DEBUG)
@@ -979,10 +1007,13 @@ public class KnowledgeManagementProcessorImpl implements IKnowledgeManagementPro
                 			DEBUGGER.debug("List<Object>: authorData: {}", authorData);
                 		}
 
-                		UserAccount authorAccount = new UserAccount();
-                    	authorAccount.setGuid((String) authorData.get(1));
-                    	authorAccount.setUsername((String) authorData.get(0));
-                    	authorAccount.setDisplayName((String) authorData.get(11));
+                		if (!(Objects.isNull(authorData)))
+                		{
+                			authorAccount = new UserAccount();
+                			authorAccount.setGuid((String) authorData.get(1));
+                			authorAccount.setUsername((String) authorData.get(0));
+                			authorAccount.setDisplayName((String) authorData.get(11));
+                		}
 
                     	if (DEBUG)
                     	{
@@ -1113,7 +1144,13 @@ public class KnowledgeManagementProcessorImpl implements IKnowledgeManagementPro
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid(), userAccount.getUserRole().toString())));
+            accessRequest.setServiceGuid(request.getServiceId());
+            accessRequest.setUserAccount(
+            		new ArrayList<Object>(
+            				Arrays.asList(
+            						userAccount.getGuid(),
+            						userAccount.getUserRole().toString(),
+            						userAccount.getUserGroups())));
 
             if (DEBUG)
             {
@@ -1216,14 +1253,12 @@ public class KnowledgeManagementProcessorImpl implements IKnowledgeManagementPro
 
 	                	if ((Objects.isNull(authorData)) || (authorData.size() == 0))
 	                	{
-	                		throw new KnowledgeManagementException("No author information could be found. Unable to load article.");
+	                		ERROR_RECORDER.error("No author information could be found. Unable to load article.");
 	                	}
             		}
             		catch (UserManagementException umx)
             		{
             			ERROR_RECORDER.error(umx.getMessage(), umx);
-
-            			throw new KnowledgeManagementException("No author information could be found. Unable to load article.");
             		}
 
                 	UserAccount authorAccount = new UserAccount();
@@ -1353,7 +1388,13 @@ public class KnowledgeManagementProcessorImpl implements IKnowledgeManagementPro
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid(), userAccount.getUserRole().toString())));
+            accessRequest.setServiceGuid(request.getServiceId());
+            accessRequest.setUserAccount(
+            		new ArrayList<Object>(
+            				Arrays.asList(
+            						userAccount.getGuid(),
+            						userAccount.getUserRole().toString(),
+            						userAccount.getUserGroups())));
 
             if (DEBUG)
             {
@@ -1559,7 +1600,13 @@ public class KnowledgeManagementProcessorImpl implements IKnowledgeManagementPro
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid(), userAccount.getUserRole().toString())));
+            accessRequest.setServiceGuid(request.getServiceId());
+            accessRequest.setUserAccount(
+            		new ArrayList<Object>(
+            				Arrays.asList(
+            						userAccount.getGuid(),
+            						userAccount.getUserRole().toString(),
+            						userAccount.getUserGroups())));
 
             if (DEBUG)
             {
@@ -1671,19 +1718,17 @@ public class KnowledgeManagementProcessorImpl implements IKnowledgeManagementPro
             		DEBUGGER.debug("reviewData: {}", approveData);
             	}
 
-            	authorAccount = new UserAccount();
-            	authorAccount.setGuid((String) authorData.get(1));
-            	authorAccount.setUsername((String) authorData.get(0));
-            	authorAccount.setDisplayName((String) authorData.get(11));
-
-            	if (DEBUG)
+            	if (!(Objects.isNull(authorData) || (authorData.size() != 0)))
             	{
-            		DEBUGGER.debug("UserAccount: authorAccount: {}", authorAccount);
-            	}
+            		authorAccount = new UserAccount();
+            		authorAccount.setGuid((String) authorData.get(1));
+            		authorAccount.setUsername((String) authorData.get(0));
+            		authorAccount.setDisplayName((String) authorData.get(11));
 
-            	if ((Objects.isNull(authorData)) || (authorData.size() == 0))
-            	{
-            		throw new KnowledgeManagementException("No author information could be found. Unable to load article.");
+                	if (DEBUG)
+                	{
+                		DEBUGGER.debug("UserAccount: authorAccount: {}", authorAccount);
+                	}
             	}
 
             	if (!(Objects.isNull(modifyData) || (modifyData.size() != 0)))
@@ -1860,7 +1905,13 @@ public class KnowledgeManagementProcessorImpl implements IKnowledgeManagementPro
         {
             // this will require admin and service authorization
             AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setUserAccount(new ArrayList<String>(Arrays.asList(userAccount.getGuid(), userAccount.getUserRole().toString())));
+            accessRequest.setServiceGuid(request.getServiceId());
+            accessRequest.setUserAccount(
+            		new ArrayList<Object>(
+            				Arrays.asList(
+            						userAccount.getGuid(),
+            						userAccount.getUserRole().toString(),
+            						userAccount.getUserGroups())));
 
             if (DEBUG)
             {

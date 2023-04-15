@@ -39,6 +39,7 @@ import com.cws.esolutions.security.SecurityServiceConstants;
  */
 public class AccountChangeRequest implements Serializable
 {
+	private String serviceId = null;
 	private boolean isReset = false;
     private String applicationId = null;
     private UserAccount requestor = null;
@@ -53,6 +54,19 @@ public class AccountChangeRequest implements Serializable
 
     private static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
+
+    public final void setServiceId(final String value)
+    {
+        final String methodName = AccountChangeRequest.CNAME + "#setServiceId(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.serviceId = value;
+    }
 
     public final void setHostInfo(final RequestHostInfo value)
     {
@@ -156,6 +170,19 @@ public class AccountChangeRequest implements Serializable
         }
 
         this.changeData = value;
+    }
+
+    public final String getServiceId()
+    {
+        final String methodName = AccountChangeRequest.CNAME + "#getServiceId()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.serviceId);
+        }
+
+        return this.serviceId;
     }
 
     public final RequestHostInfo getHostInfo()

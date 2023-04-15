@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package com.cws.esolutions.security.processors.impl;
-import java.util.ArrayList;
-import java.util.Arrays;
 /*
  * Project: eSolutionsSecurity
  * Package: com.cws.esolutions.security.processors.impl
@@ -29,21 +27,26 @@ import java.util.Arrays;
  */
 import java.util.Date;
 import java.util.List;
+import java.util.Arrays;
 import java.util.Objects;
+import java.util.ArrayList;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+
 import org.apache.commons.lang3.StringUtils;
 
+import com.cws.esolutions.security.dto.UserGroup;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.enums.SecurityUserRole;
 import com.cws.esolutions.security.processors.enums.SaltType;
 import com.cws.esolutions.utility.securityutils.PasswordUtils;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
+import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.exception.SecurityServiceException;
 import com.cws.esolutions.security.processors.dto.AuthenticationRequest;
 import com.cws.esolutions.security.processors.dto.AuthenticationResponse;
-import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.utility.securityutils.processors.dto.AuditEntry;
 import com.cws.esolutions.utility.securityutils.processors.enums.AuditType;
 import com.cws.esolutions.utility.securityutils.processors.dto.AuditRequest;
@@ -192,8 +195,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 	            	String tokenValue = (String) userObject.get(1);
 	            	String tokenSalt = PasswordUtils.returnGeneratedSalt(secConfig.getRandomGenerator(), secConfig.getSaltLength()); // salt value for auth token
 	            	String authToken = PasswordUtils.encryptText(tokenValue.toCharArray(), tokenSalt,
-	                        secConfig.getSecretKeyAlgorithm(),
-	                        secConfig.getIterations(), secConfig.getKeyLength(),
+	                        secConfig.getSecretKeyAlgorithm(), secConfig.getIterations(), secConfig.getKeyLength(),
 	                        sysConfig.getEncoding());
 
 	            	if (DEBUG)
@@ -217,22 +219,58 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 	            		throw new AuthenticationException("The authentication process failed. Please review logs.");
 	            	}
 
-	            	userAccount.setGuid((String) userObject.get(1)); // UID
-		            userAccount.setUsername((String) userObject.get(0)); // CN
-		            userAccount.setUserRole(SecurityUserRole.valueOf((String) userObject.get(2))); // USER_ROLE
-		            userAccount.setFailedCount((Integer) userObject.get(3)); // FAILEDCOUNT
-		            userAccount.setLastLogin((Date) userObject.get(4)); // LAST LOGON
-		            userAccount.setSurname((String) userObject.get(5)); // SURNAME
-		            userAccount.setGivenName((String) userObject.get(6)); // GIVEN NAME
-		            userAccount.setExpiryDate((Date) userObject.get(7)); // EXPIRY_DATE
-		            userAccount.setSuspended((Boolean) userObject.get(8));  // SUSPENDED
-		            userAccount.setDisplayName((String) userObject.get(11)); // DISPLAYNAME
-		            userAccount.setEmailAddr((String) userObject.get(13)); // EMAIL
-		            userAccount.setPagerNumber((String) userObject.get((14)));
-		            userAccount.setTelephoneNumber((String) userObject.get(15));
-		            userAccount.setAuthToken(authToken);
-		            userAccount.setSessionId(authSec.getSessionId());
-		
+	            	List<UserGroup> userGroups = null;
+
+	            	if (!(Objects.isNull(userObject.get(13))))
+	            	{
+		            	String[] groupList = userManager.loadUserGroups((String) userObject.get(1)).split(",");
+
+		            	if (DEBUG)
+		            	{
+		            		DEBUGGER.debug("List<String[]: groupList: {}", (Object) groupList);
+		            	}
+
+		            	userGroups = new ArrayList<UserGroup>();
+
+		            	if (!(Objects.isNull(userGroups)));
+		            	{
+			            	for (String str : groupList)
+			            	{
+			            		if (DEBUG)
+			            		{
+			            			DEBUGGER.debug("String[]: str: {}", (Object) str);
+			            		}
+
+			            		UserGroup userGroup = new UserGroup();
+			            		userGroup.setGuid(str);
+
+			            		if (DEBUG)
+			            		{
+			            			DEBUGGER.debug("UserGroup: userGroup: {}", userGroup);
+			            		}
+
+			            		userGroups.add(userGroup);
+			            	}
+		            	}
+	            	}
+
+	            	userAccount.setUsername((String) userObject.get(0));
+                    userAccount.setGuid((String) userObject.get(1));
+                    userAccount.setUserRole(SecurityUserRole.valueOf((String) userObject.get(2)));
+                    userAccount.setFailedCount(((Objects.isNull(userObject.get(9))) ? 0 : (Integer) userObject.get(3)));
+                    userAccount.setLastLogin(((Objects.isNull(userObject.get(4))) ? new Date(System.currentTimeMillis()) : new Date(((Timestamp) userObject.get(4)).getTime()))); // fix
+                    userAccount.setSurname((String) userObject.get(5));
+                    userAccount.setGivenName((String) userObject.get(6));
+                    userAccount.setExpiryDate(((Objects.isNull(userObject.get(7))) ? new Date(System.currentTimeMillis()) : new Date(((Timestamp) userObject.get(7)).getTime()))); // fix
+                    userAccount.setSuspended(((Objects.isNull(userObject.get(8))) ? Boolean.FALSE : (Boolean) userObject.get(8)));
+                    userAccount.setDisplayName((String) userObject.get(11));
+                    userAccount.setAcceptedTerms((Boolean) userObject.get(12));
+                    userAccount.setEmailAddr((String) userObject.get(14));
+                    userAccount.setTelephoneNumber((String) userObject.get(15));
+                    userAccount.setPagerNumber((String) userObject.get(16));
+                    userAccount.setUserGroups(userGroups);
+                    userAccount.setAuthToken(authToken);
+
 		            if (DEBUG)
 		            {
 		                DEBUGGER.debug("UserAccount: {}", userAccount);
@@ -356,7 +394,14 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 
         try
         {
-        	authenticator.performLogoff(authUser.getGuid(), authUser.getUsername(), authUser.getAuthToken());
+        	String tokenSalt = userSec.getUserSalt(authUser.getGuid(), SaltType.AUTHTOKEN.name());
+
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("String: tokenSalt: {}", tokenSalt);
+        	}
+
+        	authenticator.performLogoff(authUser.getGuid(), authUser.getUsername(), tokenSalt, authUser.getAuthToken());
 
         	response.setRequestStatus(SecurityRequestStatus.SUCCESS);
 
@@ -371,6 +416,12 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 
             throw new AuthenticationException(ssx.getMessage(), ssx);
         }
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new AuthenticationException(sqx.getMessage(), sqx);
+		}
         finally
         {
         	if (secConfig.getPerformAudit())

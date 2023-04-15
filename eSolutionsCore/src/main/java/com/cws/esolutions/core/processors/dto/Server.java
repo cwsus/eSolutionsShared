@@ -54,14 +54,12 @@ public class Server implements Serializable
     private Date onlineDate = null;
     private Date offlineDate = null;
     private String virtualId = null;
-    private Platform platform = null;
     private String serverGuid = null;
     private String natAddress = null;
     private String bkHostName = null;
     private String serverRack = null;
     private String domainName = null;
     private Server owningDmgr = null;
-    private String datacenter = null;
     private String serverModel = null;
     private String nasHostName = null;
     private String bkIpAddress = null;
@@ -74,6 +72,7 @@ public class Server implements Serializable
     private String mgmtIpAddress = null;
     private String serverComments = null;
     private ServerType serverType = null;
+    private Datacenter datacenter = null;
     private ServerStatus serverStatus = null;
     private ServiceRegion serverRegion = null;
     private UserAccount assignedEngineer = null;
@@ -85,9 +84,9 @@ public class Server implements Serializable
     private static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
-    public final void setDatacenter(final String value)
+    public final void setDatacenter(final Datacenter value)
     {
-        final String methodName = Server.CNAME + "#setDatacenter(final String value)";
+        final String methodName = Server.CNAME + "#setDatacenter(final Datacenter value)";
 
         if (DEBUG)
         {
@@ -475,19 +474,6 @@ public class Server implements Serializable
         this.networkPartition = value;
     }
 
-    public final void setPlatform(final Platform value)
-    {
-        final String methodName = Server.CNAME + "#setPlatform(final Platform value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.platform = value;
-    }
-
     public final void setOnlineDate(final Date value)
     {
         final String methodName = Server.CNAME + "#setOnlineDate(final Date value)";
@@ -527,7 +513,7 @@ public class Server implements Serializable
         this.domain = value;
     }
 
-    public final String getDatacenter()
+    public final Datacenter getDatacenter()
     {
         final String methodName = Server.CNAME + "#getDatacenter()";
 
@@ -915,19 +901,6 @@ public class Server implements Serializable
         }
 
         return this.networkPartition;
-    }
-
-    public final Platform getPlatform()
-    {
-        final String methodName = Server.CNAME + "#getPlatform()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.platform);
-        }
-
-        return this.platform;
     }
 
     public final Date getOnlineDate()

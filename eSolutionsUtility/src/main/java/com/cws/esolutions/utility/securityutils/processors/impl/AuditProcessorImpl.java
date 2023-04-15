@@ -38,10 +38,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import com.cws.esolutions.utility.securityutils.processors.dto.AuditEntry;
+import com.cws.esolutions.utility.securityutils.processors.enums.AuditType;
 import com.cws.esolutions.utility.securityutils.processors.dto.AuditRequest;
 import com.cws.esolutions.utility.securityutils.processors.dto.AuditResponse;
 import com.cws.esolutions.utility.securityutils.processors.enums.AuditRequestStatus;
-import com.cws.esolutions.utility.securityutils.processors.enums.AuditType;
 import com.cws.esolutions.utility.securityutils.processors.interfaces.IAuditProcessor;
 import com.cws.esolutions.utility.securityutils.processors.exception.AuditServiceException;
 /**

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 package com.cws.esolutions.utility.services.impl;
+import java.sql.SQLException;
 /*
  * Project: eSolutionsSecurity
  * Package: com.cws.esolutions.security.services.impl
@@ -54,29 +55,69 @@ public class AccessControlServiceImpl implements IAccessControlService
             DEBUGGER.debug("AccessControlServiceRequest: {}", request);
         }
 
-        List<String> accountData = request.getUserAccount();
+        boolean isAuthorized = false;
+        List<Object> accountData = request.getUserAccount();
 
         if (DEBUG)
         {
         	DEBUGGER.debug("UserAccount: {}", accountData);
         }
 
-        // TODO
-        if (StringUtils.equals(accountData.get(1), "SITE_ADMIN"))
+        try
         {
-        	response.setIsUserAuthorized(Boolean.TRUE);
-        }
-        else
-        {
-        	for (String group : accountData.get(2).split(","))
-        	{
-        		if (DEBUG)
-        		{
-        			DEBUGGER.debug("String: group: {}", group);
-        		}
+	        if (StringUtils.equals((String) accountData.get(1), "SITE_ADMIN"))
+	        {
+	        	response.setIsUserAuthorized(Boolean.TRUE);
+	        }
+	        else
+	        {
+	        	boolean isEnabled = dao.isGroupEnabled(request.getServiceGuid());
 
-        		
-        	}
+	        	if (DEBUG)
+	        	{
+	        		DEBUGGER.debug("isEnabled: {}", isEnabled);
+	        	}
+
+	        	if (isEnabled)
+	        	{
+	        		String[] userGroups = dao.getUserGroups((String) accountData.get(0)).split(",");
+
+	        		if (DEBUG)
+	        		{
+	        			DEBUGGER.debug("List<String>: userGroups: {}", (Object) userGroups);
+	        		}
+
+	        		for (String group : userGroups)
+	        		{
+	        			if (DEBUG)
+	        			{
+	        				DEBUGGER.debug("String: group: {}", group);
+	        			}
+
+	        			isAuthorized = StringUtils.equals(request.getServiceGuid(), group.trim());
+
+	        			if (DEBUG)
+	        			{
+	        				DEBUGGER.debug("isAuthorized: {}", isAuthorized);
+	        			}
+
+	        			if (isAuthorized)
+	        			{
+	        				response.setIsUserAuthorized(isAuthorized);
+
+	        				break;
+	        			}
+	        		}
+	        	}
+	        	else
+	        	{
+	        		response.setIsUserAuthorized(Boolean.FALSE);
+	        	}
+	        }
+        }
+        catch (SQLException sqx)
+        {
+        	ERROR_RECORDER.error(sqx.getMessage(), sqx);
         }
         
         return response;

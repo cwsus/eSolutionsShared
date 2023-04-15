@@ -76,7 +76,7 @@ public class UserSecurityInformationDAOFactory
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("SQLUserSecurityInformationDAOImpl: {}", userSecDAO);
+                    DEBUGGER.debug("AccessControlServiceDAOImpl: {}", userSecDAO);
                 }
             }
             catch (final InstantiationException ix)
