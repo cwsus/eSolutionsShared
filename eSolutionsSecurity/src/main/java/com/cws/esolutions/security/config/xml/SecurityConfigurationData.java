@@ -32,10 +32,10 @@ import java.lang.reflect.Field;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.commons.lang3.StringUtils;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlRootElement;
-import jakarta.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlAccessorType;
 
 import com.cws.esolutions.security.SecurityServiceConstants;
 /**
@@ -47,12 +47,9 @@ import com.cws.esolutions.security.SecurityServiceConstants;
 @XmlAccessorType(XmlAccessType.NONE)
 public final class SecurityConfigurationData
 {
-    private KeyConfig keyConfig = null;
     private SystemConfig systemConfig = null;
-    private CertificateConfig certConfig = null;
     private SecurityConfig securityConfig = null;
     private ResourceConfig resourceConfig = null;
-    private FileSecurityConfig fileSecurityConfig = null;
 
     private static final String CNAME = SecurityConfigurationData.class.getName();
 
@@ -98,45 +95,6 @@ public final class SecurityConfigurationData
         this.resourceConfig = value;
     }
 
-    public final void setKeyConfig(final KeyConfig value)
-    {
-        final String methodName = SecurityConfigurationData.CNAME + "#setKeyConfig(final KeyConfig value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.keyConfig = value;
-    }
-
-    public final void setFileSecurityConfig(final FileSecurityConfig value)
-    {
-        final String methodName = SecurityConfigurationData.CNAME + "#setFileSecurityConfig(final FileSecurityConfig value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.fileSecurityConfig = value;
-    }
-
-    public final void setCertConfig(final CertificateConfig value)
-    {
-        final String methodName = SecurityConfigurationData.CNAME + "#setCertConfig(final CertificateConfig value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.certConfig = value;
-    }
-
     @XmlElement(name = "system-config")
     public final SystemConfig getSystemConfig()
     {
@@ -177,128 +135,6 @@ public final class SecurityConfigurationData
         }
 
         return this.resourceConfig;
-    }
-
-    @XmlElement(name = "key-config")
-    public final KeyConfig getKeyConfig()
-    {
-        final String methodName = SecurityConfigurationData.CNAME + "#getKeyConfig()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.keyConfig);
-        }
-
-        return this.keyConfig;
-    }
-
-    @XmlElement(name = "file-security-config")
-    public final FileSecurityConfig getFileSecurityConfig()
-    {
-        final String methodName = SecurityConfigurationData.CNAME + "#getFileSecurityConfig()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.fileSecurityConfig);
-        }
-
-        return this.fileSecurityConfig;
-    }
-
-    @XmlElement(name = "certificate-config")
-    public final CertificateConfig getCertConfig()
-    {
-        final String methodName = SecurityConfigurationData.CNAME + "#getCertConfig()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.certConfig);
-        }
-
-        return this.certConfig;
-    }
-
-    public static final String expandEnvVars(final String value)
-    {
-        final String methodName = SecurityConfigurationData.CNAME + "#expandEnvVars(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        String returnValue = null;
-
-        if (!(StringUtils.contains(value, "$")))
-        {
-            return null;
-        }
-
-        final Properties sysProps = System.getProperties();
-        final Map<String, String> envMap = System.getenv();
-        final String text = StringUtils.replaceEachRepeatedly(value.split("=")[1].trim(), new String[] {"${", "}" }, new String[] { "", "" }).trim();
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("Properties sysProps: {}", sysProps);
-            DEBUGGER.debug("Map<String, String> envMap: {}", envMap);
-            DEBUGGER.debug("String text: {}", text);
-        }
-
-        for (Entry<Object, Object> property : sysProps.entrySet())
-        {
-            if (DEBUG)
-            {
-                DEBUGGER.debug("Entry<Object, Object> property: {}", property);
-            }
-
-            String key = (String) property.getKey();
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("String key: {}", key);
-            }
-
-            if (StringUtils.equals(key.trim(), text))
-            {
-                returnValue = sysProps.getProperty(key.trim());
-
-                break;
-            }
-        }
-
-        for (Entry<String, String> entry : envMap.entrySet())
-        {
-            if (DEBUG)
-            {
-                DEBUGGER.debug("Entry<String, String> entry: {}", entry);
-            }
-
-            String key = entry.getKey();
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("String key: {}", key);
-            }
-
-            if (StringUtils.equals(key.trim(), text))
-            {
-                returnValue = entry.getValue();
-
-                break;
-            }
-        }
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("String returnValue: {}", returnValue);
-        }
-
-        return returnValue;
     }
 
     @Override

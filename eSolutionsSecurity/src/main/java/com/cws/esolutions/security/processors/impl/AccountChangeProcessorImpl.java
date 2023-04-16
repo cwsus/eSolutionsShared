@@ -28,31 +28,25 @@ package com.cws.esolutions.security.processors.impl;
 import java.util.Date;
 import java.util.List;
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.Calendar;
 import java.util.ArrayList;
-import java.security.KeyPair;
 import java.sql.SQLException;
 import org.apache.commons.lang3.StringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.security.config.xml.KeyConfig;
 import com.cws.esolutions.security.processors.enums.SaltType;
 import com.cws.esolutions.utility.securityutils.PasswordUtils;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
-import com.cws.esolutions.security.processors.dto.AccountChangeData;
-import com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager;
-import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
+import com.cws.esolutions.security.processors.dto.AccountChangeData;
+import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.processors.dto.AccountChangeRequest;
 import com.cws.esolutions.security.processors.dto.AccountChangeResponse;
 import com.cws.esolutions.utility.securityutils.processors.dto.AuditEntry;
 import com.cws.esolutions.utility.securityutils.processors.enums.AuditType;
 import com.cws.esolutions.utility.securityutils.processors.dto.AuditRequest;
-import com.cws.esolutions.security.dao.keymgmt.factory.KeyManagementFactory;
 import com.cws.esolutions.security.processors.exception.AccountChangeException;
-import com.cws.esolutions.security.dao.keymgmt.exception.KeyManagementException;
 import com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
 import com.cws.esolutions.utility.securityutils.processors.exception.AuditServiceException;
@@ -634,148 +628,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                 {
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setAuditType(AuditType.CHANGESECURITY);
-                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
-                    auditEntry.setSessionId(requestor.getSessionId());
-                    auditEntry.setUserGuid(requestor.getGuid());
-                    auditEntry.setUserName(requestor.getUsername());
-                    auditEntry.setUserRole(requestor.getUserRole().toString());
-                    auditEntry.setAuthorized(Boolean.TRUE);
-                    auditEntry.setApplicationId(request.getApplicationId());
-                    auditEntry.setApplicationName(request.getApplicationName());
-    
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                    }
-    
-                    List<String> auditHostInfo = new ArrayList<String>(
-                    		Arrays.asList(
-                    				reqInfo.getHostAddress(),
-                    				reqInfo.getHostName()));
-
-                    if (DEBUG)
-                    {
-                    	DEBUGGER.debug("List<String>: {}", auditHostInfo);
-                    }
-
-                    AuditRequest auditRequest = new AuditRequest();
-                    auditRequest.setAuditEntry(auditEntry);
-                    auditRequest.setHostInfo(auditHostInfo);
-    
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                    }
-
-                    auditor.auditRequest(auditRequest);
-                }
-                catch (final AuditServiceException asx)
-                {
-                    ERROR_RECORDER.error(asx.getMessage(), asx);
-                }
-            }
-        }
-
-        return response;
-    }
-
-    /**
-     * @see com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor#changeUserKeys(com.cws.esolutions.security.processors.dto.AccountChangeRequest)
-     */
-    public AccountChangeResponse changeUserKeys(final AccountChangeRequest request) throws AccountChangeException
-    {
-        final String methodName = AccountChangeProcessorImpl.CNAME + "#changeUserKeys(final AccountChangeRequest request) throws AccountChangeException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("AccountChangeRequest: {}", request);
-        }
-
-        AccountChangeResponse response = new AccountChangeResponse();
-
-        final RequestHostInfo reqInfo = request.getHostInfo();
-        final UserAccount userAccount = request.getUserAccount();
-        final UserAccount requestor = request.getRequestor();
-        final KeyConfig keyConfig = secBean.getConfigData().getKeyConfig();
-        final KeyManager keyManager = KeyManagementFactory.getKeyManager(keyConfig.getKeyManager());
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-            DEBUGGER.debug("UserAccount: {}", userAccount);
-            DEBUGGER.debug("UserAccount: {}", requestor);
-            DEBUGGER.debug("KeyConfig: {}", keyConfig);
-            DEBUGGER.debug("KeyManager: {}", keyManager);
-        }
-
-        if (!(StringUtils.equals(userAccount.getGuid(), requestor.getGuid())))
-        {
-            // requesting user is not the same as the user being reset. authorize
-            response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
-
-            return response;
-        }
-
-        try
-        {
-        	KeyPair keyPair = null;
-
-        	// delete the existing keys
-        	try
-        	{
-        		keyPair = keyManager.returnKeys(userAccount.getGuid());
-        	}
-        	catch (KeyManagementException kmx) {} // do nothing with it, we dont care
-
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("KeyPair: {}", keyPair);
-        	}
-
-        	if (!(Objects.isNull(keyPair)))
-        	{
-        		boolean keysRemoved = keyManager.removeKeys(userAccount.getGuid());
-
-	            if (DEBUG)
-	            {
-	                DEBUGGER.debug("keysRemoved: {}", keysRemoved);
-	            }
-        	}
-
-            boolean keysAdded = keyManager.createKeys(userAccount.getGuid());
-
-            if (DEBUG)
-            {
-            	DEBUGGER.debug("keysAdded: {}", keysAdded);
-            }
-
-            if (keysAdded)
-            {
-            	response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-            }
-            else
-            {
-            	response.setRequestStatus(SecurityRequestStatus.FAILURE);
-            }
-        }
-        catch (final KeyManagementException kmx)
-        {
-            ERROR_RECORDER.error(kmx.getMessage(), kmx);
-
-            throw new AccountChangeException(kmx.getMessage(), kmx);
-        }
-        finally
-        {
-            // audit
-            if (secConfig.getPerformAudit())
-            {
-                // audit if a valid account. if not valid we cant audit much,
-                // but we should try anyway. not sure how thats going to work
-                try
-                {
-                    AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setAuditType(AuditType.CHANGEKEYS);
                     auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
                     auditEntry.setSessionId(requestor.getSessionId());
                     auditEntry.setUserGuid(requestor.getGuid());

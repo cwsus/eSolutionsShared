@@ -47,38 +47,6 @@
         <userSecDAO>com.cws.esolutions.security.dao.reference.impl.SQLUserSecurityInformationDAOImpl</userSecDAO>
     </security-config>
 
-    <!-- only required if file-based signing is used. the keys arent used for anything else. -->
-    <key-config>
-        <keyAlgorithm>RSA</keyAlgorithm> <!-- keygen algorithm -->
-        <signatureAlgorithm>SHA512withRSA</signatureAlgorithm>
-        <keySize>4096</keySize> <!-- if algorithm is DSA, this MUST be 1024: http://docs.oracle.com/javase/6/docs/technotes/guides/security/SunProviders.html -->
-        <keyDirectory>/opt/cws/eSolutions/keys</keyDirectory> <!-- this is ONLY required if you're using a file-based keymanager -->
-        <keyManager>com.cws.esolutions.security.dao.keymgmt.impl.FileKeyManager</keyManager>
-    </key-config>
-
-    <certificate-config>
-        <rootDirectory>/opt/cws/eSolutions/certs</rootDirectory>
-        <privateKeyDirectory>/opt/cws/eSolutions/certs/private</privateKeyDirectory>
-        <publicKeyDirectory>/opt/cws/eSolutions/certs/public</publicKeyDirectory>
-        <certificateDirectory>/opt/cws/eSolutions/certs/certificates</certificateDirectory>
-        <csrDirectory>/opt/cws/eSolutions/certs/certreq</csrDirectory>
-        <storeDirectory>/opt/cws/eSolutions/certs/keystores</storeDirectory>
-        <certificateType>X509</certificateType>
-        <certificateAlgorithm>RSA</certificateAlgorithm>
-        <signatureAlgorithm>SHA512withRSA</signatureAlgorithm>
-        <certificateKeySize>2048</certificateKeySize>
-        <rootCertificateName>CWS Root CA v1</rootCertificateName>
-        <intermediateCertificateName>CWS Intermediate CA v1</intermediateCertificateName>
-        <rootCertificateFile>/opt/cws/eSolutions/certs/cacerts/CWS Root CA v1.crt</rootCertificateFile>
-        <intermediateCertificateFile>/opt/cws/eSolutions/certs/cacerts/CWS Intermediate CA v1.crt</intermediateCertificateFile>
-    </certificate-config>
-
-    <!-- only required if file-based signing is used. if this is configured then key-config MUST be configured. -->
-    <file-security-config>
-        <signatureAlgorithm>SHA512withRSA</signatureAlgorithm> <!-- file signature algorithm -->
-        <encryptionAlgorithm>RSA</encryptionAlgorithm> <!-- file encryption algorithm -->
-    </file-security-config>
-
     <resource-config>
         <DataSourceManager>
             <dsName>SecurityDataSource</dsName>

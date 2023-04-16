@@ -30,7 +30,6 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
 import com.cws.esolutions.security.SecurityServiceBean;
-import com.cws.esolutions.security.config.xml.KeyConfig;
 import com.cws.esolutions.security.config.xml.SystemConfig;
 import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.config.xml.SecurityConfig;
@@ -59,7 +58,6 @@ public interface IAccountChangeProcessor
 {
 	static final String CNAME = IAccountChangeProcessor.class.getName();
     static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
-    static final KeyConfig keyConfig = secBean.getConfigData().getKeyConfig();
     static final SystemConfig sysConfig = secBean.getConfigData().getSystemConfig();
     static final IAuditProcessor auditor = (IAuditProcessor) new AuditProcessorImpl();
     static final SecurityConfig secConfig = secBean.getConfigData().getSecurityConfig();
@@ -122,17 +120,4 @@ public interface IAccountChangeProcessor
      * @throws AccountChangeException {@link com.cws.esolutions.security.processors.exception.AccountChangeException} if an exception occurs during processing
      */
     AccountChangeResponse changeUserContact(final AccountChangeRequest request) throws AccountChangeException;
-
-    /**
-     * Allows a provided user to change the security keys used for encryption/signing associated with
-     * their account. When performed, a confirmation email is sent to the email address associated
-     * with the account to advise of success and to ensure that the request was valid.
-     *
-     * @param request - The {@link com.cws.esolutions.security.processors.dto.AccountChangeRequest}
-     * which contains the necessary information to complete the request
-     * @return {@link com.cws.esolutions.security.processors.dto.AccountChangeResponse} containing
-     * response information regarding the request status
-     * @throws AccountChangeException {@link com.cws.esolutions.security.processors.exception.AccountChangeException} if an exception occurs during processing
-     */
-    AccountChangeResponse changeUserKeys(final AccountChangeRequest request) throws AccountChangeException;
 }

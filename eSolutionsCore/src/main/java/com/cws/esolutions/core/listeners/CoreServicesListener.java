@@ -31,11 +31,11 @@ import java.util.HashMap;
 import javax.naming.Context;
 import javax.sql.DataSource;
 import javax.naming.InitialContext;
-import jakarta.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBContext;
 import javax.naming.NamingException;
 import javax.servlet.ServletContext;
-import jakarta.xml.bind.Unmarshaller;
-import jakarta.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.JAXBException;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 

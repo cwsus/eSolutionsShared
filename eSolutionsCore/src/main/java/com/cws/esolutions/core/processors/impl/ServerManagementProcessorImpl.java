@@ -37,7 +37,6 @@ import org.apache.commons.lang3.StringUtils;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.esolutions.core.CoreServicesConstants;
-import com.cws.esolutions.core.processors.dto.Platform;
 import com.cws.esolutions.core.enums.CoreServicesStatus;
 import com.cws.esolutions.core.processors.enums.ServerType;
 import com.cws.esolutions.core.processors.enums.ServerStatus;
@@ -443,7 +442,6 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                             requestServer.getServerStatus().name(),
                             requestServer.getServerRegion().name(),
                             requestServer.getNetworkPartition().name(),
-                            requestServer.getPlatform().getPlatformGuid(),
                             requestServer.getServerType().name(),
                             requestServer.getDomainName(),
                             requestServer.getCpuType(),
@@ -1300,22 +1298,12 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
                 if ((serverData != null) && (serverData.size() != 0))
                 {
-                    Platform platform = new Platform();
-                    platform.setPlatformGuid((String) serverData.get(30));
-                    platform.setPlatformName((String) serverData.get(31));
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("Platform: {}", platform);
-                    }
-
                     Server server = new Server();
                     server.setServerGuid((String) serverData.get(0)); // SYSTEM_GUID
                     server.setOsName((String) serverData.get(1)); // SYSTEM_OSTYPE
                     server.setServerStatus(ServerStatus.valueOf((String) serverData.get(2))); // SYSTEM_STATUS
                     server.setServerRegion(ServiceRegion.valueOf((String) serverData.get(3))); // SYSTEM_REGION
                     server.setNetworkPartition(NetworkPartition.valueOf((String) serverData.get(4))); // NETWORK_PARTITION
-                    server.setPlatform(platform); // datacenter as earlier obtained
                     server.setServerType(ServerType.valueOf((String) serverData.get(5))); // SYSTEM_TYPE
                     server.setDomainName((String) serverData.get(6)); // DOMAIN_NAME
                     server.setCpuType((String) serverData.get(7)); // CPU_TYPE
