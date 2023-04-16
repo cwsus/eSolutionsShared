@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.security.listeners;
+package com.cws.esolutions.security.init;
 /*
  * Project: eSolutionsSecurity
- * Package: com.cws.esolutions.security.listeners
+ * Package: com.cws.esolutions.security.init
  * File: SecurityServiceListener.java
  *
  * History
@@ -39,6 +39,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import org.apache.commons.lang3.StringUtils;
 import javax.servlet.ServletContextListener;
+import javax.servlet.annotation.WebListener;
 
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.SecurityServiceConstants;
@@ -48,6 +49,7 @@ import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
 /**
  * @see javax.servlet.ServletContextListener
  */
+@WebListener
 public class SecurityServiceListener implements ServletContextListener
 {
     private static final String INIT_SYSCONFIG_FILE = "SecurityServiceConfig";

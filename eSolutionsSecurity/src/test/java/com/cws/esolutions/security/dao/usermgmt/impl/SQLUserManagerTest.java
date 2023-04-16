@@ -36,9 +36,9 @@ import org.apache.commons.lang3.RandomStringUtils;
 
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.enums.SecurityUserRole;
+import com.cws.esolutions.security.init.SecurityServiceInitializer;
 import com.cws.esolutions.utility.securityutils.PasswordUtils;
 import com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager;
-import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.security.dao.usermgmt.factory.UserManagerFactory;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
 

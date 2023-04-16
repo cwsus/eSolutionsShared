@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.core.listeners;
+package com.cws.esolutions.core.init;
 /*
  * Project: eSolutionsCore
- * Package: com.cws.esolutions.core.listeners
+ * Package: com.cws.esolutions.core.init
  * File: CoreServiceInitializer.java
  *
  * History

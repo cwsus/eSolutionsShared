@@ -35,9 +35,9 @@ import org.junit.jupiter.api.BeforeAll;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.TestInstance;
 
+import com.cws.esolutions.core.init.CoreServicesInitializer;
 import com.cws.esolutions.core.dao.interfaces.IDatacenterDataDAO;
-import com.cws.esolutions.core.listeners.CoreServicesInitializer;
-import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
+import com.cws.esolutions.security.init.SecurityServiceInitializer;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class DatacenterDAOImplTest

@@ -35,8 +35,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
 
 import com.cws.esolutions.core.dao.interfaces.IKnowledgeDataDAO;
-import com.cws.esolutions.core.listeners.CoreServicesInitializer;
-import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
+import com.cws.esolutions.core.init.CoreServicesInitializer;
+import com.cws.esolutions.security.init.SecurityServiceInitializer;
 /**
  * @see com.cws.esolutions.core.dao.interfaces.IApplicationDataDAO
  * @author cws-khuntly

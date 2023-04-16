@@ -34,8 +34,8 @@ import org.assertj.core.api.Assertions;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import com.cws.esolutions.security.processors.enums.SaltType;
-import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO;
+import com.cws.esolutions.security.init.SecurityServiceInitializer;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class SQLUserSecurityInformationDAOImplTest

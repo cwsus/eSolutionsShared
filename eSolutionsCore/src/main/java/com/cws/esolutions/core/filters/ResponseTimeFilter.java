@@ -39,7 +39,6 @@ import org.apache.logging.log4j.Logger;
 import javax.servlet.annotation.WebFilter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.commons.lang3.StringUtils;
-import javax.servlet.annotation.WebInitParam;
 import javax.servlet.http.HttpServletRequest;
 
 import com.cws.esolutions.core.CoreServicesConstants;
@@ -49,7 +48,7 @@ import com.cws.esolutions.core.processors.enums.ServiceRegion;
  * @version 1.0
  * @see javax.servlet.Filter
  */
-@WebFilter(filterName = "ResponseTimeFilter", urlPatterns = {"/*"}, initParams = @WebInitParam(name = "environment", value = "DEV"))
+@WebFilter(filterName = "ResponseTimeFilter", urlPatterns = {"/*"})
 public class ResponseTimeFilter implements Filter
 {
 	private String environment = null;

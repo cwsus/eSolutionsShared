@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.core.listeners;
+package com.cws.esolutions.core.init;
 /*
  * Project: eSolutionsCore
- * Package: com.cws.esolutions.core.listeners
+ * Package: com.cws.esolutions.core.init
  * File: CoreServiceListener.java
  *
  * History
@@ -38,6 +38,7 @@ import jakarta.xml.bind.Unmarshaller;
 import jakarta.xml.bind.JAXBException;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import javax.servlet.annotation.WebListener;
 
 import com.cws.esolutions.core.CoreServicesBean;
 import com.cws.esolutions.core.CoreServicesConstants;
@@ -49,6 +50,7 @@ import com.cws.esolutions.core.config.xml.CoreConfigurationData;
  * @version 1.0
  * @see javax.servlet.ServletContextListener
  */
+@WebListener
 public class CoreServicesListener implements ServletContextListener
 {
     private static final CoreServicesBean appBean = CoreServicesBean.getInstance();

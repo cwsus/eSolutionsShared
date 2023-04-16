@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.security.listeners;
+package com.cws.esolutions.security.init;
 /*
  * Project: eSolutionsSecurity
- * Package: com.cws.esolutions.security.listeners
+ * Package: com.cws.esolutions.security.init
  * File: SecurityServiceInitializer.java
  *
  * History
