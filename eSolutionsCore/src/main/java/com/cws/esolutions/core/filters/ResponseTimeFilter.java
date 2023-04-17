@@ -27,26 +27,26 @@ package com.cws.esolutions.core.filters;
  */
 import java.io.IOException;
 import javax.naming.Context;
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.FilterConfig;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.ServletException;
 import org.apache.logging.log4j.Logger;
-import javax.servlet.annotation.WebFilter;
+import jakarta.servlet.annotation.WebFilter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.commons.lang3.StringUtils;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import com.cws.esolutions.core.CoreServicesConstants;
 import com.cws.esolutions.core.processors.enums.ServiceRegion;
 /**
  * @author cws-khuntly
  * @version 1.0
- * @see javax.servlet.Filter
+ * @see jakarta.servlet.Filter
  */
 @WebFilter(filterName = "ResponseTimeFilter", urlPatterns = {"/*"})
 public class ResponseTimeFilter implements Filter

@@ -28,7 +28,6 @@ package com.cws.esolutions.core.processors.impl;
 import java.util.List;
 import java.util.ArrayList;
 import org.junit.jupiter.api.Test;
-import org.assertj.core.util.Arrays;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.assertj.core.api.Assertions;

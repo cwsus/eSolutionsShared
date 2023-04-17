@@ -30,14 +30,10 @@ import java.util.Objects;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.sql.Connection;
-import javax.naming.Context;
 import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
-import com.cws.esolutions.utility.UtilityConstants;
 import com.cws.esolutions.utility.securityutils.dao.audit.interfaces.IAuditDAO;
 /**
  * @see com.cws.esolutions.security.dao.audit.interfaces.IAuditDAO

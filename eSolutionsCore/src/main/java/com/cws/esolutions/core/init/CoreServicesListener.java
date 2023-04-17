@@ -33,12 +33,12 @@ import javax.sql.DataSource;
 import javax.naming.InitialContext;
 import jakarta.xml.bind.JAXBContext;
 import javax.naming.NamingException;
-import javax.servlet.ServletContext;
+import jakarta.servlet.ServletContext;
 import jakarta.xml.bind.Unmarshaller;
 import jakarta.xml.bind.JAXBException;
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-import javax.servlet.annotation.WebListener;
+import jakarta.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContextListener;
+import jakarta.servlet.annotation.WebListener;
 
 import com.cws.esolutions.core.CoreServicesBean;
 import com.cws.esolutions.core.CoreServicesConstants;
@@ -48,7 +48,7 @@ import com.cws.esolutions.core.config.xml.CoreConfigurationData;
 /**
  * @author cws-khuntly
  * @version 1.0
- * @see javax.servlet.ServletContextListener
+ * @see jakarta.servlet.ServletContextListener
  */
 @WebListener
 public class CoreServicesListener implements ServletContextListener
