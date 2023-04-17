@@ -27,13 +27,13 @@ package com.cws.esolutions.utility.coreutils;
  */
 import java.util.List;
 import java.util.Objects;
-import javax.mail.Session;
-import javax.mail.Message;
-import javax.mail.Transport;
-import javax.mail.MessagingException;
+import jakarta.mail.Session;
+import jakarta.mail.Message;
+import jakarta.mail.Transport;
+import jakarta.mail.MessagingException;
 import org.apache.logging.log4j.Logger;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
+import jakarta.mail.internet.InternetAddress;
 import org.apache.logging.log4j.LogManager;
 import org.apache.commons.lang3.StringUtils;
 
@@ -61,7 +61,7 @@ public final class EmailUtils
      * @param mailConfig - The {@link com.cws.esolutions.core.config.xml.MailConfig} to utilize
      * @param message - The email message
      * @param isWeb - <code>true</code> if this came from a container, <code>false</code> otherwise
-     * @throws MessagingException {@link javax.mail.MessagingException} if an exception occurs sending the message
+     * @throws MessagingException {@link jakarta.mail.MessagingException} if an exception occurs sending the message
      */
     public static final synchronized void sendEmailMessage(final Session mailSession, final List<Object> message) throws MessagingException
     {

@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.cws</groupId>
         <artifactId>cws</artifactId>
-        <version>5.5.4</version>
+        <version>5.5.9</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -65,12 +65,6 @@
             <version>${eSolutionsUtility.version}</version>
             <type>jar</type>
             <scope>provided</scope>
-            <exclusions>
-            	<exclusion>
-            		<groupId>jakarta.mail</groupId>
-            		<artifactId>jakarta.mail-api</artifactId>
-            	</exclusion>
-            </exclusions>
         </dependency>
     </dependencies>
 </project>

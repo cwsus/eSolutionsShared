@@ -37,6 +37,8 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.ServletException;
 import org.apache.logging.log4j.Logger;
 import jakarta.servlet.annotation.WebFilter;
+import jakarta.servlet.annotation.WebInitParam;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.commons.lang3.StringUtils;
 import jakarta.servlet.http.HttpServletRequest;
@@ -48,7 +50,7 @@ import com.cws.esolutions.core.processors.enums.ServiceRegion;
  * @version 1.0
  * @see jakarta.servlet.Filter
  */
-@WebFilter(filterName = "ResponseTimeFilter", urlPatterns = {"/*"})
+@WebFilter(filterName = "ResponseTimeFilter", urlPatterns = {"/*"}, initParams = @WebInitParam(name = "environment", value = "dev"))
 public class ResponseTimeFilter implements Filter
 {
 	private String environment = null;

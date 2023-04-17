@@ -44,9 +44,7 @@ public class CoreServicesBean implements Serializable
     private String hostName = null;
     private CoreConfigurationData configData = null;
     private Map<String, DataSource> dataSources = null;
-
     private static CoreServicesBean instance = null;
-
     private static final long serialVersionUID = -246438369655482396L;
     private static final String CNAME = CoreServicesBean.class.getName();
 
@@ -117,15 +115,15 @@ public class CoreServicesBean implements Serializable
      */
     public final void setOsType(final String value)
     {
-        final String methodName = CoreServicesBean.CNAME + "#setOsType(final String value)";
+            final String methodName = CoreServicesBean.CNAME + "#setOsType(final String value)";
 
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
+            if (DEBUG)
+            {
+                DEBUGGER.debug(methodName);
+                DEBUGGER.debug("Value: {}", value);
+            }
 
-        this.osType = value;
+            this.osType = value;
     }
 
     /**

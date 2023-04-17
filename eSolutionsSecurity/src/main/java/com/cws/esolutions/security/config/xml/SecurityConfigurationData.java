@@ -47,12 +47,9 @@ import com.cws.esolutions.security.SecurityServiceConstants;
 @XmlAccessorType(XmlAccessType.NONE)
 public final class SecurityConfigurationData
 {
-    private KeyConfig keyConfig = null;
     private SystemConfig systemConfig = null;
-    private CertificateConfig certConfig = null;
     private SecurityConfig securityConfig = null;
     private ResourceConfig resourceConfig = null;
-    private FileSecurityConfig fileSecurityConfig = null;
 
     private static final String CNAME = SecurityConfigurationData.class.getName();
 
@@ -98,45 +95,6 @@ public final class SecurityConfigurationData
         this.resourceConfig = value;
     }
 
-    public final void setKeyConfig(final KeyConfig value)
-    {
-        final String methodName = SecurityConfigurationData.CNAME + "#setKeyConfig(final KeyConfig value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.keyConfig = value;
-    }
-
-    public final void setFileSecurityConfig(final FileSecurityConfig value)
-    {
-        final String methodName = SecurityConfigurationData.CNAME + "#setFileSecurityConfig(final FileSecurityConfig value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.fileSecurityConfig = value;
-    }
-
-    public final void setCertConfig(final CertificateConfig value)
-    {
-        final String methodName = SecurityConfigurationData.CNAME + "#setCertConfig(final CertificateConfig value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.certConfig = value;
-    }
-
     @XmlElement(name = "system-config")
     public final SystemConfig getSystemConfig()
     {
@@ -177,48 +135,6 @@ public final class SecurityConfigurationData
         }
 
         return this.resourceConfig;
-    }
-
-    @XmlElement(name = "key-config")
-    public final KeyConfig getKeyConfig()
-    {
-        final String methodName = SecurityConfigurationData.CNAME + "#getKeyConfig()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.keyConfig);
-        }
-
-        return this.keyConfig;
-    }
-
-    @XmlElement(name = "file-security-config")
-    public final FileSecurityConfig getFileSecurityConfig()
-    {
-        final String methodName = SecurityConfigurationData.CNAME + "#getFileSecurityConfig()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.fileSecurityConfig);
-        }
-
-        return this.fileSecurityConfig;
-    }
-
-    @XmlElement(name = "certificate-config")
-    public final CertificateConfig getCertConfig()
-    {
-        final String methodName = SecurityConfigurationData.CNAME + "#getCertConfig()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.certConfig);
-        }
-
-        return this.certConfig;
     }
 
     public static final String expandEnvVars(final String value)
