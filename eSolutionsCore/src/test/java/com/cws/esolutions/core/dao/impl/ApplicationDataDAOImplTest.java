@@ -34,9 +34,9 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.assertj.core.api.Assertions;
 
-import com.cws.esolutions.core.listeners.CoreServicesInitializer;
+import com.cws.esolutions.security.init.SecurityServicesInitializer;
 import com.cws.esolutions.core.dao.interfaces.IApplicationDataDAO;
-import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
+import com.cws.esolutions.core.init.CoreServicesInitializer;
 /**
  * @see com.cws.esolutions.core.dao.interfaces.IApplicationDataDAO
  * @author cws-khuntly
@@ -52,7 +52,7 @@ public class ApplicationDataDAOImplTest
     {
         try
         {
-            SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", true);
+            SecurityServicesInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", true);
             CoreServicesInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "eSolutionsCore/logging/logging.xml", true, true);
         }
         catch (final Exception ex)

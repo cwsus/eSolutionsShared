@@ -33,11 +33,11 @@ import org.junit.jupiter.api.TestInstance;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.enums.SecurityUserRole;
+import com.cws.esolutions.security.init.SecurityServicesInitializer;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.dto.AccountSearchRequest;
 import com.cws.esolutions.security.processors.dto.AccountSearchResponse;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
-import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.security.processors.exception.AccountSearchException;
 import com.cws.esolutions.security.processors.interfaces.IAccountSearchProcessor;
 /**
@@ -54,7 +54,7 @@ class AccountSearchProcessorImplTest
     {
         try
         {
-            SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", true);
+            SecurityServicesInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", true);
         }
         catch (final Exception ex)
         {
@@ -122,6 +122,6 @@ class AccountSearchProcessorImplTest
 
     @AfterAll public void tearDown()
     {
-        SecurityServiceInitializer.shutdown();
+        SecurityServicesInitializer.shutdown();
     }
 }

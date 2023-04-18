@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.security.listeners;
+package com.cws.esolutions.security.init;
 /*
  * Project: eSolutionsSecurity
- * Package: com.cws.esolutions.security.listeners
- * File: SecurityServiceListener.java
+ * Package: com.cws.esolutions.security.init
+ * File: SecurityServicesListener.java
  *
  * History
  *
@@ -39,6 +39,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import org.apache.commons.lang3.StringUtils;
 import javax.servlet.ServletContextListener;
+import javax.servlet.annotation.WebListener;
 
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.SecurityServiceConstants;
@@ -48,7 +49,8 @@ import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
 /**
  * @see javax.servlet.ServletContextListener
  */
-public class SecurityServiceListener implements ServletContextListener
+@WebListener
+public class SecurityServicesListener implements ServletContextListener
 {
     private static final String INIT_SYSCONFIG_FILE = "SecurityServiceConfig";
     private static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
@@ -64,19 +66,19 @@ public class SecurityServiceListener implements ServletContextListener
         SecurityConfigurationData configData = null;
 
         final ServletContext sContext = sContextEvent.getServletContext();
-        final ClassLoader classLoader = SecurityServiceListener.class.getClassLoader();
+        final ClassLoader classLoader = SecurityServicesListener.class.getClassLoader();
 
         try
         {
             if (sContext != null)
             {
-            	if (StringUtils.isBlank(SecurityServiceListener.INIT_SYSCONFIG_FILE))
+            	if (StringUtils.isBlank(SecurityServicesListener.INIT_SYSCONFIG_FILE))
                 {
                     throw new SecurityServiceException("SecurityService: System configuration file location not provided by application. Cannot continue.");
                 }
                 else
                 {
-                	xmlURL = classLoader.getResource(sContext.getInitParameter(SecurityServiceListener.INIT_SYSCONFIG_FILE));
+                	xmlURL = classLoader.getResource(sContext.getInitParameter(SecurityServicesListener.INIT_SYSCONFIG_FILE));
                 }
 
                 if (xmlURL != null)

@@ -33,11 +33,11 @@ import org.junit.jupiter.api.TestInstance;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.enums.SecurityUserRole;
+import com.cws.esolutions.security.init.SecurityServicesInitializer;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
-import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.security.processors.dto.AccountControlRequest;
 import com.cws.esolutions.security.processors.dto.AccountControlResponse;
 import com.cws.esolutions.security.processors.exception.AccountControlException;
@@ -64,7 +64,7 @@ public class AccountControlProcessorImplTest
             userAccount.setUsername("junit");
             userAccount.setUserRole(SecurityUserRole.SITE_ADMIN);
 
-            SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", true);
+            SecurityServicesInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", true);
         }
         catch (final Exception ex)
         {
@@ -275,6 +275,6 @@ public class AccountControlProcessorImplTest
 
     @AfterAll public void tearDown()
     {
-        SecurityServiceInitializer.shutdown();
+        SecurityServicesInitializer.shutdown();
     }
 }

@@ -33,11 +33,11 @@ import org.junit.jupiter.api.TestInstance;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
+import com.cws.esolutions.security.init.SecurityServicesInitializer;
 import com.cws.esolutions.security.processors.dto.AccountChangeData;
 import com.cws.esolutions.security.processors.dto.AccountResetRequest;
 import com.cws.esolutions.security.processors.dto.AccountResetResponse;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
-import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.security.processors.exception.AccountResetException;
 import com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor;
 
@@ -52,7 +52,7 @@ public class AccountResetProcessorImplTest
     {
         try
         {
-            SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", true);
+            SecurityServicesInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", true);
 
             hostInfo = new RequestHostInfo();
             hostInfo.setHostAddress("junit");
@@ -165,6 +165,6 @@ public class AccountResetProcessorImplTest
 
     @AfterAll public void tearDown()
     {
-        SecurityServiceInitializer.shutdown();
+        SecurityServicesInitializer.shutdown();
     }
 }

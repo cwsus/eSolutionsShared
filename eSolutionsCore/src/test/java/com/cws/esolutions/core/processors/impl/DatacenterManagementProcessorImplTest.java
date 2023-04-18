@@ -33,13 +33,13 @@ import org.junit.jupiter.api.TestInstance;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.enums.CoreServicesStatus;
+import com.cws.esolutions.core.init.CoreServicesInitializer;
 import com.cws.esolutions.core.processors.dto.Datacenter;
 import com.cws.esolutions.security.enums.SecurityUserRole;
+import com.cws.esolutions.security.init.SecurityServicesInitializer;
 import com.cws.esolutions.core.processors.enums.ServiceStatus;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
-import com.cws.esolutions.core.listeners.CoreServicesInitializer;
-import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.core.processors.dto.DatacenterManagementRequest;
 import com.cws.esolutions.core.processors.dto.DatacenterManagementResponse;
 import com.cws.esolutions.core.processors.exception.DatacenterManagementException;
@@ -65,7 +65,7 @@ public class DatacenterManagementProcessorImplTest
         
         try
         {
-            SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", false);
+            SecurityServicesInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", false);
             CoreServicesInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "eSolutionsCore/logging/logging.xml", true, true);
         }
         catch (final Exception ex)
@@ -231,7 +231,7 @@ public class DatacenterManagementProcessorImplTest
 
     @AfterAll public void tearDown()
     {
-        SecurityServiceInitializer.shutdown();
+        SecurityServicesInitializer.shutdown();
         CoreServicesInitializer.shutdown();
     }
 }

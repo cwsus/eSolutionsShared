@@ -38,10 +38,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpSession;
 import org.apache.logging.log4j.Logger;
 import javax.servlet.UnavailableException;
+import javax.servlet.annotation.WebFilter;
 import java.util.MissingResourceException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.commons.lang3.StringUtils;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.annotation.WebInitParam;
 import javax.servlet.http.HttpServletResponse;
 
 import com.cws.esolutions.security.dto.UserAccount;
@@ -54,6 +56,7 @@ import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException
 /**
  * @see javax.servlet.Filter
  */
+@WebFilter(filterName = "SessionAuthenticationFilter", urlPatterns = {"/*"}, initParams = @WebInitParam(name = "filter-config", value = "SecurityService/filters/SessionAuthenticationFilter"))
 public class SessionAuthenticationFilter implements Filter
 {
 	private String loginURI = null;

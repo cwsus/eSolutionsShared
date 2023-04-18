@@ -38,8 +38,8 @@ import org.apache.commons.lang3.RandomStringUtils;
 import com.cws.esolutions.core.processors.enums.ServerType;
 import com.cws.esolutions.core.processors.enums.ServiceRegion;
 import com.cws.esolutions.core.processors.enums.ServiceStatus;
-import com.cws.esolutions.core.listeners.CoreServicesInitializer;
 import com.cws.esolutions.core.dao.interfaces.IServerDataDAO;
+import com.cws.esolutions.core.init.CoreServicesInitializer;
 
 public class ServerDataDAOImplTest
 {

@@ -28,7 +28,6 @@ package com.cws.esolutions.core.processors.impl;
 import java.util.List;
 import java.util.ArrayList;
 import org.junit.jupiter.api.Test;
-import org.assertj.core.util.Arrays;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.assertj.core.api.Assertions;
@@ -38,11 +37,11 @@ import com.cws.esolutions.security.dto.UserGroup;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.processors.dto.Article;
 import com.cws.esolutions.core.enums.CoreServicesStatus;
+import com.cws.esolutions.core.init.CoreServicesInitializer;
 import com.cws.esolutions.security.enums.SecurityUserRole;
+import com.cws.esolutions.security.init.SecurityServicesInitializer;
 import com.cws.esolutions.core.processors.enums.ArticleStatus;
-import com.cws.esolutions.core.listeners.CoreServicesInitializer;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
-import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.core.processors.dto.KnowledgeManagementRequest;
 import com.cws.esolutions.core.processors.dto.KnowledgeManagementResponse;
 import com.cws.esolutions.core.processors.exception.KnowledgeManagementException;
@@ -65,7 +64,7 @@ class KnowledgeManagementProcessorImplTest
 	{
         try
         {
-            SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", false);
+            SecurityServicesInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", false);
             CoreServicesInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "eSolutionsCore/logging/logging.xml", true, true);
         }
         catch (final Exception ex)

@@ -27,6 +27,7 @@ package com.cws.esolutions.utility.init;
  */
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import javax.servlet.annotation.WebListener;
 
 import com.cws.esolutions.utility.UtilityBean;
 import com.cws.esolutions.utility.coreutils.DAOInitializer;
@@ -34,6 +35,7 @@ import com.cws.esolutions.utility.exception.UtilityException;
 /**
  * @see jakarta.servlet.ServletContextListener
  */
+@WebListener
 public class UtilityListener implements ServletContextListener
 {
     private static final UtilityBean bean = UtilityBean.getInstance();

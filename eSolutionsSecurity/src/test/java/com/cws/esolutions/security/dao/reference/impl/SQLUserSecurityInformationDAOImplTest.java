@@ -34,8 +34,8 @@ import org.assertj.core.api.Assertions;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import com.cws.esolutions.security.processors.enums.SaltType;
-import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO;
+import com.cws.esolutions.security.init.SecurityServicesInitializer;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class SQLUserSecurityInformationDAOImplTest
@@ -49,7 +49,7 @@ public class SQLUserSecurityInformationDAOImplTest
     {
         try
         {
-            SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", true);
+            SecurityServicesInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", true);
         }
         catch (final Exception e)
         {
@@ -110,6 +110,6 @@ public class SQLUserSecurityInformationDAOImplTest
 
     @AfterAll public void tearDown()
     {
-        SecurityServiceInitializer.shutdown();
+        SecurityServicesInitializer.shutdown();
     }
 }

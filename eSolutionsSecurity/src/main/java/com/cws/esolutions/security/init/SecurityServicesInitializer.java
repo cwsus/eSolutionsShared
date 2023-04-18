@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.security.listeners;
+package com.cws.esolutions.security.init;
 /*
  * Project: eSolutionsSecurity
- * Package: com.cws.esolutions.security.listeners
- * File: SecurityServiceInitializer.java
+ * Package: com.cws.esolutions.security.init
+ * File: SecurityServicesInitializer.java
  *
  * History
  *
@@ -48,7 +48,7 @@ import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
  * @author cws-khuntly
  * @version 1.0
  */
-public class SecurityServiceInitializer
+public class SecurityServicesInitializer
 {
     private static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
 
@@ -69,7 +69,7 @@ public class SecurityServiceInitializer
         Unmarshaller marshaller = null;
         SecurityConfigurationData configData = null;
 
-        final ClassLoader classLoader = SecurityServiceInitializer.class.getClassLoader();
+        final ClassLoader classLoader = SecurityServicesInitializer.class.getClassLoader();
         final String serviceConfig = (StringUtils.isBlank(configFile)) ? System.getProperty("configFile") : configFile;
 
         try
@@ -147,7 +147,7 @@ public class SecurityServiceInitializer
      */
     public static void shutdown()
     {
-        Map<String, DataSource> dsMap = SecurityServiceInitializer.svcBean.getDataSources();
+        Map<String, DataSource> dsMap = SecurityServicesInitializer.svcBean.getDataSources();
 
         try
         {
@@ -166,7 +166,7 @@ public class SecurityServiceInitializer
         }
         catch (final SQLException sqx)
         {
-        	System.err.println("SecurityServiceInitializer#shutdown(): Exception occurred while shutting down: " + sqx.getMessage());
+        	System.err.println("SecurityServicesInitializer#shutdown(): Exception occurred while shutting down: " + sqx.getMessage());
         }
     }
 }

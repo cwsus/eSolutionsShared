@@ -31,8 +31,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.TestInstance;
 
-import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.security.dao.userauth.interfaces.Authenticator;
+import com.cws.esolutions.security.init.SecurityServicesInitializer;
 import com.cws.esolutions.security.dao.userauth.factory.AuthenticatorFactory;
 import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException;
 
@@ -45,7 +45,7 @@ public class SQLAuthenticatorTest
     {
         try
         {
-            SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", true);
+            SecurityServicesInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml", true);
         }
         catch (final Exception e)
         {
@@ -70,6 +70,6 @@ public class SQLAuthenticatorTest
 
     @AfterAll public void tearDown()
     {
-        SecurityServiceInitializer.shutdown();
+        SecurityServicesInitializer.shutdown();
     }
 }
