@@ -391,6 +391,7 @@ public class SQLUserManager implements UserManager
 
                 stmt = sqlConn.prepareStatement("{ CALL getUserByAttribute(?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
                 stmt.setString(1, searchData);
+                System.out.println(stmt);
         	}
 
             if (DEBUG)

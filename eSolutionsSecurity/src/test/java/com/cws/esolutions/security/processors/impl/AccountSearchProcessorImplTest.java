@@ -106,7 +106,7 @@ class AccountSearchProcessorImplTest
         request.setApplicationName("eSolutions");
         request.setHostInfo(hostInfo);
         request.setUserAccount(userAccount);
-        request.setSearchTerms("khuntly");
+        request.setSearchTerms("fuck");
 
         try
         {

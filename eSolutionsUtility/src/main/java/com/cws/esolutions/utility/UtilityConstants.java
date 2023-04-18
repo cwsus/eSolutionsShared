@@ -31,7 +31,7 @@ package com.cws.esolutions.utility;
  */
 public final class UtilityConstants
 {
-	public static final String DS_CONTEXT = "java:comp/env";
+	public static final String DS_CONTEXT = "java:comp/env/";
 
 	// logging
     public static final String DEBUGGER = "UTILITY_DEBUGGER";

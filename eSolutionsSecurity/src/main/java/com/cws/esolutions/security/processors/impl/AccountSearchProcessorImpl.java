@@ -195,12 +195,13 @@ public class AccountSearchProcessorImpl implements IAccountSearchProcessor
         {
             List<String[]> userList = userManager.findUsers(request.getSearchTerms());
 
+            System.out.println(userList);
 	        if (DEBUG)
 	        {
 	        	DEBUGGER.debug("userList: {}", userList);
 	        }
 
-            if ((userList != null) && (userList.size() != 0))
+            if (!(Objects.isNull(userList)) && (userList.size() != 0))
             {
                 for (Object[] userData : userList)
                 {
@@ -243,7 +244,7 @@ public class AccountSearchProcessorImpl implements IAccountSearchProcessor
             }
             else
             {
-            	throw new AccountSearchException("Failed to load account for the given information.");
+            	response.setRequestStatus(SecurityRequestStatus.FAILURE);
             }
         }
         catch (final UserManagementException umx)
