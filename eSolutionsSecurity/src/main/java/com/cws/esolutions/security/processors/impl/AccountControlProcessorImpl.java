@@ -95,33 +95,48 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         try
         {
-            // this will require admin and service authorization
-            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setServiceGuid(request.getServiceId());
-            accessRequest.setUserAccount(
-            		new ArrayList<Object>(
-            				Arrays.asList(
-            						reqAccount.getGuid(),
-            						reqAccount.getUserRole().toString(),
-            						reqAccount.getUserGroups())));
+        	try
+        	{
+	            // this will require admin and service authorization
+	            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+	            accessRequest.setServiceGuid(request.getServiceId());
+	            accessRequest.setUserAccount(
+	            		new ArrayList<Object>(
+	            				Arrays.asList(
+	            						reqAccount.getGuid(),
+	            						reqAccount.getUserRole().toString(),
+	            						reqAccount.getUserGroups())));
+	
+	            if (DEBUG)
+	            {
+	                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+	            }
+	
+	            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+	
+	            if (DEBUG)
+	            {
+	                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+	            }
+	
+	            if (!(accessResponse.getIsUserAuthorized()))
+	            {
+	                // unauthorized
+	                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
 
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+	                return response;
+	            }
             }
+        	catch (AccessControlServiceException acsx)
+        	{
+        		ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
-            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+        		response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
 
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
-            }
-
-            if (!(accessResponse.getIsUserAuthorized()))
-            {
-                // unauthorized
-                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
-
+        		return response;
+			}
+        	finally
+        	{
                 // audit
                 if (secConfig.getPerformAudit())
                 {
@@ -171,9 +186,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                         ERROR_RECORDER.error(asx.getMessage(), asx);
                     }
                 }
-
-                return response;
-            }
+        	}
 
             String userGuid = UUID.randomUUID().toString();
 
@@ -289,12 +302,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             throw new AccountControlException(acx.getMessage(), acx);
         }
-        catch (final AccessControlServiceException acx)
-        {
-            ERROR_RECORDER.error(acx.getMessage(), acx);
-
-            throw new AccountControlException(acx.getMessage(), acx);
-        }
         catch (final UserManagementException umx)
         {
             ERROR_RECORDER.error(umx.getMessage(), umx);
@@ -391,33 +398,48 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         try
         {
-            // this will require admin and service authorization
-            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setServiceGuid(request.getServiceId());
-            accessRequest.setUserAccount(
-            		new ArrayList<Object>(
-            				Arrays.asList(
-            						reqAccount.getGuid(),
-            						reqAccount.getUserRole().toString(),
-            						reqAccount.getUserGroups())));
+        	try
+        	{
+	            // this will require admin and service authorization
+	            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+	            accessRequest.setServiceGuid(request.getServiceId());
+	            accessRequest.setUserAccount(
+	            		new ArrayList<Object>(
+	            				Arrays.asList(
+	            						reqAccount.getGuid(),
+	            						reqAccount.getUserRole().toString(),
+	            						reqAccount.getUserGroups())));
+	
+	            if (DEBUG)
+	            {
+	                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+	            }
+	
+	            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+	
+	            if (DEBUG)
+	            {
+	                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+	            }
+	
+	            if (!(accessResponse.getIsUserAuthorized()))
+	            {
+	                // unauthorized
+	                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
 
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+	                return response;
+	            }
             }
+        	catch (AccessControlServiceException acsx)
+        	{
+        		ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
-            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+        		response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
 
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
-            }
-
-            if (!(accessResponse.getIsUserAuthorized()))
-            {
-                // unauthorized
-                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
-
+        		return response;
+			}
+        	finally
+        	{
                 // audit
                 if (secConfig.getPerformAudit())
                 {
@@ -426,7 +448,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                     try
                     {
                         AuditEntry auditEntry = new AuditEntry();
-                        auditEntry.setAuditType(AuditType.DELETEUSER);
+                        auditEntry.setAuditType(AuditType.CREATEUSER);
                         auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
                         auditEntry.setSessionId(reqAccount.getSessionId());
                         auditEntry.setUserGuid(reqAccount.getGuid());
@@ -440,7 +462,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                         {
                             DEBUGGER.debug("AuditEntry: {}", auditEntry);
                         }
-        
+
                         List<String> auditHostInfo = new ArrayList<String>(
                         		Arrays.asList(
                         				reqInfo.getHostAddress(),
@@ -467,9 +489,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                         ERROR_RECORDER.error(asx.getMessage(), asx);
                     }
                 }
-
-                return response;
-            }
+        	}
 
             // delete userAccount
             boolean isComplete = userManager.removeUserAccount(userAccount.getGuid());
@@ -487,12 +507,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             {
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
             }
-        }
-        catch (final AccessControlServiceException acsx)
-        {
-            ERROR_RECORDER.error(acsx.getMessage(), acsx);
-
-            throw new AccountControlException(acsx.getMessage(), acsx);
         }
         catch (final UserManagementException umx)
         {
@@ -584,33 +598,48 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         try
         {
-            // this will require admin and service authorization
-            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setServiceGuid(request.getServiceId());
-            accessRequest.setUserAccount(
-            		new ArrayList<Object>(
-            				Arrays.asList(
-            						reqAccount.getGuid(),
-            						reqAccount.getUserRole().toString(),
-            						reqAccount.getUserGroups())));
+        	try
+        	{
+	            // this will require admin and service authorization
+	            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+	            accessRequest.setServiceGuid(request.getServiceId());
+	            accessRequest.setUserAccount(
+	            		new ArrayList<Object>(
+	            				Arrays.asList(
+	            						reqAccount.getGuid(),
+	            						reqAccount.getUserRole().toString(),
+	            						reqAccount.getUserGroups())));
+	
+	            if (DEBUG)
+	            {
+	                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+	            }
+	
+	            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+	
+	            if (DEBUG)
+	            {
+	                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+	            }
+	
+	            if (!(accessResponse.getIsUserAuthorized()))
+	            {
+	                // unauthorized
+	                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
 
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+	                return response;
+	            }
             }
+        	catch (AccessControlServiceException acsx)
+        	{
+        		ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
-            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+        		response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
 
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
-            }
-
-            if (!(accessResponse.getIsUserAuthorized()))
-            {
-                // unauthorized
-                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
-
+        		return response;
+			}
+        	finally
+        	{
                 // audit
                 if (secConfig.getPerformAudit())
                 {
@@ -619,7 +648,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                     try
                     {
                         AuditEntry auditEntry = new AuditEntry();
-                        auditEntry.setAuditType(AuditType.SUSPENDUSER);
+                        auditEntry.setAuditType(AuditType.CREATEUSER);
                         auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
                         auditEntry.setSessionId(reqAccount.getSessionId());
                         auditEntry.setUserGuid(reqAccount.getGuid());
@@ -633,7 +662,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                         {
                             DEBUGGER.debug("AuditEntry: {}", auditEntry);
                         }
-        
+
                         List<String> auditHostInfo = new ArrayList<String>(
                         		Arrays.asList(
                         				reqInfo.getHostAddress(),
@@ -660,9 +689,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                         ERROR_RECORDER.error(asx.getMessage(), asx);
                     }
                 }
-
-                return response;
-            }
+        	}
 
             // we will only have a guid here - so we need to load the user
             List<Object> userData = userManager.loadUserAccount(userAccount.getGuid());
@@ -697,12 +724,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
             }
-        }
-        catch (final AccessControlServiceException acsx)
-        {
-            ERROR_RECORDER.error(acsx.getMessage(), acsx);
-
-            throw new AccountControlException(acsx.getMessage(), acsx);
         }
         catch (final UserManagementException umx)
         {
@@ -794,33 +815,48 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         try
         {
-            // this will require admin and service authorization
-            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setServiceGuid(request.getServiceId());
-            accessRequest.setUserAccount(
-            		new ArrayList<Object>(
-            				Arrays.asList(
-            						reqAccount.getGuid(),
-            						reqAccount.getUserRole().toString(),
-            						reqAccount.getUserGroups())));
+        	try
+        	{
+	            // this will require admin and service authorization
+	            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+	            accessRequest.setServiceGuid(request.getServiceId());
+	            accessRequest.setUserAccount(
+	            		new ArrayList<Object>(
+	            				Arrays.asList(
+	            						reqAccount.getGuid(),
+	            						reqAccount.getUserRole().toString(),
+	            						reqAccount.getUserGroups())));
+	
+	            if (DEBUG)
+	            {
+	                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+	            }
+	
+	            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+	
+	            if (DEBUG)
+	            {
+	                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+	            }
+	
+	            if (!(accessResponse.getIsUserAuthorized()))
+	            {
+	                // unauthorized
+	                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
 
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+	                return response;
+	            }
             }
+        	catch (AccessControlServiceException acsx)
+        	{
+        		ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
-            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+        		response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
 
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
-            }
-
-            if (!(accessResponse.getIsUserAuthorized()))
-            {
-                // unauthorized
-                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
-
+        		return response;
+			}
+        	finally
+        	{
                 // audit
                 if (secConfig.getPerformAudit())
                 {
@@ -829,7 +865,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                     try
                     {
                         AuditEntry auditEntry = new AuditEntry();
-                        auditEntry.setAuditType(AuditType.CHANGEROLE);
+                        auditEntry.setAuditType(AuditType.CREATEUSER);
                         auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
                         auditEntry.setSessionId(reqAccount.getSessionId());
                         auditEntry.setUserGuid(reqAccount.getGuid());
@@ -843,7 +879,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                         {
                             DEBUGGER.debug("AuditEntry: {}", auditEntry);
                         }
-        
+
                         List<String> auditHostInfo = new ArrayList<String>(
                         		Arrays.asList(
                         				reqInfo.getHostAddress(),
@@ -870,9 +906,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                         ERROR_RECORDER.error(asx.getMessage(), asx);
                     }
                 }
-
-                return response;
-            }
+        	}
 
             // we will only have a guid here - so we need to load the user
             List<Object> userData = userManager.loadUserAccount(userAccount.getGuid());
@@ -976,12 +1010,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
             }
         }
-        catch (final AccessControlServiceException acsx)
-        {
-            ERROR_RECORDER.error(acsx.getMessage(), acsx);
-
-            throw new AccountControlException(acsx.getMessage(), acsx);
-        }
         catch (final UserManagementException umx)
         {
             ERROR_RECORDER.error(umx.getMessage(), umx);
@@ -1076,33 +1104,48 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         try
         {
-            // this will require admin and service authorization
-            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setServiceGuid(request.getServiceId());
-            accessRequest.setUserAccount(
-            		new ArrayList<Object>(
-            				Arrays.asList(
-            						reqAccount.getGuid(),
-            						reqAccount.getUserRole().toString(),
-            						reqAccount.getUserGroups())));
+        	try
+        	{
+	            // this will require admin and service authorization
+	            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+	            accessRequest.setServiceGuid(request.getServiceId());
+	            accessRequest.setUserAccount(
+	            		new ArrayList<Object>(
+	            				Arrays.asList(
+	            						reqAccount.getGuid(),
+	            						reqAccount.getUserRole().toString(),
+	            						reqAccount.getUserGroups())));
+	
+	            if (DEBUG)
+	            {
+	                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+	            }
+	
+	            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+	
+	            if (DEBUG)
+	            {
+	                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+	            }
+	
+	            if (!(accessResponse.getIsUserAuthorized()))
+	            {
+	                // unauthorized
+	                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
 
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+	                return response;
+	            }
             }
+        	catch (AccessControlServiceException acsx)
+        	{
+        		ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
-            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+        		response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
 
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
-            }
-
-            if (!(accessResponse.getIsUserAuthorized()))
-            {
-                // unauthorized
-                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
-
+        		return response;
+			}
+        	finally
+        	{
                 // audit
                 if (secConfig.getPerformAudit())
                 {
@@ -1111,7 +1154,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                     try
                     {
                         AuditEntry auditEntry = new AuditEntry();
-                        auditEntry.setAuditType(AuditType.CHANGEPASS);
+                        auditEntry.setAuditType(AuditType.CREATEUSER);
                         auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
                         auditEntry.setSessionId(reqAccount.getSessionId());
                         auditEntry.setUserGuid(reqAccount.getGuid());
@@ -1125,7 +1168,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                         {
                             DEBUGGER.debug("AuditEntry: {}", auditEntry);
                         }
-        
+
                         List<String> auditHostInfo = new ArrayList<String>(
                         		Arrays.asList(
                         				reqInfo.getHostAddress(),
@@ -1152,9 +1195,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                         ERROR_RECORDER.error(asx.getMessage(), asx);
                     }
                 }
-
-                return response;
-            }
+        	}
 
             // this is a reset request, so we need to do a few things
             // 1, we need to generate a unique id that we can email off
@@ -1219,12 +1260,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
             }
-        }
-        catch (final AccessControlServiceException acsx)
-        {
-            ERROR_RECORDER.error(acsx.getMessage(), acsx);
-
-            throw new AccountControlException(acsx.getMessage(), acsx);
         }
         catch (final SecurityException sx)
         {
@@ -1322,33 +1357,48 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         try
         {
-            // this will require admin and service authorization
-            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setServiceGuid(request.getServiceId());
-            accessRequest.setUserAccount(
-            		new ArrayList<Object>(
-            				Arrays.asList(
-            						reqAccount.getGuid(),
-            						reqAccount.getUserRole().toString(),
-            						reqAccount.getUserGroups())));
+        	try
+        	{
+	            // this will require admin and service authorization
+	            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+	            accessRequest.setServiceGuid(request.getServiceId());
+	            accessRequest.setUserAccount(
+	            		new ArrayList<Object>(
+	            				Arrays.asList(
+	            						reqAccount.getGuid(),
+	            						reqAccount.getUserRole().toString(),
+	            						reqAccount.getUserGroups())));
+	
+	            if (DEBUG)
+	            {
+	                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+	            }
+	
+	            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+	
+	            if (DEBUG)
+	            {
+	                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+	            }
+	
+	            if (!(accessResponse.getIsUserAuthorized()))
+	            {
+	                // unauthorized
+	                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
 
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+	                return response;
+	            }
             }
+        	catch (AccessControlServiceException acsx)
+        	{
+        		ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
-            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+        		response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
 
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
-            }
-
-            if (!(accessResponse.getIsUserAuthorized()))
-            {
-                // unauthorized
-                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
-
+        		return response;
+			}
+        	finally
+        	{
                 // audit
                 if (secConfig.getPerformAudit())
                 {
@@ -1357,7 +1407,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                     try
                     {
                         AuditEntry auditEntry = new AuditEntry();
-                        auditEntry.setAuditType(AuditType.MODIFYLOCKOUT);
+                        auditEntry.setAuditType(AuditType.CREATEUSER);
                         auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
                         auditEntry.setSessionId(reqAccount.getSessionId());
                         auditEntry.setUserGuid(reqAccount.getGuid());
@@ -1371,7 +1421,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                         {
                             DEBUGGER.debug("AuditEntry: {}", auditEntry);
                         }
-        
+
                         List<String> auditHostInfo = new ArrayList<String>(
                         		Arrays.asList(
                         				reqInfo.getHostAddress(),
@@ -1398,9 +1448,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                         ERROR_RECORDER.error(asx.getMessage(), asx);
                     }
                 }
-
-                return response;
-            }
+        	}
 
             // we will only have a guid here - so we need to load the user
             List<Object> userData = userManager.loadUserAccount(userAccount.getGuid());
@@ -1434,12 +1482,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
             }
-        }
-        catch (final AccessControlServiceException acsx)
-        {
-            ERROR_RECORDER.error(acsx.getMessage(), acsx);
-
-            throw new AccountControlException(acsx.getMessage(), acsx);
         }
         catch (final UserManagementException umx)
         {
@@ -1532,33 +1574,48 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         try
         {
-            // this will require admin and service authorization
-            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setServiceGuid(request.getServiceId());
-            accessRequest.setUserAccount(
-            		new ArrayList<Object>(
-            				Arrays.asList(
-            						reqAccount.getGuid(),
-            						reqAccount.getUserRole().toString(),
-            						reqAccount.getUserGroups())));
+        	try
+        	{
+	            // this will require admin and service authorization
+	            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+	            accessRequest.setServiceGuid(request.getServiceId());
+	            accessRequest.setUserAccount(
+	            		new ArrayList<Object>(
+	            				Arrays.asList(
+	            						reqAccount.getGuid(),
+	            						reqAccount.getUserRole().toString(),
+	            						reqAccount.getUserGroups())));
+	
+	            if (DEBUG)
+	            {
+	                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+	            }
+	
+	            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+	
+	            if (DEBUG)
+	            {
+	                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+	            }
+	
+	            if (!(accessResponse.getIsUserAuthorized()))
+	            {
+	                // unauthorized
+	                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
 
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+	                return response;
+	            }
             }
+        	catch (AccessControlServiceException acsx)
+        	{
+        		ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
-            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+        		response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
 
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
-            }
-
-            if (!(accessResponse.getIsUserAuthorized()))
-            {
-                // unauthorized
-                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
-
+        		return response;
+			}
+        	finally
+        	{
                 // audit
                 if (secConfig.getPerformAudit())
                 {
@@ -1567,13 +1624,13 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                     try
                     {
                         AuditEntry auditEntry = new AuditEntry();
-                        auditEntry.setAuditType(AuditType.LOADACCOUNT);
+                        auditEntry.setAuditType(AuditType.CREATEUSER);
                         auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
                         auditEntry.setSessionId(reqAccount.getSessionId());
                         auditEntry.setUserGuid(reqAccount.getGuid());
                         auditEntry.setUserName(reqAccount.getUsername());
                         auditEntry.setUserRole(reqAccount.getUserRole().toString());
-                        auditEntry.setAuthorized(Boolean.TRUE);
+                        auditEntry.setAuthorized(Boolean.FALSE);
                         auditEntry.setApplicationId(request.getApplicationId());
                         auditEntry.setApplicationName(request.getApplicationName());
         
@@ -1581,7 +1638,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                         {
                             DEBUGGER.debug("AuditEntry: {}", auditEntry);
                         }
-        
+
                         List<String> auditHostInfo = new ArrayList<String>(
                         		Arrays.asList(
                         				reqInfo.getHostAddress(),
@@ -1608,9 +1665,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                         ERROR_RECORDER.error(asx.getMessage(), asx);
                     }
                 }
-
-                return response;
-            }
+        	}
 
             List<Object> userData = userManager.loadUserAccount(userAccount.getGuid());
 
@@ -1658,12 +1713,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             ERROR_RECORDER.error(umx.getMessage(), umx);
 
             throw new AccountControlException(umx.getMessage(), umx);
-        }
-        catch (final AccessControlServiceException acsx)
-        {
-            ERROR_RECORDER.error(acsx.getMessage(), acsx);
-
-            throw new AccountControlException(acsx.getMessage(), acsx);
         }
         finally
         {
@@ -1749,33 +1798,48 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         try
         {
-            // this will require admin and service authorization
-            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setServiceGuid(request.getServiceId());
-            accessRequest.setUserAccount(
-            		new ArrayList<Object>(
-            				Arrays.asList(
-            						reqAccount.getGuid(),
-            						reqAccount.getUserRole().toString(),
-            						reqAccount.getUserGroups())));
+        	try
+        	{
+	            // this will require admin and service authorization
+	            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+	            accessRequest.setServiceGuid(request.getServiceId());
+	            accessRequest.setUserAccount(
+	            		new ArrayList<Object>(
+	            				Arrays.asList(
+	            						reqAccount.getGuid(),
+	            						reqAccount.getUserRole().toString(),
+	            						reqAccount.getUserGroups())));
+	
+	            if (DEBUG)
+	            {
+	                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+	            }
+	
+	            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+	
+	            if (DEBUG)
+	            {
+	                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+	            }
+	
+	            if (!(accessResponse.getIsUserAuthorized()))
+	            {
+	                // unauthorized
+	                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
 
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+	                return response;
+	            }
             }
+        	catch (AccessControlServiceException acsx)
+        	{
+        		ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
-            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+        		response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
 
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
-            }
-
-            if (!(accessResponse.getIsUserAuthorized()))
-            {
-                // unauthorized
-                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
-
+        		return response;
+			}
+        	finally
+        	{
                 // audit
                 if (secConfig.getPerformAudit())
                 {
@@ -1784,7 +1848,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                     try
                     {
                         AuditEntry auditEntry = new AuditEntry();
-                        auditEntry.setAuditType(AuditType.LISTUSERS);
+                        auditEntry.setAuditType(AuditType.CREATEUSER);
                         auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
                         auditEntry.setSessionId(reqAccount.getSessionId());
                         auditEntry.setUserGuid(reqAccount.getGuid());
@@ -1798,7 +1862,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                         {
                             DEBUGGER.debug("AuditEntry: {}", auditEntry);
                         }
-        
+
                         List<String> auditHostInfo = new ArrayList<String>(
                         		Arrays.asList(
                         				reqInfo.getHostAddress(),
@@ -1825,9 +1889,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                         ERROR_RECORDER.error(asx.getMessage(), asx);
                     }
                 }
-
-                return response;
-            }
+        	}
 
             List<Object[]> userList = userManager.listUserAccounts();
 
@@ -1884,12 +1946,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             ERROR_RECORDER.error(umx.getMessage(), umx);
 
             throw new AccountControlException(umx.getMessage(), umx);
-        }
-        catch (final AccessControlServiceException acsx)
-        {
-            ERROR_RECORDER.error(acsx.getMessage(), acsx);
-
-            throw new AccountControlException(acsx.getMessage(), acsx);
         }
         finally
         {
@@ -1980,80 +2036,98 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         try
         {
-            // this will require admin and service authorization
-            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setServiceGuid(request.getServiceId());
-            accessRequest.setUserAccount(
-            		new ArrayList<Object>(
-            				Arrays.asList(
-            						reqAccount.getGuid(),
-            						reqAccount.getUserRole().toString(),
-            						reqAccount.getUserGroups())));
+        	try
+        	{
+	            // this will require admin and service authorization
+	            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+	            accessRequest.setServiceGuid(request.getServiceId());
+	            accessRequest.setUserAccount(
+	            		new ArrayList<Object>(
+	            				Arrays.asList(
+	            						reqAccount.getGuid(),
+	            						reqAccount.getUserRole().toString(),
+	            						reqAccount.getUserGroups())));
+	
+	            if (DEBUG)
+	            {
+	                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+	            }
+	
+	            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+	
+	            if (DEBUG)
+	            {
+	                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+	            }
+	
+	            if (!(accessResponse.getIsUserAuthorized()))
+	            {
+	                // unauthorized
+	                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
 
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+	                return response;
+	            }
             }
+        	catch (AccessControlServiceException acsx)
+        	{
+        		ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
-            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+        		response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
 
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
-            }
-
-            if (!(accessResponse.getIsUserAuthorized()))
-            {
-                // unauthorized
-                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
-
+        		return response;
+			}
+        	finally
+        	{
                 // audit
-                try
+                if (secConfig.getPerformAudit())
                 {
-                    AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setAuditType(AuditType.GETAUDITENTRIES);
-                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
-                    auditEntry.setSessionId(userAccount.getSessionId());
-                    auditEntry.setUserGuid(userAccount.getGuid());
-                    auditEntry.setUserName(userAccount.getUsername());
-                    auditEntry.setUserRole(userAccount.getUserRole().toString());
-                    auditEntry.setAuthorized(Boolean.FALSE);
-                    auditEntry.setApplicationId(request.getApplicationId());
-                    auditEntry.setApplicationName(request.getApplicationName());
-    
-                    if (DEBUG)
+                    // audit if a valid account. if not valid we cant audit much,
+                    // but we should try anyway. not sure how thats going to work
+                    try
                     {
-                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                    }
-    
-                    List<String> auditHostInfo = new ArrayList<String>(
-                    		Arrays.asList(
-                    				reqInfo.getHostAddress(),
-                    				reqInfo.getHostName()));
+                        AuditEntry auditEntry = new AuditEntry();
+                        auditEntry.setAuditType(AuditType.CREATEUSER);
+                        auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                        auditEntry.setSessionId(reqAccount.getSessionId());
+                        auditEntry.setUserGuid(reqAccount.getGuid());
+                        auditEntry.setUserName(reqAccount.getUsername());
+                        auditEntry.setUserRole(reqAccount.getUserRole().toString());
+                        auditEntry.setAuthorized(Boolean.FALSE);
+                        auditEntry.setApplicationId(request.getApplicationId());
+                        auditEntry.setApplicationName(request.getApplicationName());
+        
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                        }
 
-                    if (DEBUG)
+                        List<String> auditHostInfo = new ArrayList<String>(
+                        		Arrays.asList(
+                        				reqInfo.getHostAddress(),
+                        				reqInfo.getHostName()));
+
+                        if (DEBUG)
+                        {
+                        	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                        }
+
+                        AuditRequest auditRequest = new AuditRequest();
+                        auditRequest.setAuditEntry(auditEntry);
+                        auditRequest.setHostInfo(auditHostInfo);
+        
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                        }
+
+                        auditor.auditRequest(auditRequest);
+                    }
+                    catch (final AuditServiceException asx)
                     {
-                    	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                        ERROR_RECORDER.error(asx.getMessage(), asx);
                     }
-
-                    AuditRequest auditRequest = new AuditRequest();
-                    auditRequest.setAuditEntry(auditEntry);
-                    auditRequest.setHostInfo(auditHostInfo);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                    }
-
-                    auditor.auditRequest(auditRequest);
                 }
-                catch (final AuditServiceException asx)
-                {
-                    ERROR_RECORDER.error(asx.getMessage(), asx);
-                }
-
-                return response;
-            }
+        	}
 
             AuditEntry auditEntry = new AuditEntry();
             auditEntry.setUserGuid(reqAccount.getGuid());
@@ -2106,12 +2180,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             throw new AccountControlException(asx.getMessage(), asx);
         }
-        catch (AccessControlServiceException acsx)
-        {
-            ERROR_RECORDER.error(acsx.getMessage(), acsx);
-
-            throw new AccountControlException(acsx.getMessage(), acsx);
-		}
         finally
         {
         	if (secConfig.getPerformAudit())

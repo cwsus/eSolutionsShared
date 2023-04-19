@@ -17,7 +17,7 @@ package com.cws.esolutions.security;
 /*
  * Project: eSolutionsSecurity
  * Package: com.cws.esolutions.security
- * File: SecurityServiceConstants.java
+ * File: SecurityServicesConstants.java
  *
  * History
  * Author               Date                            Comments
@@ -29,7 +29,7 @@ package com.cws.esolutions.security;
  * @author cws-khuntly
  * @version 1.0
  */
-public final class SecurityServiceConstants
+public final class SecurityServicesConstants
 {
 	// logging
     public static final String DEBUGGER = "SECURITY_DEBUGGER";
@@ -37,7 +37,7 @@ public final class SecurityServiceConstants
 
     public static final String NOT_SET = "Unconfigured";
     public static final String TEL_NOT_SET = "0000000000";
-    public static final String DS_CONTEXT = "java:comp/env/";
+    public static final String DS_CONTEXT = "java:comp/env";
     public static final String INIT_AUDITDS_MANAGER = "AuditDataSource";
     public static final String INIT_CONFIG_FILE = "SecurityServiceConfig";
     public static final String INIT_SECURITYDS_MANAGER = "SecurityDataSource";

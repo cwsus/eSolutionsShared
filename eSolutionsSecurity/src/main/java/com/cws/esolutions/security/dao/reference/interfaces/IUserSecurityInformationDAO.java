@@ -31,8 +31,8 @@ import java.sql.SQLException;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
-import com.cws.esolutions.security.SecurityServiceBean;
-import com.cws.esolutions.security.SecurityServiceConstants;
+import com.cws.esolutions.security.SecurityServicesBean;
+import com.cws.esolutions.security.SecurityServicesConstants;
 /**
  * API allowing data access for user security information, such as salt
  * or reset data.
@@ -42,10 +42,10 @@ import com.cws.esolutions.security.SecurityServiceConstants;
  */
 public interface IUserSecurityInformationDAO
 {
-    static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
+    static final SecurityServicesBean svcBean = SecurityServicesBean.getInstance();
     static final DataSource dataSource = svcBean.getDataSources().get("SecurityDataSource");
 
-    static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
+    static final Logger DEBUGGER = LogManager.getLogger(SecurityServicesConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
     List<String> getAccessGroups() throws SQLException;

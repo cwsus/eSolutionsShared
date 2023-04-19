@@ -106,6 +106,7 @@ class AccountSearchProcessorImplTest
         request.setApplicationName("eSolutions");
         request.setHostInfo(hostInfo);
         request.setUserAccount(userAccount);
+        request.setRequestor(userAccount);
         request.setSearchTerms("fuck");
 
         try

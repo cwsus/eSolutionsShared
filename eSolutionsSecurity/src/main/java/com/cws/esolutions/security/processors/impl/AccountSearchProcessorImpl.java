@@ -45,6 +45,9 @@ import com.cws.esolutions.security.processors.exception.AccountSearchException;
 import com.cws.esolutions.security.processors.interfaces.IAccountSearchProcessor;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
 import com.cws.esolutions.utility.securityutils.processors.exception.AuditServiceException;
+import com.cws.esolutions.utility.services.dto.AccessControlServiceRequest;
+import com.cws.esolutions.utility.services.dto.AccessControlServiceResponse;
+import com.cws.esolutions.utility.services.exception.AccessControlServiceException;
 /**
  * @see com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor
  */
@@ -111,7 +114,7 @@ public class AccountSearchProcessorImpl implements IAccountSearchProcessor
             	foundAccount.setGuid((String) accountData.get(1)); // CN
             	foundAccount.setUsername((String) accountData.get(0)); // UID
 	            foundAccount.setDisplayName((String) accountData.get(11)); // DISPLAYNAME
-	            foundAccount.setEmailAddr((String) accountData.get(13)); // EMAIL
+	            foundAccount.setEmailAddr((String) accountData.get(14)); // EMAIL
 
             	if (DEBUG)
             	{
@@ -183,6 +186,7 @@ public class AccountSearchProcessorImpl implements IAccountSearchProcessor
         AccountSearchResponse response = new AccountSearchResponse();
 
         final RequestHostInfo reqInfo = request.getHostInfo();
+        final UserAccount reqAccount = request.getRequestor();
         final UserAccount userAccount = request.getUserAccount();
 
         if (DEBUG)
@@ -193,9 +197,101 @@ public class AccountSearchProcessorImpl implements IAccountSearchProcessor
 
         try
         {
+        	try
+        	{
+	            // this will require admin and service authorization
+	            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
+	            accessRequest.setServiceGuid(request.getServiceId());
+	            accessRequest.setUserAccount(
+	            		new ArrayList<Object>(
+	            				Arrays.asList(
+	            						reqAccount.getGuid(),
+	            						reqAccount.getUserRole().toString(),
+	            						reqAccount.getUserGroups())));
+	
+	            if (DEBUG)
+	            {
+	                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
+	            }
+	
+	            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
+	
+	            if (DEBUG)
+	            {
+	                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
+	            }
+	
+	            if (!(accessResponse.getIsUserAuthorized()))
+	            {
+	                // unauthorized
+	                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
+
+	                return response;
+	            }
+            }
+        	catch (AccessControlServiceException acsx)
+        	{
+        		ERROR_RECORDER.error(acsx.getMessage(), acsx);
+
+        		response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
+
+        		return response;
+			}
+        	finally
+        	{
+                // audit
+                if (secConfig.getPerformAudit())
+                {
+                    // audit if a valid account. if not valid we cant audit much,
+                    // but we should try anyway. not sure how thats going to work
+                    try
+                    {
+                        AuditEntry auditEntry = new AuditEntry();
+                        auditEntry.setAuditType(AuditType.CREATEUSER);
+                        auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
+                        auditEntry.setSessionId(reqAccount.getSessionId());
+                        auditEntry.setUserGuid(reqAccount.getGuid());
+                        auditEntry.setUserName(reqAccount.getUsername());
+                        auditEntry.setUserRole(reqAccount.getUserRole().toString());
+                        auditEntry.setAuthorized(Boolean.FALSE);
+                        auditEntry.setApplicationId(request.getApplicationId());
+                        auditEntry.setApplicationName(request.getApplicationName());
+        
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                        }
+
+                        List<String> auditHostInfo = new ArrayList<String>(
+                        		Arrays.asList(
+                        				reqInfo.getHostAddress(),
+                        				reqInfo.getHostName()));
+
+                        if (DEBUG)
+                        {
+                        	DEBUGGER.debug("List<String>: {}", auditHostInfo);
+                        }
+
+                        AuditRequest auditRequest = new AuditRequest();
+                        auditRequest.setAuditEntry(auditEntry);
+                        auditRequest.setHostInfo(auditHostInfo);
+        
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                        }
+
+                        auditor.auditRequest(auditRequest);
+                    }
+                    catch (final AuditServiceException asx)
+                    {
+                        ERROR_RECORDER.error(asx.getMessage(), asx);
+                    }
+                }
+        	}
+
             List<String[]> userList = userManager.findUsers(request.getSearchTerms());
 
-            System.out.println(userList);
 	        if (DEBUG)
 	        {
 	        	DEBUGGER.debug("userList: {}", userList);

@@ -39,7 +39,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.dbcp2.BasicDataSource;
 
-import com.cws.esolutions.security.SecurityServiceBean;
+import com.cws.esolutions.security.SecurityServicesBean;
 import com.cws.esolutions.utility.securityutils.PasswordUtils;
 import com.cws.esolutions.security.config.xml.DataSourceManager;
 import com.cws.esolutions.security.exception.SecurityServiceException;
@@ -50,7 +50,7 @@ import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
  */
 public class SecurityServicesInitializer
 {
-    private static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
+    private static final SecurityServicesBean svcBean = SecurityServicesBean.getInstance();
 
     /**
      * Initializes the security service in a standalone mode - used for applications outside of a container or when

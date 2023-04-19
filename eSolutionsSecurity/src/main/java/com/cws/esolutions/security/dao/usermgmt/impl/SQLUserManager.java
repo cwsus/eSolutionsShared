@@ -412,7 +412,9 @@ public class SQLUserManager implements UserManager
                     {
                         String[] userData = new String[]
                         {
-                            resultSet.getString(1), resultSet.getString(2)
+                            resultSet.getString(1), // CN
+                            resultSet.getString(2), // UID
+                            resultSet.getString(3), // EMAIL
                         };
 
                         if (DEBUG)

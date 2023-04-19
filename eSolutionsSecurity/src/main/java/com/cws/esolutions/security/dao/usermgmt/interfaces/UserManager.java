@@ -30,8 +30,8 @@ import javax.sql.DataSource;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
-import com.cws.esolutions.security.SecurityServiceBean;
-import com.cws.esolutions.security.SecurityServiceConstants;
+import com.cws.esolutions.security.SecurityServicesBean;
+import com.cws.esolutions.security.SecurityServicesConstants;
 import com.cws.esolutions.security.config.xml.SecurityConfig;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
 /**
@@ -44,11 +44,11 @@ import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementExceptio
  */
 public interface UserManager
 {
-    static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
+    static final SecurityServicesBean svcBean = SecurityServicesBean.getInstance();
     static final DataSource authDataSource = svcBean.getDataSources().get("SecurityDataSource");
     static final DataSource contactDataSource = svcBean.getDataSources().get("ContactDataSource");
     static final SecurityConfig secConfig = svcBean.getConfigData().getSecurityConfig();
-    static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
+    static final Logger DEBUGGER = LogManager.getLogger(SecurityServicesConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
     /**

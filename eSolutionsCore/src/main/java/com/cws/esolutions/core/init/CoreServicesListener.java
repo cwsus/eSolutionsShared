@@ -92,12 +92,11 @@ public class CoreServicesListener implements ServletContextListener
 
                     // set up the resource connections
                     Context initContext = new InitialContext();
-                    Context envContext = (Context) initContext.lookup(CoreServicesConstants.DS_CONTEXT);
                     Map<String, DataSource> dsMap = new HashMap<String, DataSource>();
 
                     for (DataSourceManager mgr : configData.getResourceConfig().getDsManager())
                     {
-                        dsMap.put(mgr.getDsName(), (DataSource) envContext.lookup(mgr.getDataSource()));
+                        dsMap.put(mgr.getDsName(), (DataSource) initContext.lookup(CoreServicesConstants.DS_CONTEXT + "/" + mgr.getDataSource()));
                     }
 
                     appBean.setDataSources(dsMap);

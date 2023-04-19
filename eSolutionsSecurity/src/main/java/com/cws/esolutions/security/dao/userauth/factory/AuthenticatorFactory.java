@@ -31,7 +31,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.apache.logging.log4j.LogManager;
 
-import com.cws.esolutions.security.SecurityServiceConstants;
+import com.cws.esolutions.security.SecurityServicesConstants;
 import com.cws.esolutions.security.dao.userauth.interfaces.Authenticator;
 /**
  * Interface for the Application Data DAO layer. Allows access
@@ -47,9 +47,9 @@ public class AuthenticatorFactory
 
     private static final String CNAME = AuthenticatorFactory.class.getName();
 
-    private static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
+    private static final Logger DEBUGGER = LogManager.getLogger(SecurityServicesConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LogManager.getLogger(SecurityServiceConstants.ERROR_LOGGER + CNAME);
+    private static final Logger ERROR_RECORDER = LogManager.getLogger(SecurityServicesConstants.ERROR_LOGGER + CNAME);
 
     /**
      * Static method to provide a new or existing instance of a
