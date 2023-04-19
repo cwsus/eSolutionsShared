@@ -27,6 +27,11 @@ package com.cws.esolutions.utility.coreutils;
  */
 import java.util.List;
 import java.util.Objects;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
 import jakarta.mail.Session;
 import jakarta.mail.Message;
 import jakarta.mail.Transport;
@@ -63,14 +68,13 @@ public final class EmailUtils
      * @param isWeb - <code>true</code> if this came from a container, <code>false</code> otherwise
      * @throws MessagingException {@link jakarta.mail.MessagingException} if an exception occurs sending the message
      */
-    public static final synchronized void sendEmailMessage(final Session mailSession, final List<Object> message) throws MessagingException
+    public static final synchronized void sendEmailMessage(final List<Object> message) throws MessagingException
     {
         final String methodName = EmailUtils.CNAME + "#sendEmailMessage(final Session mailSession, final List<Object> message) throws MessagingException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", mailSession);
             DEBUGGER.debug("Value: {}", message);
         }
 
@@ -78,6 +82,10 @@ public final class EmailUtils
 
         try
         {
+        	Context context = new InitialContext();
+            Context envContext = (Context) context.lookup(UtilityConstants.DS_CONTEXT);
+            Session mailSession = (Session) envContext.lookup("mail/MailSession");
+
             if (DEBUG)
             {
                 DEBUGGER.debug("Session: {}", mailSession);
@@ -144,6 +152,10 @@ public final class EmailUtils
         {
             throw new MessagingException(mex.getMessage(), mex);
         }
+        catch (NamingException nx)
+        {
+        	throw new MessagingException(nx.getMessage(), nx);
+		}
         finally
         {
         	if (mailTransport.isConnected())

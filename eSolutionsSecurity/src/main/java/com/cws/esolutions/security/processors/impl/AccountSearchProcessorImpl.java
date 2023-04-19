@@ -200,7 +200,7 @@ public class AccountSearchProcessorImpl implements IAccountSearchProcessor
 	        	DEBUGGER.debug("userList: {}", userList);
 	        }
 
-            if ((userList != null) && (userList.size() != 0))
+            if (!(Objects.isNull(userList)) && (userList.size() != 0))
             {
                 for (Object[] userData : userList)
                 {
@@ -243,7 +243,7 @@ public class AccountSearchProcessorImpl implements IAccountSearchProcessor
             }
             else
             {
-            	throw new AccountSearchException("Failed to load account for the given information.");
+            	response.setRequestStatus(SecurityRequestStatus.FAILURE);
             }
         }
         catch (final UserManagementException umx)

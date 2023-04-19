@@ -75,38 +75,34 @@ public class ServerDataDAOImpl implements IServerDataDAO
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{ CALL addNewServer(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) }",
-            		ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            stmt.setString(1, (String) serverData.get(0)); // systemGuid
-            stmt.setString(2, (String) serverData.get(1)); // systemOs
-            stmt.setString(3, (String) serverData.get(2)); // systemStatus
-            stmt.setString(4, (String) serverData.get(3)); // systemRegion
-            stmt.setString(5, (String) serverData.get(4)); // networkPartiton
-            stmt.setString(6, (String) serverData.get(5)); // datacenter
-            stmt.setString(7, (String) serverData.get(6)); // systemType
-            stmt.setString(8, (String) serverData.get(7)); // domainName
-            stmt.setString(9, (String) serverData.get(8)); // cpuType
-            stmt.setInt(10, (Integer) serverData.get(9)); // cpuCount
-            stmt.setString(11, (String) serverData.get(10)); // serverModel
-            stmt.setString(12, (String) serverData.get(11)); // serialNumber
-            stmt.setInt(13, (Integer) serverData.get(12)); // installedMemory
-            stmt.setString(14, (String) serverData.get(13)); // operIp
-            stmt.setString(15, (String) serverData.get(14)); // operHostname
-            stmt.setString(16, (String) serverData.get(15)); // mgmtIp
-            stmt.setString(17, (String) serverData.get(16)); // mgmtHostname
-            stmt.setString(18, (String) serverData.get(17)); // backupIp
-            stmt.setString(19, (String) serverData.get(18)); // backupHostname
-            stmt.setString(20, (String) serverData.get(19)); // nasIp
-            stmt.setString(21, (String) serverData.get(20)); // nasHostname
-            stmt.setString(22, (String) serverData.get(21)); // natAddr
-            stmt.setString(23, (String) serverData.get(22)); // systemComments
-            stmt.setString(24, (String) serverData.get(23)); // engineer
-            stmt.setString(25, (String) serverData.get(24)); // mgrEntry
-            stmt.setInt(26, (Integer) serverData.get(25)); // dmgrPort
-            stmt.setString(27, (String) serverData.get(26)); // serverRack
-            stmt.setString(28, (String) serverData.get(27)); // rackPosition
-            stmt.setString(29, (String) serverData.get(28)); // owningDmgr
-            stmt.registerOutParameter(30, Types.INTEGER);
+            stmt = sqlConn.prepareCall("{ CALL addNewServer(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt.setString(1, (String) serverData.get(0)); // IN systemGuid VARCHAR(128),
+            stmt.setString(2, (String) serverData.get(1)); // IN systemOs VARCHAR(45),
+            stmt.setString(3, (String) serverData.get(2)); // IN systemStatus VARCHAR(45),
+            stmt.setString(4, (String) serverData.get(3)); // IN systemRegion VARCHAR(45),
+            stmt.setString(5, (String) serverData.get(5)); // IN networkPartition VARCHAR(45),
+            stmt.setString(6, (String) serverData.get(6)); // IN datacenter VARCHAR(128),
+            stmt.setString(7, (String) serverData.get(7)); // IN systemType VARCHAR(45),
+            stmt.setString(8, (String) serverData.get(8)); // IN domainName VARCHAR(255),
+            stmt.setString(9, (String) serverData.get(9)); // IN cpuType VARCHAR(255),
+            stmt.setInt(10, (Integer) serverData.get(10)); // IN cpuCount INT,
+            stmt.setString(11, (String) serverData.get(11)); // IN serverModel VARCHAR(255),
+            stmt.setString(12, (String) serverData.get(12)); // IN serialNumber VARCHAR(255),
+            stmt.setInt(13, (Integer) serverData.get(13)); // IN installedMemory INT,
+            stmt.setString(14, (String) serverData.get(14)); // IN operIp VARCHAR(50),
+            stmt.setString(15, (String) serverData.get(15)); // IN operHostname VARCHAR(100),
+            stmt.setString(16, (String) serverData.get(16)); // IN mgmtIp VARCHAR(50),
+            stmt.setString(17, (String) serverData.get(17)); // IN mgmtHostname VARCHAR(100),
+            stmt.setString(18, (String) serverData.get(18)); // IN backupIp VARCHAR(50),
+            stmt.setString(19, (String) serverData.get(19)); // IN backupHostname VARCHAR(100),
+            stmt.setString(20, (String) serverData.get(20)); // IN nasIp VARCHAR(50),
+            stmt.setString(21, (String) serverData.get(21)); // IN nasHostname VARCHAR(100),
+            stmt.setString(22, (String) serverData.get(22)); // IN natAddr VARCHAR(50),
+            stmt.setString(23, (String) serverData.get(23)); // IN systemComments TEXT,
+            stmt.setString(24, (String) serverData.get(24)); // IN engineer VARCHAR(100),
+            stmt.setString(25, (String) serverData.get(25)); // IN serverRack VARCHAR(255),
+            stmt.setString(26, (String) serverData.get(26)); // IN rackPosition VARCHAR(255),
+            stmt.registerOutParameter(27, Types.INTEGER); // OUT updateCount INTEGER
 
             if (DEBUG)
             {
@@ -184,38 +180,34 @@ public class ServerDataDAOImpl implements IServerDataDAO
  
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{ CALL updateServerData(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) }",
-            		ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-            stmt.setString(1, serverGuid); // systemGuid
-            stmt.setString(2, (String) serverData.get(1)); // systemOs
-            stmt.setString(3, (String) serverData.get(2)); // systemStatus
-            stmt.setString(4, (String) serverData.get(3)); // systemRegion
-            stmt.setString(5, (String) serverData.get(4)); // networkPartiton
-            stmt.setString(6, (String) serverData.get(5)); // datacenter
-            stmt.setString(7, (String) serverData.get(6)); // systemType
-            stmt.setString(8, (String) serverData.get(7)); // domainName
-            stmt.setString(9, (String) serverData.get(8)); // cpuType
-            stmt.setInt(10, (Integer) serverData.get(9)); // cpuCount
-            stmt.setString(11, (String) serverData.get(10)); // serverModel
-            stmt.setString(12, (String) serverData.get(11)); // serialNumber
-            stmt.setInt(13, (Integer) serverData.get(12)); // installedMemory
-            stmt.setString(14, (String) serverData.get(13)); // operIp
-            stmt.setString(15, (String) serverData.get(14)); // operHostname
-            stmt.setString(16, (String) serverData.get(15)); // mgmtIp
-            stmt.setString(17, (String) serverData.get(16)); // mgmtHostname
-            stmt.setString(18, (String) serverData.get(17)); // backupIp
-            stmt.setString(19, (String) serverData.get(18)); // backupHostname
-            stmt.setString(20, (String) serverData.get(19)); // nasIp
-            stmt.setString(21, (String) serverData.get(20)); // nasHostname
-            stmt.setString(22, (String) serverData.get(21)); // natAddr
-            stmt.setString(23, (String) serverData.get(22)); // systemComments
-            stmt.setString(24, (String) serverData.get(23)); // engineer
-            stmt.setString(25, (String) serverData.get(24)); // mgrEntry
-            stmt.setInt(26, (Integer) serverData.get(25)); // dmgrPort
-            stmt.setString(27, (String) serverData.get(26)); // serverRack
-            stmt.setString(28, (String) serverData.get(27)); // rackPosition
-            stmt.setString(29, (String) serverData.get(28)); // owningDmgr
-            stmt.registerOutParameter(30, Types.INTEGER);
+            stmt = sqlConn.prepareCall("{ CALL updateaServerData(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt.setString(1, (String) serverData.get(0)); // IN systemGuid VARCHAR(128),
+            stmt.setString(2, (String) serverData.get(1)); // IN systemOs VARCHAR(45),
+            stmt.setString(3, (String) serverData.get(2)); // IN systemStatus VARCHAR(45),
+            stmt.setString(4, (String) serverData.get(3)); // IN systemRegion VARCHAR(45),
+            stmt.setString(5, (String) serverData.get(5)); // IN networkPartition VARCHAR(45),
+            stmt.setString(6, (String) serverData.get(6)); // IN datacenter VARCHAR(128),
+            stmt.setString(7, (String) serverData.get(7)); // IN systemType VARCHAR(45),
+            stmt.setString(8, (String) serverData.get(8)); // IN domainName VARCHAR(255),
+            stmt.setString(9, (String) serverData.get(9)); // IN cpuType VARCHAR(255),
+            stmt.setInt(10, (Integer) serverData.get(10)); // IN cpuCount INT,
+            stmt.setString(11, (String) serverData.get(11)); // IN serverModel VARCHAR(255),
+            stmt.setString(12, (String) serverData.get(12)); // IN serialNumber VARCHAR(255),
+            stmt.setInt(13, (Integer) serverData.get(13)); // IN installedMemory INT,
+            stmt.setString(14, (String) serverData.get(14)); // IN operIp VARCHAR(50),
+            stmt.setString(15, (String) serverData.get(15)); // IN operHostname VARCHAR(100),
+            stmt.setString(16, (String) serverData.get(16)); // IN mgmtIp VARCHAR(50),
+            stmt.setString(17, (String) serverData.get(17)); // IN mgmtHostname VARCHAR(100),
+            stmt.setString(18, (String) serverData.get(18)); // IN backupIp VARCHAR(50),
+            stmt.setString(19, (String) serverData.get(19)); // IN backupHostname VARCHAR(100),
+            stmt.setString(20, (String) serverData.get(20)); // IN nasIp VARCHAR(50),
+            stmt.setString(21, (String) serverData.get(21)); // IN nasHostname VARCHAR(100),
+            stmt.setString(22, (String) serverData.get(22)); // IN natAddr VARCHAR(50),
+            stmt.setString(23, (String) serverData.get(23)); // IN systemComments TEXT,
+            stmt.setString(24, (String) serverData.get(24)); // IN engineer VARCHAR(100),
+            stmt.setString(25, (String) serverData.get(25)); // IN serverRack VARCHAR(255),
+            stmt.setString(26, (String) serverData.get(26)); // IN rackPosition VARCHAR(255),
+            stmt.registerOutParameter(27, Types.INTEGER); // OUT updateCount INTEGER
 
             if (DEBUG)
             {
@@ -601,10 +593,10 @@ public class ServerDataDAOImpl implements IServerDataDAO
 
                     responseData = new ArrayList<Object>(
                             Arrays.asList(
-                                    resultSet.getString(1), // T1.SYSTEM_GUID
+                                    resultSet.getString(1), // T1.GUID,
                                     resultSet.getString(2), // T1.SYSTEM_OSTYPE
-                                    resultSet.getString(3), // T1.SYSTEM_STATUS
-                                    resultSet.getString(4), // T1.SYSTEM_REGION
+                                    resultSet.getString(3), // T1.SYSSTATUS
+                                    resultSet.getString(4), // T1.REGION
                                     resultSet.getString(5), // T1.NETWORK_PARTITION
                                     resultSet.getString(6), // T1.SYSTEM_TYPE
                                     resultSet.getString(7), // T1.DOMAIN_NAME
@@ -628,11 +620,8 @@ public class ServerDataDAOImpl implements IServerDataDAO
                                     resultSet.getString(25), // T1.ASSIGNED_ENGINEER
                                     resultSet.getTimestamp(26), // T1.ADD_DATE
                                     resultSet.getTimestamp(27), // T1.DELETE_DATE
-                                    resultSet.getInt(28), // T1.DMGR_PORT
-                                    resultSet.getString(29), // T1.OWNING_DMGR
-                                    resultSet.getString(30), // T1.MGR_ENTRY
-                                    resultSet.getString(31), // T2.GUID
-                                    resultSet.getString(32))); // T2.NAME
+                                    resultSet.getString(28), // T2.GUID
+                                    resultSet.getString(29))); // T2.NAME
 
                     if (DEBUG)
                     {

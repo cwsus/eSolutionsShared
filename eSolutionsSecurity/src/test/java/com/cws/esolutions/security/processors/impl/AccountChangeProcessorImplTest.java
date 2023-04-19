@@ -167,11 +167,6 @@ public final class AccountChangeProcessorImplTest
         }
     }
 
-    @Test public void changeUserKeys()
-    {
-    	// TODO
-    }
-
     @Test public void changeUserPassword()
     {
     	UserAccount account = new UserAccount();

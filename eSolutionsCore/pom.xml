@@ -25,7 +25,8 @@
         <virtualbox.version>4.2.8</virtualbox.version>
         <eSolutionsSecurity.version>1.0-SNAPSHOT</eSolutionsSecurity.version>
         <commons-httpclient>5.2.1</commons-httpclient>
-        <eSolutionsUtility.version>1.0-SNAPSHOT</eSolutionsUtility.version>
+        <helidon.version>3.2.0</helidon.version>
+        <cws.version>1.0-SNAPSHOT</cws.version>
     </properties>
 
     <dependencies>
@@ -55,14 +56,14 @@
         <dependency>
             <groupId>com.cws</groupId>
             <artifactId>eSolutionsSecurity</artifactId>
-            <version>${eSolutionsSecurity.version}</version>
+            <version>${cws.version}</version>
             <type>jar</type>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.cws</groupId>
             <artifactId>eSolutionsUtility</artifactId>
-            <version>${eSolutionsUtility.version}</version>
+            <version>${cws.version}</version>
             <type>jar</type>
             <scope>provided</scope>
         </dependency>

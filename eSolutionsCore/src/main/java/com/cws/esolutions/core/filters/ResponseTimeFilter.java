@@ -28,14 +28,14 @@ package com.cws.esolutions.core.filters;
 import java.io.IOException;
 import javax.naming.Context;
 import jakarta.servlet.Filter;
+import javax.naming.InitialContext;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;
-import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import jakarta.servlet.ServletRequest;
+import org.apache.logging.log4j.Logger;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.ServletException;
-import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.commons.lang3.StringUtils;
 import jakarta.servlet.annotation.WebFilter;
@@ -59,14 +59,14 @@ public class ResponseTimeFilter implements Filter
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     static final Logger ERROR_RECORDER = LogManager.getLogger(CoreServicesConstants.ERROR_LOGGER);
 
-    public void init(final FilterConfig config) throws ServletException
+    public void init(final FilterConfig filterConfig) throws ServletException
     {
-    	final String methodName = ResponseTimeFilter.CNAME + "#init(final FilterConfig config) throws ServletException";
+    	final String methodName = ResponseTimeFilter.CNAME + "#init(final FilterConfig filterConfig) throws ServletException";
 
     	if (DEBUG)
     	{
     		DEBUGGER.debug("Value: {}", methodName);
-    		DEBUGGER.debug("Value: {}", config);
+    		DEBUGGER.debug("Value: {}", filterConfig);
     	}
 
         try
