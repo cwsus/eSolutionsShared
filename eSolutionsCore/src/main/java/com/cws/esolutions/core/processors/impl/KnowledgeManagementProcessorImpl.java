@@ -1251,6 +1251,11 @@ public class KnowledgeManagementProcessorImpl implements IKnowledgeManagementPro
 	                	{
 	                		DEBUGGER.debug("UserData: {}", authorData);
 	                	}
+
+	                	if ((Objects.isNull(authorData)) || (authorData.size() == 0))
+	                	{
+	                		ERROR_RECORDER.error("No author information could be found. Unable to load article.");
+	                	}
             		}
             		catch (UserManagementException umx)
             		{

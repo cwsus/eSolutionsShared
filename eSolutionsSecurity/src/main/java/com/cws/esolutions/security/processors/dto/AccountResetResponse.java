@@ -32,7 +32,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.security.SecurityServiceConstants;
+import com.cws.esolutions.security.SecurityServicesConstants;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 /**
  * @author cws-khuntly
@@ -51,7 +51,7 @@ public class AccountResetResponse implements Serializable
     private static final long serialVersionUID = 5259716158255929392L;
     private static final String CNAME = AccountResetResponse.class.getName();
 
-    private static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
+    private static final Logger DEBUGGER = LogManager.getLogger(SecurityServicesConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
     public final void setRequestStatus(final SecurityRequestStatus value)
@@ -214,7 +214,7 @@ public class AccountResetResponse implements Serializable
     public final String toString()
     {
         StringBuilder sBuilder = new StringBuilder()
-            .append("[" + this.getClass().getName() + "]" + SecurityServiceConstants.LINE_BREAK + "{" + SecurityServiceConstants.LINE_BREAK);
+            .append("[" + this.getClass().getName() + "]" + SecurityServicesConstants.LINE_BREAK + "{" + SecurityServicesConstants.LINE_BREAK);
 
         for (Field field : this.getClass().getDeclaredFields())
         {
@@ -229,7 +229,7 @@ public class AccountResetResponse implements Serializable
                 {
                     if (field.get(this) != null)
                     {
-                        sBuilder.append("\t" + field.getName() + " --> " + field.get(this) + SecurityServiceConstants.LINE_BREAK);
+                        sBuilder.append("\t" + field.getName() + " --> " + field.get(this) + SecurityServicesConstants.LINE_BREAK);
                     }
                 }
                 catch (final IllegalAccessException iax) {}

@@ -41,8 +41,8 @@ import org.apache.commons.lang3.StringUtils;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.annotation.WebListener;
 
-import com.cws.esolutions.security.SecurityServiceBean;
-import com.cws.esolutions.security.SecurityServiceConstants;
+import com.cws.esolutions.security.SecurityServicesBean;
+import com.cws.esolutions.security.SecurityServicesConstants;
 import com.cws.esolutions.security.config.xml.DataSourceManager;
 import com.cws.esolutions.security.exception.SecurityServiceException;
 import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
@@ -53,7 +53,7 @@ import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
 public class SecurityServiceListener implements ServletContextListener
 {
     private static final String INIT_SYSCONFIG_FILE = "SecurityServiceConfig";
-    private static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
+    private static final SecurityServicesBean svcBean = SecurityServicesBean.getInstance();
 
     /**
      * @see jakarta.servlet.ServletContextListener#contextInitialized(jakarta.servlet.ServletContextEvent)
@@ -91,7 +91,7 @@ public class SecurityServiceListener implements ServletContextListener
                     svcBean.setConfigData(configData);
 
                     Context initContext = new InitialContext();
-                    Context envContext = (Context) initContext.lookup(SecurityServiceConstants.DS_CONTEXT);
+                    Context envContext = (Context) initContext.lookup(SecurityServicesConstants.DS_CONTEXT);
                     Map<String, DataSource> dsMap = new HashMap<String, DataSource>();
 
                     for (DataSourceManager mgr : configData.getResourceConfig().getDsManager())

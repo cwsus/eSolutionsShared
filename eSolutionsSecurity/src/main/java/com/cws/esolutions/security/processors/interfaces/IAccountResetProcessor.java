@@ -28,9 +28,9 @@ package com.cws.esolutions.security.processors.interfaces;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
-import com.cws.esolutions.security.SecurityServiceBean;
+import com.cws.esolutions.security.SecurityServicesBean;
 import com.cws.esolutions.security.config.xml.SystemConfig;
-import com.cws.esolutions.security.SecurityServiceConstants;
+import com.cws.esolutions.security.SecurityServicesConstants;
 import com.cws.esolutions.security.config.xml.SecurityConfig;
 import com.cws.esolutions.security.processors.dto.AccountResetRequest;
 import com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager;
@@ -54,7 +54,7 @@ import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInforma
 public interface IAccountResetProcessor
 {
 	static final String CNAME = IAccountResetProcessor.class.getName();
-    static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
+    static final SecurityServicesBean secBean = SecurityServicesBean.getInstance();
     static final SystemConfig sysConfig = secBean.getConfigData().getSystemConfig();
     static final IAuditProcessor auditor = (IAuditProcessor) new AuditProcessorImpl();
     static final SecurityConfig secConfig = secBean.getConfigData().getSecurityConfig();
@@ -63,8 +63,8 @@ public interface IAccountResetProcessor
     static final Authenticator authenticator = (Authenticator) AuthenticatorFactory.getAuthenticator(secConfig.getAuthManager());
     static final UserManager userManager = (UserManager) UserManagerFactory.getUserManager(secBean.getConfigData().getSecurityConfig().getUserManager());
 
-    static final Logger ERROR_RECORDER = LogManager.getLogger(SecurityServiceConstants.ERROR_LOGGER + IAccountResetProcessor.CNAME);
-    static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
+    static final Logger ERROR_RECORDER = LogManager.getLogger(SecurityServicesConstants.ERROR_LOGGER + IAccountResetProcessor.CNAME);
+    static final Logger DEBUGGER = LogManager.getLogger(SecurityServicesConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
     /**

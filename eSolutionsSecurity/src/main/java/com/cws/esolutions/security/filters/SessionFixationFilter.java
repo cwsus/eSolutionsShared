@@ -42,7 +42,7 @@ import org.apache.logging.log4j.LogManager;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import com.cws.esolutions.security.SecurityServiceConstants;
+import com.cws.esolutions.security.SecurityServicesConstants;
 /**
  * @see jakarta.servlet.Filter
  */
@@ -51,7 +51,7 @@ public class SessionFixationFilter implements Filter
 {
     private static final String CNAME = SessionFixationFilter.class.getName();
 
-    private static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
+    private static final Logger DEBUGGER = LogManager.getLogger(SecurityServicesConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
     public void init(final FilterConfig filterConfig)

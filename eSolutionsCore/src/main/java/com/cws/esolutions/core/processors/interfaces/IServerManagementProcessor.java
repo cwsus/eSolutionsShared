@@ -29,7 +29,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
 import com.cws.esolutions.core.CoreServicesConstants;
-import com.cws.esolutions.security.SecurityServiceBean;
+import com.cws.esolutions.security.SecurityServicesBean;
 import com.cws.esolutions.core.dao.impl.ServerDataDAOImpl;
 import com.cws.esolutions.security.config.xml.SecurityConfig;
 import com.cws.esolutions.core.dao.interfaces.IServerDataDAO;
@@ -53,7 +53,7 @@ public interface IServerManagementProcessor
 	static final String CNAME = IServerManagementProcessor.class.getName();
     static final IServerDataDAO serverDAO = (IServerDataDAO) new ServerDataDAOImpl();
     static final IAuditProcessor auditor = (IAuditProcessor) new AuditProcessorImpl();
-    static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
+    static final SecurityServicesBean secBean = SecurityServicesBean.getInstance();
     static final SecurityConfig secConfig = secBean.getConfigData().getSecurityConfig();
     static final IDatacenterDataDAO datacenterDAO = (IDatacenterDataDAO) new DatacenterDataDAOImpl();
     static final IAccessControlService accessControl = (IAccessControlService) new AccessControlServiceImpl();

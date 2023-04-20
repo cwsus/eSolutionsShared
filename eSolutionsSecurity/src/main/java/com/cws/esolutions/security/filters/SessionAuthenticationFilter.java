@@ -47,8 +47,8 @@ import jakarta.servlet.annotation.WebInitParam;
 import jakarta.servlet.http.HttpServletResponse;
 
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.security.SecurityServiceBean;
-import com.cws.esolutions.security.SecurityServiceConstants;
+import com.cws.esolutions.security.SecurityServicesBean;
+import com.cws.esolutions.security.SecurityServicesConstants;
 import com.cws.esolutions.security.config.xml.SecurityConfig;
 import com.cws.esolutions.security.dao.userauth.interfaces.Authenticator;
 import com.cws.esolutions.security.dao.userauth.factory.AuthenticatorFactory;
@@ -74,13 +74,13 @@ public class SessionAuthenticationFilter implements Filter
     private static final String FILTER_CONFIG_PARAM_NAME = "filter-config";
     private static final String FILTER_CONFIG_FILE_NAME = "config/FilterConfig";
     private static final String CNAME = SessionAuthenticationFilter.class.getName();
-    private static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
+    private static final SecurityServicesBean secBean = SecurityServicesBean.getInstance();
     private static final SecurityConfig secConfig = secBean.getConfigData().getSecurityConfig();
     private static final Authenticator authenticator = (Authenticator) AuthenticatorFactory.getAuthenticator(secConfig.getAuthManager());
 
-    private static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
+    private static final Logger DEBUGGER = LogManager.getLogger(SecurityServicesConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LogManager.getLogger(SecurityServiceConstants.ERROR_LOGGER + CNAME);
+    private static final Logger ERROR_RECORDER = LogManager.getLogger(SecurityServicesConstants.ERROR_LOGGER + CNAME);
 
     public void init(final FilterConfig filterConfig) throws ServletException
     {

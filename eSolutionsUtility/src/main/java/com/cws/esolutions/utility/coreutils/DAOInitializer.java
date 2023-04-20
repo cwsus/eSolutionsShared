@@ -99,9 +99,8 @@ public final class DAOInitializer
         {
 
         	Context initContext = new InitialContext();
-            Context envContext = (Context) initContext.lookup(UtilityConstants.DS_CONTEXT);
 
-            bean.setAuditDataSource(envContext.lookup("jdbc/audit"));
+            bean.setAuditDataSource(initContext.lookup(UtilityConstants.DS_CONTEXT + "/jdbc/audit"));
         }
         catch (final NamingException nx)
         {

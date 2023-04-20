@@ -31,7 +31,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.security.SecurityServiceConstants;
+import com.cws.esolutions.security.SecurityServicesConstants;
 /**
  * @author cws-khuntly
  * @version 1.0
@@ -43,6 +43,7 @@ public class AccountSearchRequest implements Serializable
 	private boolean isReset = false;
 	private String searchTerms = null;
     private String applicationId = null;
+    private UserAccount requestor = null;
     private String applicationName = null;
     private UserAccount userAccount = null;
     private RequestHostInfo hostInfo = null;
@@ -50,7 +51,7 @@ public class AccountSearchRequest implements Serializable
     private static final long serialVersionUID = 2698640275755300472L;
     private static final String CNAME = AccountSearchRequest.class.getName();
 
-    private static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
+    private static final Logger DEBUGGER = LogManager.getLogger(SecurityServicesConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
     public final void setServiceId(final String value)
@@ -144,6 +145,19 @@ public class AccountSearchRequest implements Serializable
         this.isReset = value;
     }
 
+    public final void setRequestor(final UserAccount value)
+    {
+        final String methodName = AccountSearchRequest.CNAME + "#setRequestor(final UserAccount value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.requestor = value;
+    }
+
     public final String getServiceId()
     {
         final String methodName = AccountSearchRequest.CNAME + "#getServiceId()";
@@ -235,11 +249,24 @@ public class AccountSearchRequest implements Serializable
         return this.isReset;
     }
 
+    public final UserAccount getRequestor()
+    {
+        final String methodName = AccountSearchRequest.CNAME + "#getRequestor()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.requestor);
+        }
+
+        return this.requestor;
+    }
+
     @Override
     public final String toString()
     {
         StringBuilder sBuilder = new StringBuilder()
-            .append("[" + this.getClass().getName() + "]" + SecurityServiceConstants.LINE_BREAK + "{" + SecurityServiceConstants.LINE_BREAK);
+            .append("[" + this.getClass().getName() + "]" + SecurityServicesConstants.LINE_BREAK + "{" + SecurityServicesConstants.LINE_BREAK);
 
         for (Field field : this.getClass().getDeclaredFields())
         {
@@ -254,7 +281,7 @@ public class AccountSearchRequest implements Serializable
                 {
                     if (field.get(this) != null)
                     {
-                        sBuilder.append("\t" + field.getName() + " --> " + field.get(this) + SecurityServiceConstants.LINE_BREAK);
+                        sBuilder.append("\t" + field.getName() + " --> " + field.get(this) + SecurityServicesConstants.LINE_BREAK);
                     }
                 }
                 catch (final IllegalAccessException iax) {}

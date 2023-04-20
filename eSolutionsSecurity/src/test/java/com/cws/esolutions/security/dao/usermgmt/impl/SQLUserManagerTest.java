@@ -34,7 +34,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.TestInstance;
 import org.apache.commons.lang3.RandomStringUtils;
 
-import com.cws.esolutions.security.SecurityServiceBean;
+import com.cws.esolutions.security.SecurityServicesBean;
 import com.cws.esolutions.security.enums.SecurityUserRole;
 import com.cws.esolutions.security.init.SecurityServiceInitializer;
 import com.cws.esolutions.utility.securityutils.PasswordUtils;
@@ -46,7 +46,7 @@ import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementExceptio
 public class SQLUserManagerTest
 {
 	private static final String GUID = "99aaefc1-8a2a-4877-bed5-20b73d971e56";
-	private static final SecurityServiceBean bean = SecurityServiceBean.getInstance();
+	private static final SecurityServicesBean bean = SecurityServicesBean.getInstance();
     private static final UserManager manager = UserManagerFactory.getUserManager("com.cws.esolutions.security.dao.usermgmt.impl.SQLUserManager");
 
     @BeforeAll public void setUp()

@@ -29,9 +29,9 @@ package com.cws.esolutions.security.processors.interfaces;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
-import com.cws.esolutions.security.SecurityServiceBean;
+import com.cws.esolutions.security.SecurityServicesBean;
 import com.cws.esolutions.security.config.xml.SystemConfig;
-import com.cws.esolutions.security.SecurityServiceConstants;
+import com.cws.esolutions.security.SecurityServicesConstants;
 import com.cws.esolutions.security.config.xml.SecurityConfig;
 import com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager;
 import com.cws.esolutions.security.processors.dto.AccountChangeRequest;
@@ -57,7 +57,7 @@ import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInforma
 public interface IAccountChangeProcessor
 {
 	static final String CNAME = IAccountChangeProcessor.class.getName();
-    static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
+    static final SecurityServicesBean secBean = SecurityServicesBean.getInstance();
     static final SystemConfig sysConfig = secBean.getConfigData().getSystemConfig();
     static final IAuditProcessor auditor = (IAuditProcessor) new AuditProcessorImpl();
     static final SecurityConfig secConfig = secBean.getConfigData().getSecurityConfig();
@@ -65,8 +65,8 @@ public interface IAccountChangeProcessor
     static final IUserSecurityInformationDAO userSec = (IUserSecurityInformationDAO) new SQLUserSecurityInformationDAOImpl();
     static final Authenticator authenticator = (Authenticator) AuthenticatorFactory.getAuthenticator(secConfig.getAuthManager());
 
-    static final Logger ERROR_RECORDER = LogManager.getLogger(SecurityServiceConstants.ERROR_LOGGER + IAccountChangeProcessor.CNAME);
-    static final Logger DEBUGGER = LogManager.getLogger(SecurityServiceConstants.DEBUGGER);
+    static final Logger ERROR_RECORDER = LogManager.getLogger(SecurityServicesConstants.ERROR_LOGGER + IAccountChangeProcessor.CNAME);
+    static final Logger DEBUGGER = LogManager.getLogger(SecurityServicesConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
     /**
