@@ -45,7 +45,7 @@ public interface IApplicationEnablementDAO
 {
     static final CoreServicesBean appBean = CoreServicesBean.getInstance();
 
-    static final String CNAME = IApplicationDataDAO.class.getName();
+    static final String CNAME = IApplicationEnablementDAO.class.getName();
     static final DataSource dataSource = appBean.getDataSources().get("ApplicationDataSource");
 
     static final Logger ERROR_RECORDER = LogManager.getLogger(CoreServicesConstants.ERROR_LOGGER + CNAME);
