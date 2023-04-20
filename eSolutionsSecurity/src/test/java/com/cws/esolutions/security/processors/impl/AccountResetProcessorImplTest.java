@@ -37,6 +37,7 @@ import com.cws.esolutions.security.init.SecurityServicesInitializer;
 import com.cws.esolutions.security.processors.dto.AccountChangeData;
 import com.cws.esolutions.security.processors.dto.AccountResetRequest;
 import com.cws.esolutions.security.processors.dto.AccountResetResponse;
+import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.exception.AccountResetException;
 import com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor;
@@ -69,7 +70,7 @@ public class AccountResetProcessorImplTest
     {
         UserAccount account = new UserAccount();
         account.setUsername("khuntly");
-        account.setGuid("e1006d6d-e815-4b27-9a8c-fb91227cc2b5");
+        account.setGuid("68c26c4a-33db-453c-a2f9-0a9190573dd8");
 
         AccountResetRequest request = new AccountResetRequest();
         request.setApplicationId("f42fb0ba-4d1e-1126-986f-800cd2650000");
@@ -93,13 +94,13 @@ public class AccountResetProcessorImplTest
     {
         UserAccount account = new UserAccount();
         account.setUsername("khuntly");
-        account.setGuid("e1006d6d-e815-4b27-9a8c-fb91227cc2b5");
+        account.setGuid("68c26c4a-33db-453c-a2f9-0a9190573dd8");
 
         AccountChangeData changeData = new AccountChangeData();
-        changeData.setSecQuestionOne("What is your mother's maiden name ?");
+        changeData.setSecQuestionOne("What is your least favourite colour ?");
         changeData.setSecQuestionTwo("What is your favourite cartoon ?");
-        changeData.setSecAnswerOne("nsON5qYrIISL4ERvbZLAD6svT4vhaaLs".toCharArray());
-        changeData.setSecAnswerTwo("N9zj1IpL5MmpECQGdj4L0Oko80rSzoiT".toCharArray());
+        changeData.setSecAnswerOne("kgNYsfubydz8L5x10Qps".toCharArray());
+        changeData.setSecAnswerTwo("7IWZRj8hHR9FjIiKsdkl".toCharArray());
 
         AccountResetRequest request = new AccountResetRequest();
         request.setApplicationId("f42fb0ba-4d1e-1126-986f-800cd2650000");
@@ -123,12 +124,12 @@ public class AccountResetProcessorImplTest
     @Test public void resetUserPassword()
     {
         UserAccount account = new UserAccount();
-        account.setGuid("f42fb0ba-4d1e-1126-986f-800cd2650000");
-        account.setUsername("junit");
-        account.setEmailAddr("cws-khuntly");
+        account.setUsername("khuntly");
+        account.setGuid("68c26c4a-33db-453c-a2f9-0a9190573dd8");
 
         AccountResetRequest request = new AccountResetRequest();
-        request.setApplicationName("esolutions");
+        request.setApplicationId("f42fb0ba-4d1e-1126-986f-800cd2650000");
+        request.setApplicationName("eSolutions");
         request.setHostInfo(hostInfo);
         request.setUserAccount(account);
 
@@ -146,10 +147,13 @@ public class AccountResetProcessorImplTest
 
     @Test public void verifyResetRequest()
     {
-        AccountResetRequest request = new AccountResetRequest();
+    	AuthenticationData authData = new AuthenticationData();
+    	authData.setResetKey("2YCTdCw4WxWigmbtvaM09w97xfyaebnI5X2AUQwc1tlYBfdIYrx9lTZnKP5zzNqJ");
+
+    	AccountResetRequest request = new AccountResetRequest();
         request.setApplicationName("esolutions");
         request.setHostInfo(hostInfo);
-        request.setResetRequestId("hJRr61LbqEx9NngsgGbwNDdqVgB8eDy9HTsJoWPY4vTEj7QYPZK9hCbrlg9PyIYv");
+        request.setUserSecurity(authData);
 
         try
         {

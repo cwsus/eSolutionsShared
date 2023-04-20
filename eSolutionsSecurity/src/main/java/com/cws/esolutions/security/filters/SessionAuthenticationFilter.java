@@ -247,9 +247,11 @@ public class SessionAuthenticationFilter implements Filter
             ERROR_RECORDER.error("Session found is from URL. Redirecting request to " + this.loginURI);
 
             // invalidate the session
-            hRequest.getSession(false).invalidate();
             hSession.removeAttribute(SessionAuthenticationFilter.USER_ACCOUNT);
             hSession.invalidate();
+
+            hRequest.getSession().removeAttribute(SessionAuthenticationFilter.USER_ACCOUNT);
+            hRequest.getSession(false).invalidate();
 
             hResponse.sendRedirect(hResponse.encodeRedirectURL(hRequest.getContextPath() + this.logoutURI));
 
@@ -413,6 +415,7 @@ public class SessionAuthenticationFilter implements Filter
         }
 
         // i dont know how we got here but we did
+        System.out.println("Unknown fucking error");
         ERROR_RECORDER.error("An unknown error occurred. Redirecting request to " + hRequest.getContextPath() + this.logoutURI);
 
         hResponse.sendRedirect(hResponse.encodeRedirectURL(hRequest.getContextPath() + this.logoutURI));

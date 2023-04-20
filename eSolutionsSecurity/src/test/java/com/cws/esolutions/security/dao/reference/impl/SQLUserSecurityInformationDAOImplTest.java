@@ -88,7 +88,7 @@ public class SQLUserSecurityInformationDAOImplTest
     {
         try
         {
-        	Assertions.assertThat(dao.insertResetData(SQLUserSecurityInformationDAOImplTest.GUID, resetId)).isTrue();
+        	Assertions.assertThat(dao.insertResetData(SQLUserSecurityInformationDAOImplTest.GUID, resetId, new java.util.Date().toInstant())).isTrue();
         }
         catch (final SQLException sqx)
         {

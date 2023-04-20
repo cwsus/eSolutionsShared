@@ -28,7 +28,9 @@ package com.cws.esolutions.security.dao.reference.impl;
 import java.sql.Types;
 import java.util.List;
 import java.util.Arrays;
+import java.time.Instant;
 import java.util.Objects;
+import java.sql.Timestamp;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.sql.Connection;
@@ -376,15 +378,16 @@ public class SQLUserSecurityInformationDAOImpl implements IUserSecurityInformati
     /**
      * @see com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO#insertResetData(java.lang.String, java.lang.String, java.lang.String)
      */
-    public synchronized boolean insertResetData(final String commonName, final String resetId) throws SQLException
+    public synchronized boolean insertResetData(final String commonName, final String resetId, final Instant expiry) throws SQLException
     {
-        final String methodName = SQLUserSecurityInformationDAOImpl.CNAME + "#insertResetData(final String commonName, final String resetId) throws SQLException";
+        final String methodName = SQLUserSecurityInformationDAOImpl.CNAME + "#insertResetData(final String commonName, final String resetId, final Instant expiry) throws SQLException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", commonName);
             DEBUGGER.debug("Value: {}", resetId);
+            DEBUGGER.debug("Value: {}", expiry);
         }
 
         Connection sqlConn = null;
@@ -406,13 +409,14 @@ public class SQLUserSecurityInformationDAOImpl implements IUserSecurityInformati
             }
 
             sqlConn.setAutoCommit(true);
-            stmt = sqlConn.prepareCall("{ CALL insertResetData(?, ?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            stmt = sqlConn.prepareCall("{ CALL insertResetData(?, ?, ?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, commonName);
             stmt.setString(2, resetId);
-            stmt.registerOutParameter(3, Types.INTEGER);
+            stmt.setTimestamp(3, Timestamp.from(expiry));
+            stmt.registerOutParameter(4, Types.INTEGER);
 
             stmt.execute();
-            int resultCount = stmt.getInt(3);
+            int resultCount = stmt.getInt(4);
 
             if (DEBUG)
             {

@@ -32,6 +32,9 @@ import java.util.Objects;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.Instant;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 
@@ -361,15 +364,15 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
 
         AccountResetResponse response = new AccountResetResponse();
 
-        final Calendar calendar = Calendar.getInstance();
         final RequestHostInfo reqInfo = request.getHostInfo();
         final UserAccount reqAccount = request.getUserAccount();
 
-        calendar.add(Calendar.DATE, secConfig.getPasswordExpiration());
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.MINUTE, secConfig.getResetTimeout());
 
         if (DEBUG)
         {
-            DEBUGGER.debug("Calendar: {}", calendar);
+            DEBUGGER.debug("Calendar: {}", cal);
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             DEBUGGER.debug("UserAccount: {}", reqAccount);
         }
@@ -380,7 +383,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
 
             if (StringUtils.isNotEmpty(resetId))
             {
-                boolean isComplete = userSec.insertResetData(reqAccount.getGuid(), resetId);
+                boolean isComplete = userSec.insertResetData(reqAccount.getGuid(), resetId, cal.toInstant());
 
                 if (DEBUG)
                 {
@@ -488,7 +491,6 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
                 DEBUGGER.debug("Reset expiry: {}", cal.getTimeInMillis());
             }
 
-            // the request id should be in here, so lets make sure it exists
             List<Object> resetData = userSec.getResetData(authData.getResetKey());
 
             if (DEBUG)
@@ -502,7 +504,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
             }
 
             final String commonName = (String) resetData.get(0);
-            final Date resetTimestamp = (Date) resetData.get(1);
+            final Instant resetTimestamp = new Date(((Timestamp) resetData.get(1)).getTime()).toInstant();
 
             if (DEBUG)
             {
@@ -511,8 +513,10 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
             }
 
             // make sure the timestamp is appropriate
-            if (resetTimestamp.after(cal.getTime()))
+            if (resetTimestamp.isAfter(cal.getTime().toInstant()))
             {
+            	ERROR_RECORDER.error("Request has expired, unable to continue.");
+
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
 
                 return response;

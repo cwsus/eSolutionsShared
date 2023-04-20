@@ -1234,7 +1234,15 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             if (StringUtils.isNotEmpty(resetId))
             {
-                isComplete = userSec.insertResetData(userAccount.getGuid(), resetId);
+                Calendar cal = Calendar.getInstance();
+                cal.add(Calendar.MINUTE, secConfig.getResetTimeout());
+
+                if (DEBUG)
+                {
+                	DEBUGGER.debug("Calendar: {}", cal);
+                }
+
+                isComplete = userSec.insertResetData(userAccount.getGuid(), resetId, cal.toInstant());
 
                 if (DEBUG)
                 {

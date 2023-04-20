@@ -26,6 +26,7 @@ package com.cws.esolutions.security.dao.reference.interfaces;
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import java.util.List;
+import java.time.Instant;
 import javax.sql.DataSource;
 import java.sql.SQLException;
 import org.apache.logging.log4j.Logger;
@@ -104,11 +105,11 @@ public interface IUserSecurityInformationDAO
      *
      * @param commonName - The commonName associated with the user (also known as GUID)
      * @param resetId - The reset request identifier provided to the user
-     * @param smsCode - The SMS code sent to the user (if any)
+     * @param expiry - The expiration date for the reset request
      * @return <code>true</code> if the insertion was successful, <code>false</code> otherwise
      * @throws SQLException {@link java.sql.SQLException} if an exception occurs during processing
      */
-    boolean insertResetData(final String commonName, final String resetId) throws SQLException;
+    boolean insertResetData(final String commonName, final String resetId, final Instant expiry) throws SQLException;
 
     /**
      * Returns the salt value associated with the given user account to process an
