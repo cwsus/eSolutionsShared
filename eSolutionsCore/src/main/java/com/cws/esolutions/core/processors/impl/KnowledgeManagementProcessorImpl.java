@@ -1236,6 +1236,7 @@ public class KnowledgeManagementProcessorImpl implements IKnowledgeManagementPro
             }
             else
             {
+            	UserAccount authorAccount = null;
             	List<Article> responseArticles = new ArrayList<Article>();
 
             	for (int x = 0; x < articleData.size(); x++)
@@ -1261,15 +1262,18 @@ public class KnowledgeManagementProcessorImpl implements IKnowledgeManagementPro
             			ERROR_RECORDER.error(umx.getMessage(), umx);
             		}
 
-                	UserAccount authorAccount = new UserAccount();
-                	authorAccount.setGuid((String) authorData.get(1));
-                	authorAccount.setUsername((String) authorData.get(0));
-                	authorAccount.setDisplayName((String) authorData.get(11));
+            		if (!(Objects.isNull(authorData)))
+            		{
+            			authorAccount = new UserAccount();
+            			authorAccount.setGuid((String) authorData.get(1));
+            			authorAccount.setUsername((String) authorData.get(0));
+            			authorAccount.setDisplayName((String) authorData.get(11));
 
-                	if (DEBUG)
-                	{
-                		DEBUGGER.debug("UserAccount: {}", authorAccount);
-                	}
+            			if (DEBUG)
+            			{
+            				DEBUGGER.debug("UserAccount: {}", authorAccount);
+            			}
+            		}
 
             		Article resArticle = new Article();
             		resArticle.setArticleId(articleData.get(x)[0]);
@@ -2013,19 +2017,17 @@ public class KnowledgeManagementProcessorImpl implements IKnowledgeManagementPro
             		DEBUGGER.debug("UserData: {}", reviewData);
             	}
 
-            	authorAccount = new UserAccount();
-            	authorAccount.setGuid((String) authorData.get(1));
-            	authorAccount.setUsername((String) authorData.get(0));
-            	authorAccount.setDisplayName((String) authorData.get(11));
-
-            	if (DEBUG)
+            	if (!(Objects.isNull(authorData)))
             	{
-            		DEBUGGER.debug("UserAccount: authorAccount: {}", authorAccount);
-            	}
+                	authorAccount = new UserAccount();
+                	authorAccount.setGuid((String) authorData.get(1));
+                	authorAccount.setUsername((String) authorData.get(0));
+                	authorAccount.setDisplayName((String) authorData.get(11));
 
-            	if ((Objects.isNull(authorData)) || (authorData.size() == 0))
-            	{
-            		throw new KnowledgeManagementException("No author information could be found. Unable to load article.");
+                	if (DEBUG)
+                	{
+                		DEBUGGER.debug("UserAccount: authorAccount: {}", authorAccount);
+                	}
             	}
 
             	if (!(Objects.isNull(modifyData) || (modifyData.size() != 0)))
