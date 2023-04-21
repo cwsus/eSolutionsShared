@@ -415,7 +415,6 @@ public class SessionAuthenticationFilter implements Filter
         }
 
         // i dont know how we got here but we did
-        System.out.println("Unknown fucking error");
         ERROR_RECORDER.error("An unknown error occurred. Redirecting request to " + hRequest.getContextPath() + this.logoutURI);
 
         hResponse.sendRedirect(hResponse.encodeRedirectURL(hRequest.getContextPath() + this.logoutURI));
