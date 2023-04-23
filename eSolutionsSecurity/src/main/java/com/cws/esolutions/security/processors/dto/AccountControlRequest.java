@@ -86,14 +86,6 @@ public class AccountControlRequest implements Serializable
 
     public final void setUserSecurity(final AuthenticationData value)
     {
-        final String methodName = AccountControlRequest.CNAME + "#setLoginType(final AuthenticationData value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
         this.userSecurity = value;
     }
 
@@ -229,14 +221,6 @@ public class AccountControlRequest implements Serializable
 
     public final AuthenticationData getUserSecurity()
     {
-        final String methodName = AccountControlRequest.CNAME + "#getUserSecurity()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.userSecurity);
-        }
-
         return this.userSecurity;
     }
 
@@ -357,7 +341,8 @@ public class AccountControlRequest implements Serializable
                     (!(field.getName().equals("DEBUGGER"))) &&
                     (!(field.getName().equals("DEBUG"))) &&
                     (!(field.getName().equals("ERROR_RECORDER"))) &&
-                    (!(field.getName().equals("serialVersionUID"))))
+                    (!(field.getName().equals("serialVersionUID"))) &&
+                    (!(field.getName().equals("userSecurity"))))
             {
                 try
                 {

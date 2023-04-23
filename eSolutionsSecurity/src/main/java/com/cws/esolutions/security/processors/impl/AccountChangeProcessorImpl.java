@@ -48,6 +48,7 @@ import com.cws.esolutions.utility.securityutils.processors.enums.AuditType;
 import com.cws.esolutions.utility.securityutils.processors.dto.AuditRequest;
 import com.cws.esolutions.security.processors.exception.AccountChangeException;
 import com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor;
+import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
 import com.cws.esolutions.utility.securityutils.processors.exception.AuditServiceException;
 /**
@@ -75,6 +76,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
         final RequestHostInfo reqInfo = request.getHostInfo();
         final UserAccount requestor = request.getRequestor();
         final UserAccount userAccount = request.getUserAccount();
+        final AuthenticationData authData = request.getUserSecurity();
 
         if (DEBUG)
         {
@@ -96,20 +98,46 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
         try
         {
-            boolean isComplete = userManager.modifyUserEmail(userAccount.getGuid(), userAccount.getEmailAddr());
+            String userSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.LOGON.name());
 
-            if (isComplete)
+            if (StringUtils.isBlank(userSalt))
             {
-                UserAccount retAccount = userAccount;
-                retAccount.setEmailAddr(userAccount.getEmailAddr());
+                throw new AccountChangeException("Unable to obtain configured user security information. Cannot continue");
+            }
 
-                response.setUserAccount(retAccount);
-                response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-            }
-            else
+            String returnedPassword = PasswordUtils.encryptText(authData.getPassword(), userSalt,
+                    secConfig.getSecretKeyAlgorithm(),
+                    secConfig.getIterations(), secConfig.getKeyLength(),
+                    sysConfig.getEncoding());
+
+            boolean isAuthenticated = authenticator.performLogon(userAccount.getGuid(), userAccount.getUsername(), returnedPassword);
+
+            if (DEBUG)
             {
-                response.setRequestStatus(SecurityRequestStatus.FAILURE);
+            	DEBUGGER.debug("isAuthenticated: {}", isAuthenticated);
             }
+        	
+        	if (isAuthenticated)
+        	{
+        		boolean isComplete = userManager.modifyUserEmail(userAccount.getGuid(), userAccount.getEmailAddr());
+
+        		if (isComplete)
+        		{
+        			UserAccount retAccount = userAccount;
+        			retAccount.setEmailAddr(userAccount.getEmailAddr());
+
+        			response.setUserAccount(retAccount);
+        			response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+        		}
+        		else
+        		{
+        			response.setRequestStatus(SecurityRequestStatus.FAILURE);
+        		}
+        	}
+        	else
+        	{
+        		response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
+        	}
         }
         catch (final UserManagementException umx)
         {
@@ -123,6 +151,18 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
             throw new AccountChangeException(sx.getMessage(), sx);
         }
+        catch (final SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new AccountChangeException(sqx.getMessage(), sqx);
+		}
+        catch (final AuthenticatorException ax)
+        {
+            ERROR_RECORDER.error(ax.getMessage(), ax);
+
+            throw new AccountChangeException(ax.getMessage(), ax);
+		}
         finally
         {
             // audit
@@ -197,6 +237,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
         final RequestHostInfo reqInfo = request.getHostInfo();
         final UserAccount requestor = request.getRequestor();
         final UserAccount userAccount = request.getUserAccount();
+        final AuthenticationData authData = request.getUserSecurity();
 
         if (DEBUG)
         {
@@ -218,25 +259,51 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
         try
         {
-        	boolean isComplete = userManager.modifyUserContact(userAccount.getGuid(),
-                    new ArrayList<String>(
-                            Arrays.asList(
-                                    userAccount.getTelephoneNumber(),
-                                    userAccount.getPagerNumber())));
+            String userSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.LOGON.name());
 
-            if (isComplete)
+            if (StringUtils.isBlank(userSalt))
             {
-                UserAccount retAccount = userAccount;
-                retAccount.setTelephoneNumber(userAccount.getTelephoneNumber());
-                retAccount.setPagerNumber(userAccount.getPagerNumber());
+                throw new AccountChangeException("Unable to obtain configured user security information. Cannot continue");
+            }
 
-                response.setUserAccount(retAccount);
-                response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-            }
-            else
+            String returnedPassword = PasswordUtils.encryptText(authData.getPassword(), userSalt,
+                    secConfig.getSecretKeyAlgorithm(),
+                    secConfig.getIterations(), secConfig.getKeyLength(),
+                    sysConfig.getEncoding());
+
+            boolean isAuthenticated = authenticator.performLogon(userAccount.getGuid(), userAccount.getUsername(), returnedPassword);
+
+            if (DEBUG)
             {
-                response.setRequestStatus(SecurityRequestStatus.FAILURE);
+            	DEBUGGER.debug("isAuthenticated: {}", isAuthenticated);
             }
+        	
+        	if (isAuthenticated)
+        	{
+	        	boolean isComplete = userManager.modifyUserContact(userAccount.getGuid(),
+	                    new ArrayList<String>(
+	                            Arrays.asList(
+	                                    userAccount.getTelephoneNumber(),
+	                                    userAccount.getPagerNumber())));
+	
+	            if (isComplete)
+	            {
+	                UserAccount retAccount = userAccount;
+	                retAccount.setTelephoneNumber(userAccount.getTelephoneNumber());
+	                retAccount.setPagerNumber(userAccount.getPagerNumber());
+	
+	                response.setUserAccount(retAccount);
+	                response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+	            }
+	            else
+	            {
+	                response.setRequestStatus(SecurityRequestStatus.FAILURE);
+	            }
+        	}
+        	else
+        	{
+        		response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
+        	}
         }
         catch (final UserManagementException umx)
         {
@@ -250,6 +317,18 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
             throw new AccountChangeException(sx.getMessage(), sx);
         }
+        catch (final SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new AccountChangeException(sqx.getMessage(), sqx);
+		}
+        catch (final AuthenticatorException ax)
+        {
+            ERROR_RECORDER.error(ax.getMessage(), ax);
+
+            throw new AccountChangeException(ax.getMessage(), ax);
+		}
         finally
         {
             // audit
@@ -316,7 +395,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("AccountChangeRequest: {}", request);
         }
 
         AccountChangeResponse response = new AccountChangeResponse();
@@ -336,7 +414,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             DEBUGGER.debug("UserAccount: {}", requestor);
             DEBUGGER.debug("UserAccount: {}", userAccount);
-            DEBUGGER.debug("AuthenticationData: {}", reqSecurity);
             DEBUGGER.debug("boolean: {}", isReset);
         }
 
@@ -367,63 +444,84 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
             }
             else
             {
-                String newSalt = PasswordUtils.returnGeneratedSalt(secConfig.getRandomGenerator(), secConfig.getSaltLength());
+                String userSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.LOGON.name());
+
+                if (StringUtils.isBlank(userSalt))
+                {
+                    throw new AccountChangeException("Unable to obtain configured user security information. Cannot continue");
+                }
+
+                String returnedPassword = PasswordUtils.encryptText(reqSecurity.getPassword(), userSalt,
+                        secConfig.getSecretKeyAlgorithm(),
+                        secConfig.getIterations(), secConfig.getKeyLength(),
+                        sysConfig.getEncoding());
+
+                boolean isAuthenticated = authenticator.performLogon(userAccount.getGuid(), userAccount.getUsername(), returnedPassword);
 
                 if (DEBUG)
                 {
-                	DEBUGGER.debug("newSalt: {}", newSalt);
+                	DEBUGGER.debug("isAuthenticated: {}", isAuthenticated);
                 }
-
-                if (StringUtils.isNotBlank(newSalt))
-                {
-                    // good, move forward
-                    // put the new salt in the database
-                    boolean isComplete = userSec.addOrUpdateUserSalt(userAccount.getGuid(), newSalt, SaltType.LOGON.name());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("isComplete: {}", isComplete);
-                    }
-
-                    if (isComplete)
-                    {
-                        // make the modification in the user repository
-                        isComplete = userSec.modifyUserPassword(userAccount.getGuid(), userAccount.getUsername(),
-                                PasswordUtils.encryptText(reqSecurity.getNewPassword(), newSalt,
-                                		secConfig.getSecretKeyAlgorithm(), secConfig.getIterations(), secConfig.getKeyLength(),
-                                		sysConfig.getEncoding()), false);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("isComplete: {}", isComplete);
-                        }
-
-                        if (isComplete)
-                        {
-                            userAccount.setStatus(LoginStatus.SUCCESS);
-
-                            if (DEBUG)
-                            {
-                            	DEBUGGER.debug("userAccount: {}", userAccount);
-                            }
-
-                            response.setUserAccount(userAccount);
-                            response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                        }
-                        else
-                        {
-                            response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                        }
-                    }
-                    else
-                    {
-                        response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                    }
-                }
-                else
-                {
-                    throw new AccountChangeException("Unable to generate new salt for provided user account.");
-                }
+            	
+            	if (isAuthenticated)
+            	{
+	                String newSalt = PasswordUtils.returnGeneratedSalt(secConfig.getRandomGenerator(), secConfig.getSaltLength());
+	
+	                if (StringUtils.isNotBlank(newSalt))
+	                {
+	                    // good, move forward
+	                    // put the new salt in the database
+	                    boolean isComplete = userSec.addOrUpdateUserSalt(userAccount.getGuid(), newSalt, SaltType.LOGON.name());
+	
+	                    if (DEBUG)
+	                    {
+	                        DEBUGGER.debug("isComplete: {}", isComplete);
+	                    }
+	
+	                    if (isComplete)
+	                    {
+	                        // make the modification in the user repository
+	                        isComplete = userSec.modifyUserPassword(userAccount.getGuid(), userAccount.getUsername(),
+	                                PasswordUtils.encryptText(reqSecurity.getNewPassword(), newSalt,
+	                                		secConfig.getSecretKeyAlgorithm(), secConfig.getIterations(), secConfig.getKeyLength(),
+	                                		sysConfig.getEncoding()), false);
+	
+	                        if (DEBUG)
+	                        {
+	                            DEBUGGER.debug("isComplete: {}", isComplete);
+	                        }
+	
+	                        if (isComplete)
+	                        {
+	                            userAccount.setStatus(LoginStatus.SUCCESS);
+	
+	                            if (DEBUG)
+	                            {
+	                            	DEBUGGER.debug("userAccount: {}", userAccount);
+	                            }
+	
+	                            response.setUserAccount(userAccount);
+	                            response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+	                        }
+	                        else
+	                        {
+	                            response.setRequestStatus(SecurityRequestStatus.FAILURE);
+	                        }
+	                    }
+	                    else
+	                    {
+	                        response.setRequestStatus(SecurityRequestStatus.FAILURE);
+	                    }
+	                }
+	                else
+	                {
+	                    throw new AccountChangeException("Unable to generate new salt for provided user account.");
+	                }
+            	}
+            	else
+            	{
+            		response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
+            	}
             }
         }
         catch (final SQLException sqx)
@@ -438,6 +536,12 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
             throw new AccountChangeException(sx.getMessage(), sx);
         }
+        catch (final AuthenticatorException ax)
+        {
+            ERROR_RECORDER.error(ax.getMessage(), ax);
+
+            throw new AccountChangeException(ax.getMessage(), ax);
+		}
         finally
         {
         	if (!(isReset))
@@ -516,8 +620,8 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
         final RequestHostInfo reqInfo = request.getHostInfo();
         final UserAccount requestor = request.getRequestor();
         final UserAccount userAccount = request.getUserAccount();
-        final AuthenticationData reqSecurity = request.getUserSecurity();
         final AccountChangeData changeData = request.getChangeData();
+        final AuthenticationData authData = request.getUserSecurity();
 
         if (DEBUG)
         {
@@ -525,8 +629,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 			DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
 			DEBUGGER.debug("UserAccount: {}", requestor);
 			DEBUGGER.debug("UserAccount: {}", userAccount);
-			DEBUGGER.debug("AuthenticationData: {}", reqSecurity);
-			DEBUGGER.debug("AccountChangeData: {}", changeData);
         }
 
         // ok, first things first. if this is an administrative reset, make sure the requesting user
@@ -553,56 +655,82 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
             }
             else
             {
-                String newSalt = PasswordUtils.returnGeneratedSalt(secConfig.getRandomGenerator(), secConfig.getSaltLength());
+                String userSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.LOGON.name());
 
-                if (StringUtils.isBlank(newSalt))
+                if (StringUtils.isBlank(userSalt))
                 {
-                	throw new AccountChangeException("Failed to generate a salt value for the security operation.");
+                    throw new AccountChangeException("Unable to obtain configured user security information. Cannot continue");
                 }
 
-                // good, move forward
-                // make the modification in the user repository
-                boolean isComplete = userSec.modifyUserSecurity(userAccount.getGuid(), 
-                        new ArrayList<String>(
-                            Arrays.asList(
-                            		changeData.getSecQuestionOne(),
-                            		changeData.getSecQuestionTwo(),
-                            		PasswordUtils.encryptText(changeData.getSecAnswerOne(), newSalt,
-                            				secConfig.getSecretKeyAlgorithm(),
-                            				secConfig.getIterations(), secConfig.getKeyLength(),
-                            				sysConfig.getEncoding()),
-                            		PasswordUtils.encryptText(changeData.getSecAnswerTwo(), newSalt,
-                            				secConfig.getSecretKeyAlgorithm(),
-                            				secConfig.getIterations(), secConfig.getKeyLength(),
-                            				sysConfig.getEncoding()))));
+                String returnedPassword = PasswordUtils.encryptText(authData.getPassword(), userSalt,
+                        secConfig.getSecretKeyAlgorithm(),
+                        secConfig.getIterations(), secConfig.getKeyLength(),
+                        sysConfig.getEncoding());
+
+                boolean isAuthenticated = authenticator.performLogon(userAccount.getGuid(), userAccount.getUsername(), returnedPassword);
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("isComplete: {}", isComplete);
+                	DEBUGGER.debug("isAuthenticated: {}", isAuthenticated);
                 }
-
-                if (isComplete)
-                {
-                    // now update the salt
-                    isComplete = userSec.addOrUpdateUserSalt(userAccount.getGuid(), newSalt, SaltType.RESET.name());
-
-                    if (isComplete)
-                    {
-                        response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                    }
-                    else
-                    {
-                        ERROR_RECORDER.error("Failed to add the new user salt information to the database.");
-
-                        response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                    }
-                }
-                else
-                {
-                    ERROR_RECORDER.error("Failed to modify the account in the user repository.");
-                	
-                    response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                }
+            	
+            	if (isAuthenticated)
+            	{
+	                String newSalt = PasswordUtils.returnGeneratedSalt(secConfig.getRandomGenerator(), secConfig.getSaltLength());
+	
+	                if (StringUtils.isBlank(newSalt))
+	                {
+	                	throw new AccountChangeException("Failed to generate a salt value for the security operation.");
+	                }
+	
+	                // good, move forward
+	                // make the modification in the user repository
+	                boolean isComplete = userSec.modifyUserSecurity(userAccount.getGuid(), 
+	                        new ArrayList<String>(
+	                            Arrays.asList(
+	                            		changeData.getSecQuestionOne(),
+	                            		changeData.getSecQuestionTwo(),
+	                            		PasswordUtils.encryptText(changeData.getSecAnswerOne(), newSalt,
+	                            				secConfig.getSecretKeyAlgorithm(),
+	                            				secConfig.getIterations(), secConfig.getKeyLength(),
+	                            				sysConfig.getEncoding()),
+	                            		PasswordUtils.encryptText(changeData.getSecAnswerTwo(), newSalt,
+	                            				secConfig.getSecretKeyAlgorithm(),
+	                            				secConfig.getIterations(), secConfig.getKeyLength(),
+	                            				sysConfig.getEncoding()))));
+	
+	                if (DEBUG)
+	                {
+	                    DEBUGGER.debug("isComplete: {}", isComplete);
+	                }
+	
+	                if (isComplete)
+	                {
+	                    // now update the salt
+	                    isComplete = userSec.addOrUpdateUserSalt(userAccount.getGuid(), newSalt, SaltType.RESET.name());
+	
+	                    if (isComplete)
+	                    {
+	                        response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+	                    }
+	                    else
+	                    {
+	                        ERROR_RECORDER.error("Failed to add the new user salt information to the database.");
+	
+	                        response.setRequestStatus(SecurityRequestStatus.FAILURE);
+	                    }
+	                }
+	                else
+	                {
+	                    ERROR_RECORDER.error("Failed to modify the account in the user repository.");
+	                	
+	                    response.setRequestStatus(SecurityRequestStatus.FAILURE);
+	                }
+            	}
+            	else
+            	{
+            		response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
+            	}
             }
         }
         catch (final SQLException sqx)
@@ -617,6 +745,12 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
             throw new AccountChangeException(sx.getMessage(), sx);
         }
+        catch (final AuthenticatorException ax)
+        {
+            ERROR_RECORDER.error(ax.getMessage(), ax);
+
+            throw new AccountChangeException(ax.getMessage(), ax);
+		}
         finally
         {
             // audit

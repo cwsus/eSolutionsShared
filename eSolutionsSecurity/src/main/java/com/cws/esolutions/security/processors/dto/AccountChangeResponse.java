@@ -28,7 +28,6 @@ package com.cws.esolutions.security.processors.dto;
 import java.util.List;
 import java.io.Serializable;
 import java.lang.reflect.Field;
-import java.io.ByteArrayOutputStream;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -45,7 +44,6 @@ public class AccountChangeResponse implements Serializable
 	private String secret = null;
     private UserAccount userAccount = null;
     private List<String> questionList = null;
-    private ByteArrayOutputStream qrCode = null;
     private SecurityRequestStatus requestStatus = null;
 
     private static final long serialVersionUID = 2748842176593775221L;
@@ -91,19 +89,6 @@ public class AccountChangeResponse implements Serializable
         }
 
         this.questionList = value;
-    }
-
-    public final void setQrCode(final ByteArrayOutputStream value)
-    {
-        final String methodName = AccountChangeResponse.CNAME + "#setQrCode(final ByteArrayOutputStream value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.qrCode = value;
     }
 
     public final void setSecret(final String value)
@@ -156,19 +141,6 @@ public class AccountChangeResponse implements Serializable
         }
 
         return this.questionList;
-    }
-
-    public final ByteArrayOutputStream getQrCode()
-    {
-        final String methodName = AccountChangeResponse.CNAME + "#getQrCode()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.qrCode);
-        }
-
-        return this.qrCode;
     }
 
     public final String getSecret()

@@ -179,13 +179,9 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
             }
 
             // valid server
-            if ((requestServer.getServerType() == ServerType.VIRTUALHOST) || (requestServer.getServerType() == ServerType.DMGRSERVER))
+            if (requestServer.getServerType() == ServerType.VIRTUALHOST)
             {
                 if (StringUtils.isEmpty(requestServer.getMgrUrl()))
-                {
-                    throw new ServerManagementException("Server type provided was " + requestServer.getServerType() + " but additional information is required.");
-                }
-                else if ((requestServer.getServerType() == ServerType.DMGRSERVER) && (requestServer.getDmgrPort() == 0))
                 {
                     throw new ServerManagementException("Server type provided was " + requestServer.getServerType() + " but additional information is required.");
                 }
@@ -217,11 +213,8 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                             (StringUtils.isNotEmpty(requestServer.getNatAddress())) ? requestServer.getNatAddress() : CoreServicesConstants.NOT_SET,
                             requestServer.getServerComments(),
                             userAccount.getGuid(),
-                            (StringUtils.isNotBlank(requestServer.getMgrUrl())) ? requestServer.getMgrUrl() : CoreServicesConstants.NOT_SET,
-                            requestServer.getDmgrPort(),
                             (StringUtils.isNotBlank(requestServer.getServerRack())) ? requestServer.getServerRack() : CoreServicesConstants.NOT_SET,
-                            (StringUtils.isNotBlank(requestServer.getRackPosition())) ? requestServer.getRackPosition() : CoreServicesConstants.NOT_SET,
-                            (requestServer.getOwningDmgr() != null) ? requestServer.getOwningDmgr().getServerGuid() : CoreServicesConstants.NOT_SET));
+                            (StringUtils.isNotBlank(requestServer.getRackPosition())) ? requestServer.getRackPosition() : CoreServicesConstants.NOT_SET));
 
             if (DEBUG)
             {
@@ -424,13 +417,9 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                 return response;
             }
 
-            if ((requestServer.getServerType() == ServerType.VIRTUALHOST) || (requestServer.getServerType() == ServerType.DMGRSERVER))
+            if (requestServer.getServerType() == ServerType.VIRTUALHOST)
             {
                 if (StringUtils.isEmpty(requestServer.getMgrUrl()))
-                {
-                    throw new ServerManagementException("Server type provided was " + requestServer.getServerType() + " but additional information is required.");
-                }
-                else if ((requestServer.getServerType() == ServerType.DMGRSERVER) && (requestServer.getDmgrPort() == 0))
                 {
                     throw new ServerManagementException("Server type provided was " + requestServer.getServerType() + " but additional information is required.");
                 }
@@ -1387,11 +1376,6 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
                                 server.setOwningDmgr(dmgrServer); // OWNING_DMGR
                             }
-
-                            break;
-                        case DMGRSERVER:
-                            server.setDmgrPort((Integer) serverData.get(27)); // DMGR_PORT
-                            server.setMgrUrl((String) serverData.get(29)); // MGR_ENTRY
 
                             break;
                         case VIRTUALHOST:

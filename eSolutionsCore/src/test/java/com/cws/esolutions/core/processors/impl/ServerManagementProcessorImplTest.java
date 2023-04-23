@@ -126,7 +126,7 @@ public class ServerManagementProcessorImplTest
 
             server.setDatacenter(datacenter);
             server.setServerStatus(ServerStatus.ONLINE);
-            server.setServerType(ServerType.DMGRSERVER);
+            server.setServerType(ServerType.DBSERVER);
             server.setServerComments("dmgr server");
             server.setAssignedEngineer(account);
             server.setCpuType("AMD 1.0 GHz");

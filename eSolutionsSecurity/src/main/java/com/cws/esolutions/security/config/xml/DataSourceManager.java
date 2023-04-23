@@ -112,27 +112,11 @@ public final class DataSourceManager
 
     public final void setDsPass(final String value)
     {
-        final String methodName = DataSourceManager.CNAME + "#setDsPass(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
         this.dsPass = value;
     }
 
     public final void setDsSalt(final String value)
     {
-        final String methodName = DataSourceManager.CNAME + "#setDsSalt(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
         this.dsSalt = value;
     }
 
@@ -234,28 +218,12 @@ public final class DataSourceManager
     @XmlElement(name = "dsPass")
     public final String getDsPass()
     {
-        final String methodName = DataSourceManager.CNAME + "#getDsPass()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.dsPass);
-        }
-
         return this.dsPass;
     }
 
     @XmlElement(name = "dsSalt")
     public final String getDsSalt()
     {
-        final String methodName = DataSourceManager.CNAME + "#getDsSalt()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.dsSalt);
-        }
-
         return this.dsSalt;
     }
 
@@ -314,7 +282,9 @@ public final class DataSourceManager
                     (!(field.getName().equals("DEBUGGER"))) &&
                     (!(field.getName().equals("DEBUG"))) &&
                     (!(field.getName().equals("ERROR_RECORDER"))) &&
-                    (!(field.getName().equals("serialVersionUID"))))
+                    (!(field.getName().equals("serialVersionUID"))) &&
+                    (!(field.getName().equals("dsPass"))) &&
+                    (!(field.getName().equals("dsSalt"))))
             {
                 try
                 {

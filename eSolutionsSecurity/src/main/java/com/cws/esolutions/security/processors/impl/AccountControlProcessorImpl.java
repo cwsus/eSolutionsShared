@@ -44,7 +44,6 @@ import com.cws.esolutions.security.processors.enums.SaltType;
 import com.cws.esolutions.utility.securityutils.PasswordUtils;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
-import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.processors.dto.AccountControlRequest;
 import com.cws.esolutions.security.processors.dto.AccountControlResponse;
 import com.cws.esolutions.utility.securityutils.processors.dto.AuditEntry;
@@ -83,14 +82,12 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
         final RequestHostInfo reqInfo = request.getHostInfo();
         final UserAccount reqAccount = request.getRequestor();
         final UserAccount userAccount = request.getUserAccount();
-        final AuthenticationData userSecurity = request.getUserSecurity();
 
         if (DEBUG)
         {
             DEBUGGER.debug("Requestor: {}", reqAccount);
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             DEBUGGER.debug("UserAccount: {}", userAccount);
-            DEBUGGER.debug("AuthenticationData: {}", userSecurity);
         }
 
         try
@@ -257,11 +254,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 		userAccount.getTelephoneNumber(), // telnum
                 		userAccount.getPagerNumber() // pagernum
                 		));
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("accountData: {}", accountData);
-            }
 
             boolean isUserCreated = userManager.addUserAccount(accountData);
 

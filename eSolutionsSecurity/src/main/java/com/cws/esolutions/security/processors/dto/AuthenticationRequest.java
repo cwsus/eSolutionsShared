@@ -219,7 +219,8 @@ public class AuthenticationRequest implements Serializable
                     (!(field.getName().equals("DEBUGGER"))) &&
                     (!(field.getName().equals("DEBUG"))) &&
                     (!(field.getName().equals("ERROR_RECORDER"))) &&
-                    (!(field.getName().equals("serialVersionUID"))))
+                    (!(field.getName().equals("serialVersionUID"))) &&
+                    (!(field.getName().equals("userSecurity"))))
             {
                 try
                 {

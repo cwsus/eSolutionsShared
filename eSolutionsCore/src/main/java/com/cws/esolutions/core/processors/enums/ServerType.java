@@ -37,7 +37,7 @@ public enum ServerType
     NFSSERVER,
     DNSMASTER,
     DNSSLAVE,
-    DMGRSERVER,
+    DBSERVER,
     MQSERVER,
     VIRTUALHOST;
 }

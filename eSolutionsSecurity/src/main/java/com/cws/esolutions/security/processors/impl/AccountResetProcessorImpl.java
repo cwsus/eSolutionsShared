@@ -215,7 +215,6 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
         {
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             DEBUGGER.debug("UserAccount: {}", reqAccount);
-            DEBUGGER.debug("AccountChangeData: {}", changeData);
         }
 
         try
@@ -238,20 +237,9 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
                         secConfig.getIterations(), secConfig.getKeyLength(),
                         sysConfig.getEncoding());
 
-                if (DEBUG)
-                {
-                	DEBUGGER.debug("Value: {}", secAnswerTwo);
-                	DEBUGGER.debug("Value: {}", secAnswerOne);
-                }
-
             	HashMap<String, String> responseMap = new HashMap<String, String>();
             	responseMap.put(changeData.getSecQuestionOne(), secAnswerOne);
             	responseMap.put(changeData.getSecQuestionTwo(), secAnswerTwo);
-
-            	if (DEBUG)
-            	{
-            		DEBUGGER.debug("HashMap<String, String>: {}", responseMap);
-            	}
 
             	boolean isVerified = authenticator.verifySecurityData(reqAccount.getGuid(), reqAccount.getUsername(), responseMap);
 
@@ -479,7 +467,6 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
             DEBUGGER.debug("Calendar: {}", cal);
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             DEBUGGER.debug("UserAccount: {}", reqAccount);
-            DEBUGGER.debug("AuthenticationData: {}", authData);
         }
 
         try
@@ -492,11 +479,6 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
             }
 
             List<Object> resetData = userSec.getResetData(authData.getResetKey());
-
-            if (DEBUG)
-            {
-            	DEBUGGER.debug("resetData: {}", resetData);
-            }
 
             if (Objects.isNull(resetData))
             {
@@ -594,7 +576,6 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
         {
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             DEBUGGER.debug("UserAccount: {}", reqAccount);
-            DEBUGGER.debug("AccountChangeData: {}", changeData);
         }
 
         try
@@ -611,11 +592,6 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
             }
 
             String newSalt = PasswordUtils.returnGeneratedSalt(secConfig.getRandomGenerator(), secConfig.getSaltLength());
-
-            if (DEBUG)
-            {
-            	DEBUGGER.debug("newSalt: {}", newSalt);
-            }
 
             if (StringUtils.isNotBlank(newSalt))
             {

@@ -135,14 +135,6 @@ public class AccountResetRequest implements Serializable
 
     public final void setUserSecurity(final AuthenticationData value)
     {
-        final String methodName = AccountResetRequest.CNAME + "#setLoginType(final AuthenticationData value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}}", value);
-        }
-
         this.userSecurity = value;
     }
 
@@ -161,14 +153,6 @@ public class AccountResetRequest implements Serializable
 
     public final void setChangeData(final AccountChangeData value)
     {
-        final String methodName = AccountResetRequest.CNAME + "#setChangeData(final AccountChangeData value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
         this.changeData = value;
     }
 
@@ -252,14 +236,6 @@ public class AccountResetRequest implements Serializable
 
     public final AuthenticationData getUserSecurity()
     {
-        final String methodName = AccountResetRequest.CNAME + "#getUserSecurity()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}}", this.userSecurity);
-        }
-
         return this.userSecurity;
     }
 
@@ -278,14 +254,6 @@ public class AccountResetRequest implements Serializable
 
     public final AccountChangeData getChangeData()
     {
-        final String methodName = AccountResetRequest.CNAME + "#getChangeData()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.changeData);
-        }
-
         return this.changeData;
     }
 
@@ -302,7 +270,9 @@ public class AccountResetRequest implements Serializable
                     (!(field.getName().equals("DEBUGGER"))) &&
                     (!(field.getName().equals("DEBUG"))) &&
                     (!(field.getName().equals("ERROR_RECORDER"))) &&
-                    (!(field.getName().equals("serialVersionUID"))))
+                    (!(field.getName().equals("serialVersionUID"))) &&
+                    (!(field.getName().equals("userSecurity"))) &&
+                    (!(field.getName().equals("changeData"))))
             {
                 try
                 {

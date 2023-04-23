@@ -36,7 +36,6 @@ public final class AccountChangeData implements Serializable
 {
 	private int count = 0;
     private String guid = null;
-    private String resetKey = null;
     private String username = null;
     private String telNumber = null;
     private boolean isReset = false;
@@ -50,7 +49,7 @@ public final class AccountChangeData implements Serializable
     private char[] currentPassword = null;
     private char[] confirmPassword = null;
     private ResetRequestType resetType = null;
-
+    
     private static final long serialVersionUID = -7617490638200945132L;
     private static final String CNAME = AccountChangeData.class.getName();
 
@@ -83,19 +82,6 @@ public final class AccountChangeData implements Serializable
         this.isReset = value;
     }
 
-    public final void setResetKey(final String value)
-    {
-        final String methodName = AccountChangeData.CNAME + "#setResetKey(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.resetKey = value;
-    }
-
     public final void setResetType(final ResetRequestType value)
     {
         final String methodName = AccountChangeData.CNAME + "#setResetType(final ResetRequestType value)";
@@ -111,53 +97,21 @@ public final class AccountChangeData implements Serializable
 
     public final void setUsername(final String value)
     {
-        final String methodName = AccountChangeData.CNAME + "#setUsername(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.username = value;
+    	this.username = value;
     }
 
     public final void setCurrentPassword(final char[] value)
     {
-        final String methodName = AccountChangeData.CNAME + "#setCurrentPassword(final char[] value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
         this.currentPassword = value;
     }
 
     public final void setNewPassword(final char[] value)
     {
-        final String methodName = AccountChangeData.CNAME + "#setNewPassword(final char[] value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
         this.newPassword = value;
     }
 
     public final void setConfirmPassword(final char[] value)
     {
-        final String methodName = AccountChangeData.CNAME + "#setConfirmPassword(final char[] value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
         this.confirmPassword = value;
     }
 
@@ -176,53 +130,21 @@ public final class AccountChangeData implements Serializable
 
     public final void setSecAnswerOne(final char[] value)
     {
-        final String methodName = AccountChangeData.CNAME + "#setSecAnswerOne(final char[] value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.secAnswerOne);
-        }
-
         this.secAnswerOne = value;
     }
 
     public final void setSecAnswerTwo(final char[] value)
     {
-        final String methodName = AccountChangeData.CNAME + "#setSecAnswerTwo(final char[] value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.secAnswerTwo);
-        }
-
         this.secAnswerTwo = value;
     }
 
     public final void setSecQuestionOne(final String value)
     {
-        final String methodName = AccountChangeData.CNAME + "#setSecQuestionOne(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
         this.secQuestionOne = value;
     }
 
     public final void setSecQuestionTwo(final String value)
     {
-        final String methodName = AccountChangeData.CNAME + "#setSecQuestionTwo(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
         this.secQuestionTwo = value;
     }
 
@@ -304,19 +226,6 @@ public final class AccountChangeData implements Serializable
         return this.guid;
     }
 
-    public final String getResetKey()
-    {
-        final String methodName = AccountChangeData.CNAME + "#getResetKey(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.resetKey);
-        }
-
-        return this.resetKey;
-    }
-
     public final ResetRequestType getResetType()
     {
         final String methodName = AccountChangeData.CNAME + "#getResetType()";
@@ -345,40 +254,16 @@ public final class AccountChangeData implements Serializable
 
     public final char[] getCurrentPassword()
     {
-        final String methodName = AccountChangeData.CNAME + "#getCurrentPassword";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.currentPassword);
-        }
-
         return this.currentPassword;
     }
 
     public final char[] getNewPassword()
     {
-        final String methodName = AccountChangeData.CNAME + "#getNewPassword";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.newPassword);
-        }
-
         return this.newPassword;
     }
 
     public final char[] getConfirmPassword()
     {
-        final String methodName = AccountChangeData.CNAME + "#getConfirmPassword";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.confirmPassword);
-        }
-
         return this.confirmPassword;
     }
 
@@ -397,53 +282,21 @@ public final class AccountChangeData implements Serializable
 
     public final char[] getSecAnswerOne()
     {
-        final String methodName = AccountChangeData.CNAME + "#getSecAnswerOne()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.secAnswerOne);
-        }
-
         return this.secAnswerOne;
     }
 
     public final char[] getSecAnswerTwo()
     {
-        final String methodName = AccountChangeData.CNAME + "#getSecAnswerTwo()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.secAnswerTwo);
-        }
-
         return this.secAnswerTwo;
     }
 
     public final String getSecQuestionOne()
     {
-        final String methodName = AccountChangeData.CNAME + "#getSecQuestionOne()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.secQuestionOne);
-        }
-
         return this.secQuestionOne;
     }
 
     public final String getSecQuestionTwo()
     {
-        final String methodName = AccountChangeData.CNAME + "#getSecQuestionTwo()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.secQuestionTwo);
-        }
-
         return this.secQuestionTwo;
     }
 
@@ -499,7 +352,14 @@ public final class AccountChangeData implements Serializable
                     (!(field.getName().equals("DEBUGGER"))) &&
                     (!(field.getName().equals("DEBUG"))) &&
                     (!(field.getName().equals("ERROR_RECORDER"))) &&
-                    (!(field.getName().equals("serialVersionUID"))))
+                    (!(field.getName().equals("serialVersionUID"))) &&
+                    (!(field.getName().equals("newPassword"))) &&
+                    (!(field.getName().equals("secAnswerOne"))) &&
+                    (!(field.getName().equals("secAnswerTwo"))) &&
+                    (!(field.getName().equals("secQuestionOne"))) &&
+                    (!(field.getName().equals("secQuestionTwo"))) &&
+                    (!(field.getName().equals("currentPassword"))) &&
+                    (!(field.getName().equals("confirmPassword"))))
             {
                 try
                 {

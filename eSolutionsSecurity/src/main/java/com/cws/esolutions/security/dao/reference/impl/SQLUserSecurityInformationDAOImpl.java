@@ -56,8 +56,6 @@ public class SQLUserSecurityInformationDAOImpl implements IUserSecurityInformati
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("commonName: {}", commonName);
-            DEBUGGER.debug("saltType: {}", saltType);
         }
 
         Connection sqlConn = null;
@@ -218,7 +216,6 @@ public class SQLUserSecurityInformationDAOImpl implements IUserSecurityInformati
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("commonName: {}", commonName);
         }
 
         String saltValue = null;
@@ -249,11 +246,6 @@ public class SQLUserSecurityInformationDAOImpl implements IUserSecurityInformati
             stmt = sqlConn.prepareStatement("{ CALL getUserSalt(?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, commonName);
             stmt.setString(2, saltType);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("PreparedStatement: {}", stmt);
-            }
 
             if (stmt.execute())
             {
@@ -301,8 +293,6 @@ public class SQLUserSecurityInformationDAOImpl implements IUserSecurityInformati
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", commonName);
-            DEBUGGER.debug("Value: {}", userId);
         }
 
         Connection sqlConn = null;
@@ -333,11 +323,6 @@ public class SQLUserSecurityInformationDAOImpl implements IUserSecurityInformati
             stmt = sqlConn.prepareStatement("{ CALL getUserPassword(?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, commonName);
             stmt.setString(2, userId);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("PreparedStatement: {}", stmt);
-            }
 
             if (stmt.execute())
             {
@@ -385,9 +370,6 @@ public class SQLUserSecurityInformationDAOImpl implements IUserSecurityInformati
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", commonName);
-            DEBUGGER.debug("Value: {}", resetId);
-            DEBUGGER.debug("Value: {}", expiry);
         }
 
         Connection sqlConn = null;
@@ -561,11 +543,6 @@ public class SQLUserSecurityInformationDAOImpl implements IUserSecurityInformati
 
             sqlConn.setAutoCommit(true);
             stmt = sqlConn.prepareStatement("{ CALL getSecurityQuestions() }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("PreparedStatement: {}", stmt);
-            }
 
             if (stmt.execute())
             {

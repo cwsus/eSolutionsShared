@@ -57,9 +57,6 @@ public class SQLAuthenticator implements Authenticator
         if(DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", userGuid);
-            DEBUGGER.debug("Value: {}", userName);
-            DEBUGGER.debug("Value: {}", password);
         }
 
         Connection sqlConn = null;
@@ -92,11 +89,6 @@ public class SQLAuthenticator implements Authenticator
             stmt.setString(1, userGuid);
             stmt.setString(2, userName);
 
-            if (DEBUG)
-            {
-            	DEBUGGER.debug("stmt: {}", stmt);
-            }
-
             resultSet = stmt.executeQuery();
 
             if (DEBUG)
@@ -114,11 +106,6 @@ public class SQLAuthenticator implements Authenticator
             	resultSet.first();
 
             	String retrievedPassword = resultSet.getString(1);
-
-            	if (DEBUG)
-            	{
-            		DEBUGGER.debug("retrievedPassword: {}", retrievedPassword);
-            	}
 
             	if (StringUtils.equals(retrievedPassword, password))
             	{
@@ -168,9 +155,6 @@ public class SQLAuthenticator implements Authenticator
         if(DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", userGuid);
-            DEBUGGER.debug("Value: {}", userName);
-            DEBUGGER.debug("Value: {}", questionMap);
         }
 
         Connection sqlConn = null;
@@ -203,11 +187,6 @@ public class SQLAuthenticator implements Authenticator
             stmt.setString(1, userGuid);
             stmt.setString(2, userName);
 
-            if (DEBUG)
-            {
-            	DEBUGGER.debug("stmt: {}", stmt);
-            }
-
             resultSet = stmt.executeQuery();
 
             if (DEBUG)
@@ -228,23 +207,8 @@ public class SQLAuthenticator implements Authenticator
             	String foundQuestionTwo = resultSet.getString(2);
             	String foundSecAnswerOne = resultSet.getString(3);
             	String foundSecAnswerTwo = resultSet.getString(4);
-
-            	if (DEBUG)
-            	{
-            		DEBUGGER.debug("foundQuestionOne: {}", foundQuestionOne);
-            		DEBUGGER.debug("foundQuestionTwo: {}", foundQuestionTwo);
-            		DEBUGGER.debug("foundSecAnswerOne: {}", foundSecAnswerOne);
-            		DEBUGGER.debug("foundSecAnswerTwo: {}", foundSecAnswerTwo);
-            	}
-
             	String givenAnswerOne = questionMap.get(foundQuestionOne);
             	String givenAnswerTwo = questionMap.get(foundQuestionTwo);
-
-            	if (DEBUG)
-            	{
-            		DEBUGGER.debug("Value: {}", givenAnswerOne);
-            		DEBUGGER.debug("Value: {}", givenAnswerTwo);
-            	}
 
             	if ((StringUtils.isNotBlank(givenAnswerOne)) && (StringUtils.isNotBlank(givenAnswerTwo)))
             	{
@@ -297,10 +261,6 @@ public class SQLAuthenticator implements Authenticator
         if(DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", userGuid);
-            DEBUGGER.debug("Value: {}", userName);
-            DEBUGGER.debug("Value: {}", tokenSalt);
-            DEBUGGER.debug("Value: {}", authToken);
         }
 
         Connection sqlConn = null;
@@ -331,11 +291,6 @@ public class SQLAuthenticator implements Authenticator
             stmt = sqlConn.prepareStatement("{ CALL removeSessionData(?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, userGuid);
             stmt.setString(2, tokenSalt);
-
-            if (DEBUG)
-            {
-            	DEBUGGER.debug("stmt: {}", stmt);
-            }
 
             stmt.execute();
         }
@@ -374,9 +329,6 @@ public class SQLAuthenticator implements Authenticator
         if(DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", userGuid);
-            DEBUGGER.debug("Value: {}", userId);
-            DEBUGGER.debug("authToken: {}", authToken);
         }
 
         Connection sqlConn = null;
@@ -408,11 +360,6 @@ public class SQLAuthenticator implements Authenticator
             stmt = sqlConn.prepareStatement("{ CALL getAuthToken(?, ?) }", ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             stmt.setString(1, userGuid); // guid
             stmt.setString(2, userId);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("PreparedStatement: {}", stmt);
-            }
 
             if (!(stmt.execute()))
             {
@@ -485,9 +432,6 @@ public class SQLAuthenticator implements Authenticator
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", userId);
-            DEBUGGER.debug("Value: {}", guid);
-            DEBUGGER.debug("Value: {}", authToken);
         }
 
         Connection sqlConn = null;
@@ -522,11 +466,6 @@ public class SQLAuthenticator implements Authenticator
             stmt.setString(2, guid);
             stmt.setString(3, authToken);
             stmt.registerOutParameter(4, Types.INTEGER);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("CallableStatement: {}", stmt);
-            }
 
             stmt.execute();
             int updateCount = stmt.getInt(4);

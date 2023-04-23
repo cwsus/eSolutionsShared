@@ -70,7 +70,6 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("AuthenticationRequest: {}", request);
         }
 
         String userId = null;
@@ -113,11 +112,6 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 
             String userSalt = userSec.getUserSalt(userGuid, SaltType.LOGON.name());
 
-            if (DEBUG)
-            {
-            	DEBUGGER.debug("userSalt: {}", userSalt);
-            }
-
             if (StringUtils.isBlank(userSalt))
             {
                 throw new AuthenticationException("Unable to obtain configured user security information. Cannot continue");
@@ -127,11 +121,6 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                     secConfig.getSecretKeyAlgorithm(),
                     secConfig.getIterations(), secConfig.getKeyLength(),
                     sysConfig.getEncoding());
-
-            if (DEBUG)
-            {
-            	DEBUGGER.debug("returnedPassword: {}", returnedPassword);
-            }
 
             boolean isAuthenticated = authenticator.performLogon(userGuid, userId, returnedPassword);
 
@@ -152,7 +141,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 
             if (DEBUG)
             {
-            	DEBUGGER.debug("authObject: {}", userObject);
+            	DEBUGGER.debug("userObject: {}", userObject);
             }
 
             if (Objects.isNull(userObject))
@@ -378,7 +367,6 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("AuthenticationRequest: {}", request);
         }
 
         AuthenticationResponse response = new AuthenticationResponse();
@@ -395,11 +383,6 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
         try
         {
         	String tokenSalt = userSec.getUserSalt(authUser.getGuid(), SaltType.AUTHTOKEN.name());
-
-        	if (DEBUG)
-        	{
-        		DEBUGGER.debug("String: tokenSalt: {}", tokenSalt);
-        	}
 
         	authenticator.performLogoff(authUser.getGuid(), authUser.getUsername(), tokenSalt, authUser.getAuthToken());
 

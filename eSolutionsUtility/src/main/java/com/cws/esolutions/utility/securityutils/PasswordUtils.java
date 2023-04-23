@@ -33,12 +33,10 @@ import java.security.SecureRandom;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.SecretKeySpec;
-import org.apache.logging.log4j.Logger;
 import javax.crypto.BadPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import java.security.InvalidKeyException;
 import javax.crypto.NoSuchPaddingException;
-import org.apache.logging.log4j.LogManager;
 import java.io.UnsupportedEncodingException;
 import javax.crypto.IllegalBlockSizeException;
 import java.security.NoSuchAlgorithmException;
@@ -46,8 +44,6 @@ import org.apache.commons.lang3.RandomStringUtils;
 import java.security.spec.InvalidKeySpecException;
 import org.apache.commons.codec.digest.DigestUtils;
 import java.security.InvalidAlgorithmParameterException;
-
-import com.cws.esolutions.utility.UtilityConstants;
 /**
  * Performs password related functions, such as string encryption
  * and (where necessary) decryption, base64 decode/encode.
@@ -57,12 +53,7 @@ import com.cws.esolutions.utility.UtilityConstants;
  */
 public final class PasswordUtils
 {
-    private static final String CNAME = PasswordUtils.class.getName();
-
-    static final Logger DEBUGGER = LogManager.getLogger(UtilityConstants.DEBUGGER);
-    static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-
-    /**
+	/**
      * Provides an encryption method for given values
      *
      * @param value - The plain text data to encrypt
@@ -76,46 +67,15 @@ public final class PasswordUtils
      */
     public static final String encryptText(final char[] value, final String salt, final String secretInstance, final int iterations, final int keyBits, final String encoding) throws SecurityException
     {
-        final String methodName = PasswordUtils.CNAME + "#encryptText(final char[] value, final String salt, final String secretInstance, final int iterations, final int keyBits, final String encoding) throws SecurityException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-            DEBUGGER.debug("Value: {}", salt);
-            DEBUGGER.debug("Value: {}", secretInstance);
-            DEBUGGER.debug("Value: {}", iterations);
-            DEBUGGER.debug("Value: {}", keyBits);
-            DEBUGGER.debug("Value: {}", encoding);
-        }
-
         String response = null;
 
         try
         {
             SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(secretInstance);
             KeySpec keySpec = new PBEKeySpec(value, salt.getBytes(encoding), iterations, keyBits);
-
-            if (DEBUG)
-            {
-            	DEBUGGER.debug("SecretKeyFactory: {}", keyFactory);
-            	DEBUGGER.debug("KeySpec: {}", keySpec);
-            }
-
             byte[] hashed = keyFactory.generateSecret(keySpec).getEncoded();
 
-            if (DEBUG)
-            {
-            	DEBUGGER.debug("byte[]: {}", hashed);
-            }
-
             response = DigestUtils.sha512Hex(hashed);
-
-            if (DEBUG)
-            {
-            	DEBUGGER.debug("response: {}", response);
-            }
-            
         }
         catch (final NoSuchAlgorithmException nsx)
         {
@@ -150,19 +110,6 @@ public final class PasswordUtils
      */
     public static final String decryptText(final String value, final String salt, final String secretInstance, final int iterations, final int keyBits, final String algorithm, final String cipherInstance, final String encoding) throws SecurityException
     {
-        final String methodName = PasswordUtils.CNAME + "#encryptText(final String value, final String salt, final String secretInstance, final int iterations, final int keyBits, final String algorithm, final String cipherInstance, final String encoding) throws SecurityException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", secretInstance);
-            DEBUGGER.debug("Value: {}", iterations);
-            DEBUGGER.debug("Value: {}", keyBits);
-            DEBUGGER.debug("Value: {}", algorithm);
-            DEBUGGER.debug("Value: {}", cipherInstance);
-            DEBUGGER.debug("Value: {}", encoding);
-        }
-
         String decPass = null;
 
         try
@@ -217,15 +164,6 @@ public final class PasswordUtils
 
     public static final String returnGeneratedSalt(final String generator, final int length)
     {
-        final String methodName = PasswordUtils.CNAME + "#returnGeneratedSalt(final String generator, final int length)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", generator);
-            DEBUGGER.debug("Value: {}", length);
-        }
-
         String newSalt = null;
 
 		try
@@ -233,12 +171,6 @@ public final class PasswordUtils
 			SecureRandom sRandom = SecureRandom.getInstance(generator);
         	byte[] salt = new byte[length];
         	sRandom.nextBytes(salt);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("SecureRandom: {}", sRandom);
-                DEBUGGER.debug("salt: {}", salt);
-            }
 
         	newSalt = DigestUtils.sha512Hex(salt);
 		}
