@@ -104,16 +104,19 @@ public final class AccountChangeProcessorImplTest
     	System.out.println(secAnsOne);
     	System.out.println(secAnsTwo);
 
+    	AuthenticationData authData = new AuthenticationData();
+    	authData.setPassword("ANIBbuKHiGkyGANLOjawFZ9cZGXuCVRd".toCharArray());
+
     	UserAccount account = new UserAccount();
     	account.setUsername("khuntly");
-    	account.setGuid("e1006d6d-e815-4b27-9a8c-fb91227cc2b5");
+    	account.setGuid("af6a04da-b9d9-430f-8017-69ee270d794f");
     	account.setUserRole(SecurityUserRole.SITE_ADMIN);
 
     	AccountChangeData changeData = new AccountChangeData();
     	changeData.setResetType(ResetRequestType.QUESTIONS);
     	changeData.setSecAnswerOne(secAnsOne.toCharArray());
     	changeData.setSecAnswerTwo(secAnsTwo.toCharArray());
-    	changeData.setSecQuestionOne("What is your mother's maiden name ?");
+    	changeData.setSecQuestionOne("What is your mothers maiden name ?");
     	changeData.setSecQuestionTwo("What is your favourite cartoon ?");
 
         AccountChangeRequest request = new AccountChangeRequest();
@@ -124,6 +127,7 @@ public final class AccountChangeProcessorImplTest
         request.setUserAccount(account);
         request.setRequestor(account);
         request.setChangeData(changeData);
+        request.setUserSecurity(authData);
 
         try
         {
@@ -133,6 +137,7 @@ public final class AccountChangeProcessorImplTest
         }
         catch (final AccountChangeException acx)
         {
+        	acx.printStackTrace();
         	Assertions.fail(acx.getMessage());
         }
     }
