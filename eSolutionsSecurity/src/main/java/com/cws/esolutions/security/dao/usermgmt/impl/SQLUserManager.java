@@ -80,7 +80,7 @@ public class SQLUserManager implements UserManager
             	DEBUGGER.debug("sqlConn: {}", sqlConn);
             }
 
-            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
+            if (sqlConn.isClosed())
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -183,7 +183,7 @@ public class SQLUserManager implements UserManager
             	DEBUGGER.debug("sqlConn: {}", sqlConn);
             }
 
-            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
+            if (sqlConn.isClosed())
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -277,7 +277,7 @@ public class SQLUserManager implements UserManager
             	DEBUGGER.debug("sqlConn: {}", sqlConn);
             }
 
-            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
+            if (sqlConn.isClosed())
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -358,7 +358,7 @@ public class SQLUserManager implements UserManager
                     DEBUGGER.debug("sqlConn: {}", sqlConn);
                 }
 
-                if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
+                if (sqlConn.isClosed())
                 {
                     throw new SQLException("Unable to obtain application datasource connection");
                 }
@@ -382,7 +382,7 @@ public class SQLUserManager implements UserManager
                     DEBUGGER.debug("sqlConn: {}", sqlConn);
                 }
 
-                if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
+                if (sqlConn.isClosed())
                 {
                     throw new SQLException("Unable to obtain application datasource connection");
                 }
@@ -501,7 +501,7 @@ public class SQLUserManager implements UserManager
             	DEBUGGER.debug("sqlConn: {}", sqlConn);
             }
 
-            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
+            if (sqlConn.isClosed())
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -636,7 +636,7 @@ public class SQLUserManager implements UserManager
             	DEBUGGER.debug("sqlConn: {}", sqlConn);
             }
 
-            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
+            if (sqlConn.isClosed())
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -727,7 +727,7 @@ public class SQLUserManager implements UserManager
             	DEBUGGER.debug("sqlConn: {}", sqlConn);
             }
 
-            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
+            if (sqlConn.isClosed())
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -847,7 +847,7 @@ public class SQLUserManager implements UserManager
             	DEBUGGER.debug("sqlConn: {}", sqlConn);
             }
 
-            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
+            if (sqlConn.isClosed())
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -957,7 +957,7 @@ public class SQLUserManager implements UserManager
             	DEBUGGER.debug("sqlConn: {}", sqlConn);
             }
 
-            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
+            if (sqlConn.isClosed())
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -1052,7 +1052,7 @@ public class SQLUserManager implements UserManager
             	DEBUGGER.debug("sqlConn: {}", sqlConn);
             }
 
-            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
+            if (sqlConn.isClosed())
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -1142,7 +1142,7 @@ public class SQLUserManager implements UserManager
             	DEBUGGER.debug("sqlConn: {}", sqlConn);
             }
 
-            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
+            if (sqlConn.isClosed())
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -1228,7 +1228,7 @@ public class SQLUserManager implements UserManager
             	DEBUGGER.debug("sqlConn: {}", sqlConn);
             }
 
-            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
+            if (sqlConn.isClosed())
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -1310,7 +1310,7 @@ public class SQLUserManager implements UserManager
             	DEBUGGER.debug("sqlConn: {}", sqlConn);
             }
 
-            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
+            if (sqlConn.isClosed())
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -1402,7 +1402,7 @@ public class SQLUserManager implements UserManager
             	DEBUGGER.debug("sqlConn: {}", sqlConn);
             }
 
-            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
+            if (sqlConn.isClosed())
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }

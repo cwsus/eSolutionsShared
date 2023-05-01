@@ -82,6 +82,7 @@ public class SessionAuthenticationFilter implements Filter
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LogManager.getLogger(SecurityServicesConstants.ERROR_LOGGER + CNAME);
 
+    @Override
     public void init(final FilterConfig filterConfig) throws ServletException
     {
         final String methodName = SessionAuthenticationFilter.CNAME + "#init(final FilterConfig filterConfig) throws ServletException";
@@ -133,6 +134,7 @@ public class SessionAuthenticationFilter implements Filter
         }
     }
 
+    @Override
     public void doFilter(final ServletRequest sRequest, final ServletResponse sResponse, final FilterChain filterChain) throws IOException, ServletException
     {
         final String methodName = SessionAuthenticationFilter.CNAME + "#doFilter(final ServletRequest sRequest, final ServletResponse sResponse, final FilterChain filterChain) throws IOException, ServletException";
@@ -244,7 +246,7 @@ public class SessionAuthenticationFilter implements Filter
 
         if (hRequest.isRequestedSessionIdFromURL())
         {
-            ERROR_RECORDER.error("Session found is from URL. Redirecting request to " + this.loginURI);
+            ERROR_RECORDER.error("Session found is from URL. Redirecting request to %s", this.loginURI);
 
             // invalidate the session
             hSession.removeAttribute(SessionAuthenticationFilter.USER_ACCOUNT);
@@ -387,7 +389,7 @@ public class SessionAuthenticationFilter implements Filter
 	                else
 	                {
 	                    // no user account in the session
-	                    ERROR_RECORDER.error("Session contains no existing user account. Redirecting request to " + hRequest.getContextPath() + this.logoutURI);
+	                    ERROR_RECORDER.error("Session contains no existing user account. Redirecting request to %s%s", hRequest.getContextPath(), this.logoutURI);
 	
 	                    hResponse.sendRedirect(hResponse.encodeRedirectURL(hRequest.getContextPath() + this.logoutURI));
 	
@@ -397,7 +399,7 @@ public class SessionAuthenticationFilter implements Filter
 	            else
 	            {
 	                // no user account in the session
-	                ERROR_RECORDER.error("Session contains no existing user account. Redirecting request to " + hRequest.getContextPath() + this.logoutURI);
+                    ERROR_RECORDER.error("Session contains no existing user account. Redirecting request to %s%s", hRequest.getContextPath(), this.logoutURI);
 	
 	                hResponse.sendRedirect(hResponse.encodeRedirectURL(hRequest.getContextPath() + this.logoutURI));
 	
@@ -407,7 +409,7 @@ public class SessionAuthenticationFilter implements Filter
         }
         else
         {
-            ERROR_RECORDER.error("The found session contained no attributes. Redirecting to " + hRequest.getContextPath() + this.logoutURI);
+            ERROR_RECORDER.error("The found session contained no attributes. Redirecting to %s%s", hRequest.getContextPath(), this.logoutURI);
 
             hResponse.sendRedirect(hResponse.encodeRedirectURL(hRequest.getContextPath() + this.logoutURI));
 
@@ -415,10 +417,8 @@ public class SessionAuthenticationFilter implements Filter
         }
 
         // i dont know how we got here but we did
-        ERROR_RECORDER.error("An unknown error occurred. Redirecting request to " + hRequest.getContextPath() + this.logoutURI);
+        ERROR_RECORDER.error("An unknown error occurred. Redirecting request to %s%s", hRequest.getContextPath(), this.logoutURI);
 
         hResponse.sendRedirect(hResponse.encodeRedirectURL(hRequest.getContextPath() + this.logoutURI));
-
-        return;
     }
 }

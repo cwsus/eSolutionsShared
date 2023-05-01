@@ -72,7 +72,7 @@ public class SQLUserSecurityInformationDAOImpl implements IUserSecurityInformati
         {
             sqlConn = dataSource.getConnection();
 
-            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
+            if (sqlConn.isClosed())
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -150,7 +150,7 @@ public class SQLUserSecurityInformationDAOImpl implements IUserSecurityInformati
                 DEBUGGER.debug("Connection: {}", sqlConn);
             }
 
-            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
+            if (sqlConn.isClosed())
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -237,7 +237,7 @@ public class SQLUserSecurityInformationDAOImpl implements IUserSecurityInformati
                 DEBUGGER.debug("Connection: {}", sqlConn);
             }
 
-            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
+            if (sqlConn.isClosed())
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -314,7 +314,7 @@ public class SQLUserSecurityInformationDAOImpl implements IUserSecurityInformati
                 DEBUGGER.debug("Connection: {}", sqlConn);
             }
 
-            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
+            if (sqlConn.isClosed())
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -385,7 +385,7 @@ public class SQLUserSecurityInformationDAOImpl implements IUserSecurityInformati
         {
             sqlConn = dataSource.getConnection();
 
-            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
+            if (sqlConn.isClosed())
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -461,7 +461,7 @@ public class SQLUserSecurityInformationDAOImpl implements IUserSecurityInformati
                 DEBUGGER.debug("Connection: {}", sqlConn);
             }
 
-            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
+            if (sqlConn.isClosed())
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -536,7 +536,7 @@ public class SQLUserSecurityInformationDAOImpl implements IUserSecurityInformati
         {
             sqlConn = dataSource.getConnection();
 
-            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
+            if (sqlConn.isClosed())
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -644,7 +644,7 @@ public class SQLUserSecurityInformationDAOImpl implements IUserSecurityInformati
             	DEBUGGER.debug("sqlConn: {}", sqlConn);
             }
 
-            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
+            if (sqlConn.isClosed())
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -729,7 +729,7 @@ public class SQLUserSecurityInformationDAOImpl implements IUserSecurityInformati
             	DEBUGGER.debug("sqlConn: {}", sqlConn);
             }
 
-            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
+            if (sqlConn.isClosed())
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -808,7 +808,7 @@ public class SQLUserSecurityInformationDAOImpl implements IUserSecurityInformati
         {
             sqlConn = dataSource.getConnection();
 
-            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
+            if (sqlConn.isClosed())
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }

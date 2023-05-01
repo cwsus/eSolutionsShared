@@ -44,7 +44,6 @@ public class CoreServicesRequest implements Serializable
 	private String appName = null;
     private String projectId = null;
     private String serviceId = null;
-    private Object requestPayload = null;
 
     private static final long serialVersionUID = 8744045748424626849L;
     private static final String CNAME = CoreServicesRequest.class.getName();
@@ -91,19 +90,6 @@ public class CoreServicesRequest implements Serializable
         this.serviceId = value;
     }
 
-    public final void setRequestPayload(final Object value)
-    {
-        final String methodName = CoreServicesRequest.CNAME + "#setRequestPayload(final Object value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.requestPayload = value;
-    }
-
     public final String getAppName()
     {
         final String methodName = CoreServicesRequest.CNAME + "#getAppName()";
@@ -141,19 +127,6 @@ public class CoreServicesRequest implements Serializable
         }
 
         return this.serviceId;
-    }
-
-    public final Object getRequestPayload()
-    {
-        final String methodName = CoreServicesRequest.CNAME + "#getRequestPayload()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.requestPayload);
-        }
-
-        return this.requestPayload;
     }
 
     @Override

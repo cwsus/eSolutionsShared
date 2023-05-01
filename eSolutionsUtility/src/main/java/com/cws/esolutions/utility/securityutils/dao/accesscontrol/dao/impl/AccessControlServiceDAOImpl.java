@@ -83,7 +83,7 @@ public class AccessControlServiceDAOImpl implements IAccessControlServiceDAO
                 DEBUGGER.debug("Connection: {}", sqlConn);
             }
 
-            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
+            if (sqlConn.isClosed())
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -167,7 +167,7 @@ public class AccessControlServiceDAOImpl implements IAccessControlServiceDAO
 
             sqlConn = dataSource.getConnection();
 
-            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
+            if (sqlConn.isClosed())
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -264,7 +264,7 @@ public class AccessControlServiceDAOImpl implements IAccessControlServiceDAO
                 DEBUGGER.debug("Connection: {}", sqlConn);
             }
 
-            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
+            if (sqlConn.isClosed())
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }

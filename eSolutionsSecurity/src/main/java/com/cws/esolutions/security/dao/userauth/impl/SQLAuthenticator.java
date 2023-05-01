@@ -78,7 +78,7 @@ public class SQLAuthenticator implements Authenticator
             	DEBUGGER.debug("sqlConn: {}", sqlConn);
             }
 
-            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
+            if (sqlConn.isClosed())
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -176,7 +176,7 @@ public class SQLAuthenticator implements Authenticator
             	DEBUGGER.debug("sqlConn: {}", sqlConn);
             }
 
-            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
+            if (sqlConn.isClosed())
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -280,7 +280,7 @@ public class SQLAuthenticator implements Authenticator
             	DEBUGGER.debug("sqlConn: {}", sqlConn);
             }
 
-            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
+            if (sqlConn.isClosed())
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -350,7 +350,7 @@ public class SQLAuthenticator implements Authenticator
             	DEBUGGER.debug("sqlConn: {}", sqlConn);
             }
 
-            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
+            if (sqlConn.isClosed())
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -452,7 +452,7 @@ public class SQLAuthenticator implements Authenticator
             	DEBUGGER.debug("sqlConn: {}", sqlConn);
             }
 
-            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
+            if (sqlConn.isClosed())
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
@@ -535,7 +535,7 @@ public class SQLAuthenticator implements Authenticator
             	DEBUGGER.debug("sqlConn: {}", sqlConn);
             }
 
-            if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
+            if (sqlConn.isClosed())
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }

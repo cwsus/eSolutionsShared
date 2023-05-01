@@ -175,7 +175,6 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
 
             CoreServicesRequest agentRequest = new CoreServicesRequest();
             agentRequest.setAppName(appConfig.getAppName());
-            agentRequest.setRequestPayload(systemReq);
 
             if (DEBUG)
             {
@@ -406,7 +405,6 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
 
             CoreServicesRequest agentRequest = new CoreServicesRequest();
             agentRequest.setAppName(appConfig.getAppName());
-            agentRequest.setRequestPayload(systemReq);
 
             if (DEBUG)
             {
@@ -635,7 +633,6 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
 
             CoreServicesRequest agentRequest = new CoreServicesRequest();
             agentRequest.setAppName(appConfig.getAppName());
-            agentRequest.setRequestPayload(systemReq);
 
             if (DEBUG)
             {
@@ -864,7 +861,6 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
 
             CoreServicesRequest agentRequest = new CoreServicesRequest();
             agentRequest.setAppName(appConfig.getAppName());
-            agentRequest.setRequestPayload(systemReq);
 
             if (DEBUG)
             {

@@ -58,6 +58,7 @@ public class SecurityServicesListener implements ServletContextListener
     /**
      * @see javax.servlet.ServletContextListener#contextInitialized(javax.servlet.ServletContextEvent)
      */
+    @Override
     public void contextInitialized(final ServletContextEvent sContextEvent)
     {
         URL xmlURL = null;
@@ -127,6 +128,7 @@ public class SecurityServicesListener implements ServletContextListener
     /**
      * @see javax.servlet.ServletContextListener#contextDestroyed(javax.servlet.ServletContextEvent)
      */
+    @Override
     public void contextDestroyed(final ServletContextEvent sContextEvent)
     {
     }

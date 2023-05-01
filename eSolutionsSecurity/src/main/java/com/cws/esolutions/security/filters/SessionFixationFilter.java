@@ -54,6 +54,7 @@ public class SessionFixationFilter implements Filter
     private static final Logger DEBUGGER = LogManager.getLogger(SecurityServicesConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
+    @Override
     public void init(final FilterConfig filterConfig)
     {
         final String methodName = SessionFixationFilter.CNAME + "#init(final FilterConfig filterConfig) throws ServletException";
@@ -65,6 +66,7 @@ public class SessionFixationFilter implements Filter
         }
     }
 
+    @Override
     public void doFilter(final ServletRequest sRequest, final ServletResponse sResponse, final FilterChain filterChain) throws IOException, ServletException
     {
         final String methodName = SessionFixationFilter.CNAME + "#doFilter(final ServletRequest sRequest, final ServletResponse sResponse, final FilterChain filterChain) throws IOException, ServletException";
@@ -191,17 +193,16 @@ public class SessionFixationFilter implements Filter
                         String newSessionElement = (String) sessionEnumeration.nextElement();
                         Object newSessionValue = nSession.getAttribute(newSessionElement);
     
-                        DEBUGGER.debug("Attribute: " + newSessionElement + "; Value: " + newSessionValue);
+                        DEBUGGER.debug("Attribute: {}, Value: {}", newSessionElement, newSessionValue);
                     }
                 }
             }
         }
 
         filterChain.doFilter(sRequest, sResponse);
-
-        return;
     }
 
+    @Override
     public void destroy()
     {
         final String methodName = SessionFixationFilter.CNAME + "#destroy()";

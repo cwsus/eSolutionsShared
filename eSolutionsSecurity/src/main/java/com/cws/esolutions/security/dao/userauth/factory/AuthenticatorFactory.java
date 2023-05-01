@@ -91,9 +91,9 @@ public class AuthenticatorFactory
             {
                 ERROR_RECORDER.error(cnx.getMessage(), cnx);
             }
-            catch (final IllegalArgumentException iax)
+            catch (final IllegalArgumentException iax2)
             {
-                ERROR_RECORDER.error(iax.getMessage(), iax);
+                ERROR_RECORDER.error(iax2.getMessage(), iax2);
             }
             catch (final SecurityException sx)
             {

@@ -61,7 +61,7 @@ public class ApplicationEnablementDAOImpl implements IApplicationEnablementDAO
 	    {
 	        sqlConn = dataSource.getConnection();
 
-	        if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
+	        if (sqlConn.isClosed())
 	        {
 	            throw new SQLException("Unable to obtain application datasource connection");
 	        }
@@ -141,7 +141,7 @@ public class ApplicationEnablementDAOImpl implements IApplicationEnablementDAO
 	    {
 	        sqlConn = dataSource.getConnection();
 
-	        if ((Objects.isNull(sqlConn)) || (sqlConn.isClosed()))
+	        if (sqlConn.isClosed())
 	        {
 	            throw new SQLException("Unable to obtain application datasource connection");
 	        }
