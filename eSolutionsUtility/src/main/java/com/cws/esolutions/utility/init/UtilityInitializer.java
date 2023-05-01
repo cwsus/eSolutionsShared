@@ -36,6 +36,11 @@ public class UtilityInitializer
 {
     private static final UtilityBean bean = UtilityBean.getInstance();
 
+    private UtilityInitializer()
+    {
+    	super();
+    }
+
     /**
      * Initializes the security service in a standalone mode - used for applications outside of a container or when
      * run as a standalone jar.

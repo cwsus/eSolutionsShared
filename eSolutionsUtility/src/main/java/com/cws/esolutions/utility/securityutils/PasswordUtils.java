@@ -25,25 +25,15 @@ package com.cws.esolutions.utility.securityutils;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
-import java.util.Base64;
-import javax.crypto.Cipher;
-import javax.crypto.SecretKey;
 import java.security.spec.KeySpec;
 import java.security.SecureRandom;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.SecretKeySpec;
-import javax.crypto.BadPaddingException;
-import javax.crypto.spec.IvParameterSpec;
-import java.security.InvalidKeyException;
-import javax.crypto.NoSuchPaddingException;
 import java.io.UnsupportedEncodingException;
-import javax.crypto.IllegalBlockSizeException;
 import java.security.NoSuchAlgorithmException;
 import org.apache.commons.lang3.RandomStringUtils;
 import java.security.spec.InvalidKeySpecException;
 import org.apache.commons.codec.digest.DigestUtils;
-import java.security.InvalidAlgorithmParameterException;
 /**
  * Performs password related functions, such as string encryption
  * and (where necessary) decryption, base64 decode/encode.
@@ -53,6 +43,11 @@ import java.security.InvalidAlgorithmParameterException;
  */
 public final class PasswordUtils
 {
+	private PasswordUtils()
+	{
+		super();
+	}
+
 	/**
      * Provides an encryption method for given values
      *

@@ -57,6 +57,7 @@ public class CoreServicesListener implements ServletContextListener
 
     private static final String INIT_SYSCONFIG_FILE = "eSolutionsCoreConfig";
 
+    @Override
     public void contextInitialized(final ServletContextEvent contextEvent)
     {
         URL xmlURL = null;
@@ -125,6 +126,7 @@ public class CoreServicesListener implements ServletContextListener
         }
     }
 
+    @Override
     public void contextDestroyed(final ServletContextEvent contextEvent)
     {
     }
