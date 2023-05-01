@@ -120,7 +120,7 @@ public class AccountSearchResponse implements Serializable
 
     public final SecurityRequestStatus getRequestStatus()
     {
-        final String methodName = AccountSearchResponse.CNAME + "#getMgmtType()";
+        final String methodName = AccountSearchResponse.CNAME + "#getRequestStatus";
 
         if (DEBUG)
         {

@@ -135,7 +135,7 @@ public class AccountControlResponse implements Serializable
 
     public final SecurityRequestStatus getRequestStatus()
     {
-        final String methodName = AccountControlResponse.CNAME + "#getMgmtType()";
+        final String methodName = AccountControlResponse.CNAME + "#getRequestStatus()";
 
         if (DEBUG)
         {

@@ -91,7 +91,7 @@ public class AuthenticationResponse implements Serializable
 
     public final SecurityRequestStatus getRequestStatus()
     {
-        final String methodName = AuthenticationResponse.CNAME + "#getMgmtType()";
+        final String methodName = AuthenticationResponse.CNAME + "#getRequestStatus";
 
         if (DEBUG)
         {

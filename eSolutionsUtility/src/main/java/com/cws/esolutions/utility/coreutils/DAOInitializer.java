@@ -66,9 +66,8 @@ public final class DAOInitializer
         try
         {
         	Context initContext = new InitialContext();
-            Context envContext = (Context) initContext.lookup(UtilityConstants.DS_CONTEXT);
+            bean.setAuthDataSource(initContext.lookup(UtilityConstants.DS_CONTEXT + "/jdbc/cwssec"));
 
-            bean.setAuthDataSource(envContext.lookup("jdbc/cwssec"));
         }
         catch (final NamingException nx)
         {

@@ -106,7 +106,7 @@ public class AccountChangeResponse implements Serializable
 
     public final SecurityRequestStatus getRequestStatus()
     {
-        final String methodName = AccountChangeResponse.CNAME + "#getMgmtType()";
+        final String methodName = AccountChangeResponse.CNAME + "#getRequestStatus()";
 
         if (DEBUG)
         {

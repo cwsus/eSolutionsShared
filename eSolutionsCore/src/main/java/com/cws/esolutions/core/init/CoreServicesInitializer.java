@@ -40,9 +40,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.dbcp2.BasicDataSource;
 
 import com.cws.esolutions.core.CoreServicesBean;
-import com.cws.esolutions.security.SecurityServicesBean;
 import com.cws.esolutions.core.config.xml.DataSourceManager;
-import com.cws.esolutions.utility.securityutils.PasswordUtils;
 import com.cws.esolutions.core.exception.CoreServicesException;
 import com.cws.esolutions.core.config.xml.CoreConfigurationData;
 /**
@@ -52,7 +50,6 @@ import com.cws.esolutions.core.config.xml.CoreConfigurationData;
 public class CoreServicesInitializer
 {
     private static final CoreServicesBean appBean = CoreServicesBean.getInstance();
-    private static final SecurityServicesBean secBean = SecurityServicesBean.getInstance();
 
     /**
      * Initializes the core service in a standalone mode - used for applications outside of a container or when
@@ -113,13 +110,7 @@ public class CoreServicesInitializer
                             dataSource.setUrl(mgr.getDataSource());
                             dataSource.setUsername(mgr.getDsUser());
                             dataSource.setConnectionProperties(sBuilder.toString());
-                            dataSource.setPassword(PasswordUtils.decryptText(mgr.getDsPass(), mgr.getDsSalt(),
-                            		secBean.getConfigData().getSecurityConfig().getSecretKeyAlgorithm(),
-                            		secBean.getConfigData().getSecurityConfig().getIterations(),
-                            		secBean.getConfigData().getSecurityConfig().getKeyLength(),
-                            		secBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(),
-                            		secBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
-                            		appBean.getConfigData().getSystemConfig().getEncoding()));
+                            dataSource.setPassword(mgr.getDsPass());
 
                         dsMap.put(mgr.getDsName(), dataSource);
                     }

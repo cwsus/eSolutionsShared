@@ -52,9 +52,4 @@ public class PasswordUtilsTest
             Assertions.fail(sx.getMessage());
         }
     }
-
-    @Test public void testOneWayEncryption()
-    {
-
-    }
 }

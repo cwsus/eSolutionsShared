@@ -105,17 +105,14 @@ public class SecurityServicesInitializer
                         {
                             StringBuilder sBuilder = new StringBuilder()
                                 .append("connectTimeout=" + mgr.getConnectTimeout() + ";")
-                                .append("socketTimeout=" + mgr.getConnectTimeout() + ";")
-                                .append("autoReconnect=" + mgr.getAutoReconnect() + ";");
+                                .append("socketTimeout=" + mgr.getConnectTimeout() + ";");
 
                             BasicDataSource dataSource = new BasicDataSource();
                             dataSource.setDriverClassName(mgr.getDriver());
                             dataSource.setUrl(mgr.getDataSource());
                             dataSource.setUsername(mgr.getDsUser());
                             dataSource.setConnectionProperties(sBuilder.toString());
-                            dataSource.setPassword(PasswordUtils.decryptText(mgr.getDsPass(), mgr.getDsSalt(), svcBean.getConfigData().getSecurityConfig().getSecretKeyAlgorithm(), svcBean.getConfigData().getSecurityConfig().getIterations(),
-                        			svcBean.getConfigData().getSecurityConfig().getKeyLength(), svcBean.getConfigData().getSecurityConfig().getEncryptionAlgorithm(), svcBean.getConfigData().getSecurityConfig().getEncryptionInstance(),
-                        			svcBean.getConfigData().getSystemConfig().getEncoding()));
+                            dataSource.setPassword(mgr.getDsPass());
 
                             dsMap.put(mgr.getDsName(), dataSource);
                         }

@@ -47,11 +47,9 @@ public final class DataSourceManager
     private String driver = null;
     private String dsUser = null;
     private String dsPass = null;
-    private String dsSalt = null;
     private String datasource = null;
     private int socketTimeout = 10000;
     private int connectTimeout = 10000;
-    private boolean autoReconnect = true;
 
     private static final String CNAME = DataSourceManager.class.getName();
 
@@ -115,11 +113,6 @@ public final class DataSourceManager
         this.dsPass = value;
     }
 
-    public final void setDsSalt(final String value)
-    {
-        this.dsSalt = value;
-    }
-
     public final void setConnectTimeout(final int value)
     {
         final String methodName = DataSourceManager.CNAME + "#setSalt(final int value)";
@@ -144,19 +137,6 @@ public final class DataSourceManager
         }
 
         this.socketTimeout = value;
-    }
-
-    public final void setAutoReconnect(final boolean value)
-    {
-        final String methodName = DataSourceManager.CNAME + "#setAutoReconnect(final boolean value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.autoReconnect = value;
     }
 
     @XmlElement(name = "dsName")
@@ -221,12 +201,6 @@ public final class DataSourceManager
         return this.dsPass;
     }
 
-    @XmlElement(name = "dsSalt")
-    public final String getDsSalt()
-    {
-        return this.dsSalt;
-    }
-
     @XmlElement(name = "connectTimeout")
     public final int getConnectTimeout()
     {
@@ -255,20 +229,6 @@ public final class DataSourceManager
         return this.socketTimeout;
     }
 
-    @XmlElement(name = "autoReconnect")
-    public final boolean getAutoReconnect()
-    {
-        final String methodName = DataSourceManager.CNAME + "#getAutoReconnect()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.autoReconnect);
-        }
-
-        return this.autoReconnect;
-    }
-
     @Override
     public final String toString()
     {
@@ -283,8 +243,7 @@ public final class DataSourceManager
                     (!(field.getName().equals("DEBUG"))) &&
                     (!(field.getName().equals("ERROR_RECORDER"))) &&
                     (!(field.getName().equals("serialVersionUID"))) &&
-                    (!(field.getName().equals("dsPass"))) &&
-                    (!(field.getName().equals("dsSalt"))))
+                    (!(field.getName().equals("dsPass"))))
             {
                 try
                 {

@@ -25,19 +25,23 @@ package com.cws.esolutions.security.processors.impl;
  * ----------------------------------------------------------------------------
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
+import java.util.Arrays;
+import java.util.List;
+import java.util.ArrayList;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.TestInstance;
 
+import com.cws.esolutions.security.dto.UserGroup;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.enums.SecurityUserRole;
-import com.cws.esolutions.security.init.SecurityServicesInitializer;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
-import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
+import com.cws.esolutions.security.init.SecurityServicesInitializer;
+import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.processors.dto.AccountControlRequest;
 import com.cws.esolutions.security.processors.dto.AccountControlResponse;
 import com.cws.esolutions.security.processors.exception.AccountControlException;
@@ -75,6 +79,28 @@ public class AccountControlProcessorImplTest
 
     @Test public void createNewUser()
     {
+    	List<UserGroup> grpList = new ArrayList<UserGroup>();
+    	List<String> guids = new ArrayList<String>(Arrays.asList(
+    			"0C1C5F83-3EDD-4635-9F1E-6A9B5383747E",
+    			"2B58DC01-E63D-4125-B55F-D407A17EA4B5",
+    			"3F0D3FB5-56C9-4A90-B177-4E1593088DBF",
+    			"45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E",
+    			"4B081972-92C3-455B-9403-B81E68C538B6",
+    			"5DC38ADF-6D09-4843-8A58-514072DD25D5",
+    			"703209b7-ac2f-4181-85cc-f2e263f659c1",
+    			"96E4E53E-FE87-446C-AF03-0F5BC6527B9D",
+    			"B52B1DE9-37A4-4554-B85E-2EA28C4EE3DD",
+    			"C7DE2E53-400A-4D20-B4B6-146918822339",
+    			"D95C1E18-8C80-481D-A7A8-8678CFA48B64"));
+
+    	for (String guid : guids)
+    	{
+    		UserGroup group = new UserGroup();
+    		group.setGuid(guid);
+
+    		grpList.add(group);
+    	}
+
     	UserAccount account = new UserAccount();
     	account.setUsername("khuntly");
     	account.setSurname("Huntly");
@@ -84,6 +110,7 @@ public class AccountControlProcessorImplTest
     	account.setUsername("khuntly");
     	account.setUserRole(SecurityUserRole.SITE_ADMIN);
     	account.setEmailAddr("kmhuntly@gmail.com");
+    	account.setUserGroups(grpList);
 
         AuthenticationData authSec = new AuthenticationData();
         authSec.setPassword("ANIBbuKHiGkyGANLOjawFZ9cZGXuCVRd".toCharArray());
@@ -114,7 +141,7 @@ public class AccountControlProcessorImplTest
     {
     	UserAccount account = new UserAccount();
     	account.setUsername("khuntly");
-    	account.setGuid("03a6c07e-a69f-452d-814f-d22fb497140b");
+    	account.setGuid("af6a04da-b9d9-430f-8017-69ee270d794f");
     	account.setUserRole(SecurityUserRole.SITE_ADMIN);
 
         AccountControlRequest request = new AccountControlRequest();
