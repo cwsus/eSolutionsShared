@@ -26,6 +26,7 @@ package com.cws.esolutions.utility;
  * Kevin Huntly         12/05/2008 13:36:09             Added method to process change requests
  */
 import java.util.Map;
+import java.util.Objects;
 import java.io.Serializable;
 import javax.sql.DataSource;
 import java.lang.reflect.Field;
@@ -61,7 +62,7 @@ public class UtilityBean implements Serializable
             DEBUGGER.debug("instance: {}", UtilityBean.instance);
         }
 
-        if (UtilityBean.instance == null)
+        if (Objects.isNull(UtilityBean.instance))
         {
             UtilityBean.instance = new UtilityBean();
         }
