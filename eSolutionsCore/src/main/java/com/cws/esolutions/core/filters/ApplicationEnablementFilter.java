@@ -81,6 +81,7 @@ public class ApplicationEnablementFilter implements Filter
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     static final Logger ERROR_RECORDER = LogManager.getLogger(CoreServicesConstants.ERROR_LOGGER);
 
+    @Override
     public void init(final FilterConfig filterConfig) throws ServletException
     {
         final String methodName = ApplicationEnablementFilter.CNAME + "#init(final FilterConfig filterConfig) throws ServletException";
@@ -130,6 +131,7 @@ public class ApplicationEnablementFilter implements Filter
         }
     }
 
+    @Override
     public void doFilter(final ServletRequest sRequest, final ServletResponse sResponse, final FilterChain filterChain) throws IOException, ServletException
     {
     	final String methodName = ApplicationEnablementFilter.CNAME + "#doFilter(final ServletRequest sRequest, final ServletResponse sResponse, final FilterChain filterChain) throws IOException, ServletException";
@@ -195,7 +197,7 @@ public class ApplicationEnablementFilter implements Filter
             }
         }
 
-    	final IApplicationEnablementProcessor enabler = (IApplicationEnablementProcessor) new ApplicationEnablementProcessorImpl();
+    	final IApplicationEnablementProcessor enabler = new ApplicationEnablementProcessorImpl();
 
         ApplicationEnablementRequest enableRequest = new ApplicationEnablementRequest();
         enableRequest.setApplicationId(this.appId);
@@ -237,10 +239,6 @@ public class ApplicationEnablementFilter implements Filter
 					hResponse.sendRedirect(hResponse.encodeRedirectURL(hRequest.getContextPath() + this.svcUnauthorizedRedir));
 
 					break;
-				default:
-					hResponse.sendRedirect(hResponse.encodeRedirectURL(hRequest.getContextPath() + this.svcNotEnabledRedir));
-					
-					return;
 	        }
         }
         catch (final ApplicationEnablementException aex)
@@ -248,8 +246,6 @@ public class ApplicationEnablementFilter implements Filter
         	ERROR_RECORDER.error(aex.getMessage(), aex);
 
 			hResponse.sendRedirect(hResponse.encodeRedirectURL(hRequest.getContextPath() + this.svcFailureRedir));
-
-        	return;
         }
     }
 }
