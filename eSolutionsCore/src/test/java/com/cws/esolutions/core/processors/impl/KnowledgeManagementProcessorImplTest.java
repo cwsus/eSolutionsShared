@@ -89,9 +89,9 @@ class KnowledgeManagementProcessorImplTest
 		userGroups.add(userGroup);
 		
 		UserAccount userAccount = new UserAccount();
-		userAccount.setGuid("e1006d6d-e815-4b27-9a8c-fb91227cc2b5");
+		userAccount.setGuid("af6a04da-b9d9-430f-8017-69ee270d794f");
 		userAccount.setUsername("khuntly");
-		userAccount.setUserRole(SecurityUserRole.USER);
+		userAccount.setUserRole(SecurityUserRole.SITE_ADMIN);
 		userAccount.setUserGroups(userGroups);
 
 		Article article = new Article();

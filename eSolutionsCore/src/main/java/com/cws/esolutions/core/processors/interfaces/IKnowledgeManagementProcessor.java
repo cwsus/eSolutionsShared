@@ -56,10 +56,10 @@ public interface IKnowledgeManagementProcessor
     static final SecurityServicesBean secBean = SecurityServicesBean.getInstance();
     static final SecurityConfig secConfig = secBean.getConfigData().getSecurityConfig();
     static final ApplicationConfig appConfig = appBean.getConfigData().getAppConfig();
-    static final IAuditProcessor auditor = (IAuditProcessor) new AuditProcessorImpl();
-    static final IKnowledgeDataDAO dao = (IKnowledgeDataDAO) new KnowledgeDataDAOImpl();
-    static final UserManager userManager = (UserManager) UserManagerFactory.getUserManager(secConfig.getUserManager());
-    static final IAccessControlService accessControl = (IAccessControlService) new AccessControlServiceImpl();
+    static final IAuditProcessor auditor = new AuditProcessorImpl();
+    static final IKnowledgeDataDAO dao = new KnowledgeDataDAOImpl();
+    static final UserManager userManager = UserManagerFactory.getUserManager(secConfig.getUserManager());
+    static final IAccessControlService accessControl = new AccessControlServiceImpl();
 
     static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();

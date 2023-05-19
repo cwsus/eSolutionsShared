@@ -50,7 +50,7 @@
     <resource-config>
         <DataSourceManager>
             <dsName>SecurityDataSource</dsName>
-            <datasource>jdbc:mysql://localhost/CWSSEC?useCompression=true&amp;useSSL=false&amp;paranoid=true&amp;useLocalTransactionState=true&amp;characterEncoding=UTF8&amp;useServerPrepStmts=true&amp;zeroDateTimeBehavior=CONVERT_TO_NULL</datasource>
+            <datasource>jdbc:mysql://localhost/CWSSEC?useCompression=true&amp;useSSL=false&amp;allowPublicKeyRetrieval=true&amp;paranoid=true&amp;useLocalTransactionState=true&amp;characterEncoding=UTF8&amp;useServerPrepStmts=true&amp;zeroDateTimeBehavior=CONVERT_TO_NULL</datasource>
             <driver>com.mysql.cj.jdbc.Driver</driver>
             <dsUser>appadm</dsUser>
             <dsPass>XwNT5EQqpfRWnFVfgYy^</dsPass>
@@ -59,7 +59,7 @@
         </DataSourceManager>
         <DataSourceManager>
             <dsName>AuditDataSource</dsName>
-            <datasource>jdbc:mysql://localhost/AUDIT?useCompression=true&amp;useSSL=false&amp;paranoid=true&amp;useLocalTransactionState=true&amp;characterEncoding=UTF8&amp;useServerPrepStmts=true&amp;zeroDateTimeBehavior=CONVERT_TO_NULL</datasource>
+            <datasource>jdbc:mysql://localhost/AUDIT?useCompression=true&amp;useSSL=false&amp;allowPublicKeyRetrieval=true&amp;paranoid=true&amp;useLocalTransactionState=true&amp;characterEncoding=UTF8&amp;useServerPrepStmts=true&amp;zeroDateTimeBehavior=CONVERT_TO_NULL</datasource>
             <driver>com.mysql.cj.jdbc.Driver</driver>
             <dsUser>appadm</dsUser>
             <dsPass>XwNT5EQqpfRWnFVfgYy^</dsPass>
@@ -68,7 +68,7 @@
         </DataSourceManager>
         <DataSourceManager>
             <dsName>ContactDataSource</dsName>
-            <datasource>jdbc:mysql://localhost/CONTACT?useCompression=true&amp;useSSL=true&amp;requireSSL=true&amp;verifyServerCertificate=true&amp;trustCertificateKeyStoreUrl=file:///opt/cws/etc/kdb/trust.jks&amp;trustCertificateKeyStoreType=JKS&amp;trustCertificateKeyStorePassword=twO23w2urkcVh3S4QGrD&amp;paranoid=true&amp;useLocalTransactionState=true&amp;characterEncoding=UTF8&amp;useServerPrepStmts=true&amp;zeroDateTimeBehavior=CONVERT_TO_NULL</datasource>
+            <datasource>jdbc:mysql://localhost/CONTACT?useCompression=true&amp;useSSL=true&amp;allowPublicKeyRetrieval=true&amp;requireSSL=true&amp;verifyServerCertificate=true&amp;trustCertificateKeyStoreUrl=file:///opt/cws/etc/kdb/trust.jks&amp;trustCertificateKeyStoreType=JKS&amp;trustCertificateKeyStorePassword=twO23w2urkcVh3S4QGrD&amp;paranoid=true&amp;useLocalTransactionState=true&amp;characterEncoding=UTF8&amp;useServerPrepStmts=true&amp;zeroDateTimeBehavior=CONVERT_TO_NULL</datasource>
             <driver>com.mysql.cj.jdbc.Driver</driver>
             <dsUser>appadm</dsUser>
             <dsPass>XwNT5EQqpfRWnFVfgYy^</dsPass>

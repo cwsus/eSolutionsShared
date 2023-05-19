@@ -105,7 +105,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
                 DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
             }
 
-            if (!(accessResponse.getIsUserAuthorized()))
+            if (Boolean.FALSE.equals((accessResponse.getIsUserAuthorized())))
             {
                 // unauthorized
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
@@ -334,7 +334,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
                 DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
             }
 
-            if (!(accessResponse.getIsUserAuthorized()))
+            if (Boolean.FALSE.equals((accessResponse.getIsUserAuthorized())))
             {
                 // unauthorized
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
@@ -564,7 +564,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
                 DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
             }
 
-            if (!(accessResponse.getIsUserAuthorized()))
+            if (Boolean.FALSE.equals((accessResponse.getIsUserAuthorized())))
             {
                 // unauthorized
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
@@ -792,7 +792,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
                 DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
             }
 
-            if (!(accessResponse.getIsUserAuthorized()))
+            if (Boolean.FALSE.equals((accessResponse.getIsUserAuthorized())))
             {
                 // unauthorized
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);

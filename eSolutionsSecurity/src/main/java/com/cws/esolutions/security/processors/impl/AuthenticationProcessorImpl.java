@@ -166,7 +166,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
             		response.setUserAccount(userAccount);
             		response.setRequestStatus(SecurityRequestStatus.FAILURE);
 	            }
-	            else if ((Boolean) userObject.get(8))
+	            else if (Boolean.TRUE.equals(userObject.get(8)))
 	            {
             		userAccount.setStatus(LoginStatus.SUSPENDED);
 

@@ -104,7 +104,7 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
                 DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
             }
 
-            if (!(accessResponse.getIsUserAuthorized()))
+            if (Boolean.FALSE.equals((accessResponse.getIsUserAuthorized())))
             {
                 // unauthorized
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
@@ -344,7 +344,7 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
                 DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
             }
 
-            if (!(accessResponse.getIsUserAuthorized()))
+            if (Boolean.FALSE.equals((accessResponse.getIsUserAuthorized())))
             {
                 // unauthorized
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
@@ -577,7 +577,7 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
                 DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
             }
 
-            if (!(accessResponse.getIsUserAuthorized()))
+            if (Boolean.FALSE.equals((accessResponse.getIsUserAuthorized())))
             {
                 // unauthorized
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
@@ -766,7 +766,7 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
                 DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
             }
 
-            if (!(accessResponse.getIsUserAuthorized()))
+            if (Boolean.FALSE.equals((accessResponse.getIsUserAuthorized())))
             {
                 // unauthorized
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
@@ -981,7 +981,7 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
                 DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
             }
 
-            if (!(accessResponse.getIsUserAuthorized()))
+            if (Boolean.FALSE.equals((accessResponse.getIsUserAuthorized())))
             {
                 // unauthorized
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
@@ -1195,7 +1195,7 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
                 DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
             }
 
-            if (!(accessResponse.getIsUserAuthorized()))
+            if (Boolean.FALSE.equals((accessResponse.getIsUserAuthorized())))
             {
                 // unauthorized
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);

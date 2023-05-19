@@ -115,7 +115,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                 DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
             }
 
-            if (!(accessResponse.getIsUserAuthorized()))
+            if (Boolean.FALSE.equals((accessResponse.getIsUserAuthorized())))
             {
                 // unauthorized
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
@@ -359,7 +359,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                 DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
             }
 
-            if (!(accessResponse.getIsUserAuthorized()))
+            if (Boolean.FALSE.equals((accessResponse.getIsUserAuthorized())))
             {
                 // unauthorized
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
@@ -597,7 +597,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                 DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
             }
 
-            if (!(accessResponse.getIsUserAuthorized()))
+            if (Boolean.FALSE.equals((accessResponse.getIsUserAuthorized())))
             {
                 // unauthorized
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
@@ -785,7 +785,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                 DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
             }
 
-            if (!(accessResponse.getIsUserAuthorized()))
+            if (Boolean.FALSE.equals((accessResponse.getIsUserAuthorized())))
             {
                 // unauthorized
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
@@ -999,7 +999,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                 DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
             }
 
-            if (!(accessResponse.getIsUserAuthorized()))
+            if (Boolean.FALSE.equals((accessResponse.getIsUserAuthorized())))
             {
                 // unauthorized
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
@@ -1218,7 +1218,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                 DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
             }
 
-            if (!(accessResponse.getIsUserAuthorized()))
+            if (Boolean.FALSE.equals((accessResponse.getIsUserAuthorized())))
             {
                 // unauthorized
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);

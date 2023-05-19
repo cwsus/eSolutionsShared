@@ -221,7 +221,7 @@ public class AccountSearchProcessorImpl implements IAccountSearchProcessor
 	                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
 	            }
 	
-	            if (!(accessResponse.getIsUserAuthorized()))
+	            if (Boolean.FALSE.equals((accessResponse.getIsUserAuthorized())))
 	            {
 	                // unauthorized
 	                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);

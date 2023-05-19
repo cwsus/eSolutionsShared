@@ -36,6 +36,8 @@ import com.cws.esolutions.core.dao.interfaces.IServerDataDAO;
 import com.cws.esolutions.core.processors.dto.DNSServiceRequest;
 import com.cws.esolutions.core.processors.dto.DNSServiceResponse;
 import com.cws.esolutions.core.processors.exception.DNSServiceException;
+import com.cws.esolutions.security.SecurityServicesBean;
+import com.cws.esolutions.security.config.xml.SecurityConfig;
 import com.cws.esolutions.utility.services.impl.AccessControlServiceImpl;
 import com.cws.esolutions.utility.services.interfaces.IAccessControlService;
 import com.cws.esolutions.utility.securityutils.processors.impl.AuditProcessorImpl;
@@ -48,12 +50,14 @@ import com.cws.esolutions.utility.securityutils.processors.interfaces.IAuditProc
  */
 public interface IDNSServiceRequestProcessor
 {
+	static final IServerDataDAO dao = new ServerDataDAOImpl();
+	static final IAuditProcessor auditor = new AuditProcessorImpl();
     static final CoreServicesBean appBean = CoreServicesBean.getInstance();
     static final String CNAME = IDNSServiceRequestProcessor.class.getName();
     static final SSHConfig sshConfig = appBean.getConfigData().getSshConfig();
-    static final IServerDataDAO dao = (IServerDataDAO) new ServerDataDAOImpl();
-    static final IAuditProcessor auditor = (IAuditProcessor) new AuditProcessorImpl();
-    static final IAccessControlService accessControl = (IAccessControlService) new AccessControlServiceImpl();
+    static final SecurityServicesBean secBean = SecurityServicesBean.getInstance();
+    static final IAccessControlService accessControl = new AccessControlServiceImpl();
+    static final SecurityConfig secConfig = secBean.getConfigData().getSecurityConfig();
 
     static final Logger DEBUGGER = LogManager.getLogger(CoreServicesConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();

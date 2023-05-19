@@ -73,9 +73,10 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
         AccountChangeResponse response = new AccountChangeResponse();
 
-        final RequestHostInfo reqInfo = request.getHostInfo();
         final UserAccount requestor = request.getRequestor();
+        final RequestHostInfo reqInfo = request.getHostInfo();
         final UserAccount userAccount = request.getUserAccount();
+        final AccountChangeData changeData = request.getChangeData();
         final AuthenticationData authData = request.getUserSecurity();
 
         if (DEBUG)
@@ -83,6 +84,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             DEBUGGER.debug("UserAccount: {}", requestor);
             DEBUGGER.debug("UserAccount: {}", userAccount);
+            DEBUGGER.debug("AccountChangeData: {}", changeData);
         }
 
         // ok, first things first. if this is an administrative reset, make sure the requesting user
@@ -119,7 +121,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
         	
         	if (isAuthenticated)
         	{
-        		boolean isComplete = userManager.modifyUserEmail(userAccount.getGuid(), userAccount.getEmailAddr());
+        		boolean isComplete = userManager.modifyUserEmail(userAccount.getGuid(), changeData.getEmailAddr());
 
         		if (isComplete)
         		{
@@ -237,6 +239,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
         final RequestHostInfo reqInfo = request.getHostInfo();
         final UserAccount requestor = request.getRequestor();
         final UserAccount userAccount = request.getUserAccount();
+        final AccountChangeData changeData = request.getChangeData();
         final AuthenticationData authData = request.getUserSecurity();
 
         if (DEBUG)
@@ -244,6 +247,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             DEBUGGER.debug("UserAccount: {}", requestor);
             DEBUGGER.debug("UserAccount: {}", userAccount);
+            DEBUGGER.debug("AccountChangeData: {}", changeData);
         }
 
         // ok, first things first. if this is an administrative reset, make sure the requesting user
@@ -283,8 +287,8 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 	        	boolean isComplete = userManager.modifyUserContact(userAccount.getGuid(),
 	                    new ArrayList<String>(
 	                            Arrays.asList(
-	                                    userAccount.getTelephoneNumber(),
-	                                    userAccount.getPagerNumber())));
+	                            		changeData.getTelNumber(),
+	                            		changeData.getPagerNumber())));
 	
 	            if (isComplete)
 	            {

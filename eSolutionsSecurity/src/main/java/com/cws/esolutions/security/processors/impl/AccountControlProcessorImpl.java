@@ -116,7 +116,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 	                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
 	            }
 	
-	            if (!(accessResponse.getIsUserAuthorized()))
+	            if (Boolean.FALSE.equals((accessResponse.getIsUserAuthorized())))
 	            {
 	                // unauthorized
 	                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
@@ -414,7 +414,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 	                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
 	            }
 	
-	            if (!(accessResponse.getIsUserAuthorized()))
+	            if (Boolean.FALSE.equals((accessResponse.getIsUserAuthorized())))
 	            {
 	                // unauthorized
 	                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
@@ -614,7 +614,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 	                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
 	            }
 	
-	            if (!(accessResponse.getIsUserAuthorized()))
+	            if (Boolean.FALSE.equals((accessResponse.getIsUserAuthorized())))
 	            {
 	                // unauthorized
 	                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
@@ -831,7 +831,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 	                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
 	            }
 	
-	            if (!(accessResponse.getIsUserAuthorized()))
+	            if (Boolean.FALSE.equals((accessResponse.getIsUserAuthorized())))
 	            {
 	                // unauthorized
 	                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
@@ -1120,7 +1120,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 	                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
 	            }
 	
-	            if (!(accessResponse.getIsUserAuthorized()))
+	            if (Boolean.FALSE.equals((accessResponse.getIsUserAuthorized())))
 	            {
 	                // unauthorized
 	                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
@@ -1381,7 +1381,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 	                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
 	            }
 	
-	            if (!(accessResponse.getIsUserAuthorized()))
+	            if (Boolean.FALSE.equals((accessResponse.getIsUserAuthorized())))
 	            {
 	                // unauthorized
 	                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
@@ -1598,7 +1598,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 	                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
 	            }
 	
-	            if (!(accessResponse.getIsUserAuthorized()))
+	            if (Boolean.FALSE.equals((accessResponse.getIsUserAuthorized())))
 	            {
 	                // unauthorized
 	                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
@@ -1822,7 +1822,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 	                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
 	            }
 	
-	            if (!(accessResponse.getIsUserAuthorized()))
+	            if (Boolean.FALSE.equals((accessResponse.getIsUserAuthorized())))
 	            {
 	                // unauthorized
 	                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
@@ -2060,7 +2060,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 	                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
 	            }
 	
-	            if (!(accessResponse.getIsUserAuthorized()))
+	            if (Boolean.FALSE.equals((accessResponse.getIsUserAuthorized())))
 	            {
 	                // unauthorized
 	                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);

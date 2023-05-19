@@ -70,19 +70,26 @@ public final class AccountChangeProcessorImplTest
 
     @Test public void changeUserEmail()
     {
+    	AuthenticationData authData = new AuthenticationData();
+    	authData.setPassword("ANIBbuKHiGkyGANLOjawFZ9cZGXuCVRd".toCharArray());
+
     	UserAccount account = new UserAccount();
     	account.setUsername("khuntly");
-    	account.setGuid("e1006d6d-e815-4b27-9a8c-fb91227cc2b5");
-    	account.setEmailAddr("foo@gmail.com");
+    	account.setGuid("af6a04da-b9d9-430f-8017-69ee270d794f");
     	account.setUserRole(SecurityUserRole.SITE_ADMIN);
 
-        AccountChangeRequest request = new AccountChangeRequest();
+    	AccountChangeData changeData = new AccountChangeData();
+    	changeData.setEmailAddr("foo@bar.com");
+
+    	AccountChangeRequest request = new AccountChangeRequest();
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
         request.setApplicationName("eSolutions");
         request.setHostInfo(AccountChangeProcessorImplTest.hostInfo);
         request.setIsReset(false);
         request.setUserAccount(account);
         request.setRequestor(account);
+        request.setChangeData(changeData);
+        request.setUserSecurity(authData);
 
         try
         {

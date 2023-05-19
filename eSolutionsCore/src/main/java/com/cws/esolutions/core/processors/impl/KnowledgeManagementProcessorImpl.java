@@ -37,19 +37,15 @@ import java.sql.SQLException;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.processors.dto.Article;
 import com.cws.esolutions.core.enums.CoreServicesStatus;
+import com.cws.esolutions.core.helpers.UtilityRequestHelper;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.dto.KnowledgeManagementRequest;
 import com.cws.esolutions.core.processors.dto.KnowledgeManagementResponse;
-import com.cws.esolutions.utility.securityutils.processors.dto.AuditEntry;
-import com.cws.esolutions.utility.services.dto.AccessControlServiceRequest;
 import com.cws.esolutions.utility.securityutils.processors.enums.AuditType;
-import com.cws.esolutions.utility.securityutils.processors.dto.AuditRequest;
-import com.cws.esolutions.utility.services.dto.AccessControlServiceResponse;
 import com.cws.esolutions.core.processors.exception.KnowledgeManagementException;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
 import com.cws.esolutions.core.processors.interfaces.IKnowledgeManagementProcessor;
 import com.cws.esolutions.utility.services.exception.AccessControlServiceException;
-import com.cws.esolutions.utility.securityutils.processors.exception.AuditServiceException;
 /**
  * @author cws-khuntly
  * @version 1.0
@@ -83,82 +79,19 @@ public class KnowledgeManagementProcessorImpl implements IKnowledgeManagementPro
 
         try
         {
-            // this will require admin and service authorization
-            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setServiceGuid(request.getServiceId());
-            accessRequest.setUserAccount(
-            		new ArrayList<Object>(
-            				Arrays.asList(
-            						userAccount.getGuid(),
-            						userAccount.getUserRole().toString(),
-            						userAccount.getUserGroups())));
+        	boolean isAuthorized = UtilityRequestHelper.checkForAppropriateAccess(request.getServiceId(), userAccount);
 
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
-            }
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("isAuhorized: {}", isAuthorized);
+        	}
 
-            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
-            }
-
-            if (!(accessResponse.getIsUserAuthorized()))
+            if (!(isAuthorized))
             {
                 // unauthorized
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
 
-                // audit
-                if (secConfig.getPerformAudit())
-                {
-                    // audit if a valid account. if not valid we cant audit much,
-                    // but we should try anyway. not sure how thats going to work
-                    try
-                    {
-                        AuditEntry auditEntry = new AuditEntry();
-                        auditEntry.setAuditType(AuditType.ADDARTICLE);
-                        auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
-                        auditEntry.setSessionId(userAccount.getSessionId());
-                        auditEntry.setUserGuid(userAccount.getGuid());
-                        auditEntry.setUserName(userAccount.getUsername());
-                        auditEntry.setUserRole(userAccount.getUserRole().toString());
-                        auditEntry.setAuthorized(Boolean.FALSE);
-                        auditEntry.setApplicationId(request.getApplicationId());
-                        auditEntry.setApplicationName(request.getApplicationName());
-        
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                        }
-        
-                        List<String> auditHostInfo = new ArrayList<String>(
-                        		Arrays.asList(
-                        				reqInfo.getHostAddress(),
-                        				reqInfo.getHostName()));
-
-                        if (DEBUG)
-                        {
-                        	DEBUGGER.debug("List<String>: {}", auditHostInfo);
-                        }
-
-                        AuditRequest auditRequest = new AuditRequest();
-                        auditRequest.setAuditEntry(auditEntry);
-                        auditRequest.setHostInfo(auditHostInfo);
-        
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                        }
-
-                        auditor.auditRequest(auditRequest);
-                    }
-                    catch (final AuditServiceException asx)
-                    {
-                        ERROR_RECORDER.error(asx.getMessage(), asx);
-                    }
-                }
+                UtilityRequestHelper.doAuditEntry(AuditType.ADDARTICLE, userAccount, reqInfo, isAuthorized, request.getApplicationId(), request.getApplicationName());
 
                 return response;
             }
@@ -220,55 +153,7 @@ public class KnowledgeManagementProcessorImpl implements IKnowledgeManagementPro
         }
         finally
         {
-            // audit
-            if (secConfig.getPerformAudit())
-            {
-                // audit if a valid account. if not valid we cant audit much,
-                // but we should try anyway. not sure how thats going to work
-                try
-                {
-                    AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setAuditType(AuditType.ADDARTICLE);
-                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
-                    auditEntry.setSessionId(userAccount.getSessionId());
-                    auditEntry.setUserGuid(userAccount.getGuid());
-                    auditEntry.setUserName(userAccount.getUsername());
-                    auditEntry.setUserRole(userAccount.getUserRole().toString());
-                    auditEntry.setAuthorized(Boolean.TRUE);
-                    auditEntry.setApplicationId(request.getApplicationId());
-                    auditEntry.setApplicationName(request.getApplicationName());
-    
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                    }
-    
-                    List<String> auditHostInfo = new ArrayList<String>(
-                    		Arrays.asList(
-                    				reqInfo.getHostAddress(),
-                    				reqInfo.getHostName()));
-
-                    if (DEBUG)
-                    {
-                    	DEBUGGER.debug("List<String>: {}", auditHostInfo);
-                    }
-
-                    AuditRequest auditRequest = new AuditRequest();
-                    auditRequest.setAuditEntry(auditEntry);
-                    auditRequest.setHostInfo(auditHostInfo);
-    
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                    }
-
-                    auditor.auditRequest(auditRequest);
-                }
-                catch (final AuditServiceException asx)
-                {
-                    ERROR_RECORDER.error(asx.getMessage(), asx);
-                }
-            }
+        	UtilityRequestHelper.doAuditEntry(AuditType.ADDARTICLE, userAccount, reqInfo, Boolean.TRUE, request.getApplicationId(), request.getApplicationName());
         }
 
         return response;
@@ -300,82 +185,19 @@ public class KnowledgeManagementProcessorImpl implements IKnowledgeManagementPro
 
         try
         {
-            // this will require admin and service authorization
-            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setServiceGuid(request.getServiceId());
-            accessRequest.setUserAccount(
-            		new ArrayList<Object>(
-            				Arrays.asList(
-            						userAccount.getGuid(),
-            						userAccount.getUserRole().toString(),
-            						userAccount.getUserGroups())));
+        	boolean isAuthorized = UtilityRequestHelper.checkForAppropriateAccess(request.getServiceId(), userAccount);
 
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
-            }
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("isAuhorized: {}", isAuthorized);
+        	}
 
-            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
-            }
-
-            if (!(accessResponse.getIsUserAuthorized()))
+            if (!(isAuthorized))
             {
                 // unauthorized
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
 
-                // audit
-                if (secConfig.getPerformAudit())
-                {
-                    // audit if a valid account. if not valid we cant audit much,
-                    // but we should try anyway. not sure how thats going to work
-                    try
-                    {
-                        AuditEntry auditEntry = new AuditEntry();
-                        auditEntry.setAuditType(AuditType.UPDATEARTICLE);
-                        auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
-                        auditEntry.setSessionId(userAccount.getSessionId());
-                        auditEntry.setUserGuid(userAccount.getGuid());
-                        auditEntry.setUserName(userAccount.getUsername());
-                        auditEntry.setUserRole(userAccount.getUserRole().toString());
-                        auditEntry.setAuthorized(Boolean.FALSE);
-                        auditEntry.setApplicationId(request.getApplicationId());
-                        auditEntry.setApplicationName(request.getApplicationName());
-        
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                        }
-        
-                        List<String> auditHostInfo = new ArrayList<String>(
-                        		Arrays.asList(
-                        				reqInfo.getHostAddress(),
-                        				reqInfo.getHostName()));
-
-                        if (DEBUG)
-                        {
-                        	DEBUGGER.debug("List<String>: {}", auditHostInfo);
-                        }
-
-                        AuditRequest auditRequest = new AuditRequest();
-                        auditRequest.setAuditEntry(auditEntry);
-                        auditRequest.setHostInfo(auditHostInfo);
-        
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                        }
-
-                        auditor.auditRequest(auditRequest);
-                    }
-                    catch (final AuditServiceException asx)
-                    {
-                        ERROR_RECORDER.error(asx.getMessage(), asx);
-                    }
-                }
+                UtilityRequestHelper.doAuditEntry(AuditType.UPDATEARTICLE, userAccount, reqInfo, isAuthorized, request.getApplicationId(), request.getApplicationName());
 
                 return response;
             }
@@ -430,55 +252,7 @@ public class KnowledgeManagementProcessorImpl implements IKnowledgeManagementPro
         }
         finally
         {
-            // audit
-            if (secConfig.getPerformAudit())
-            {
-                // audit if a valid account. if not valid we cant audit much,
-                // but we should try anyway. not sure how thats going to work
-                try
-                {
-                    AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setAuditType(AuditType.UPDATEARTICLE);
-                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
-                    auditEntry.setSessionId(userAccount.getSessionId());
-                    auditEntry.setUserGuid(userAccount.getGuid());
-                    auditEntry.setUserName(userAccount.getUsername());
-                    auditEntry.setUserRole(userAccount.getUserRole().toString());
-                    auditEntry.setAuthorized(Boolean.TRUE);
-                    auditEntry.setApplicationId(request.getApplicationId());
-                    auditEntry.setApplicationName(request.getApplicationName());
-    
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                    }
-    
-                    List<String> auditHostInfo = new ArrayList<String>(
-                    		Arrays.asList(
-                    				reqInfo.getHostAddress(),
-                    				reqInfo.getHostName()));
-
-                    if (DEBUG)
-                    {
-                    	DEBUGGER.debug("List<String>: {}", auditHostInfo);
-                    }
-
-                    AuditRequest auditRequest = new AuditRequest();
-                    auditRequest.setAuditEntry(auditEntry);
-                    auditRequest.setHostInfo(auditHostInfo);
-    
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                    }
-
-                    auditor.auditRequest(auditRequest);
-                }
-                catch (final AuditServiceException asx)
-                {
-                    ERROR_RECORDER.error(asx.getMessage(), asx);
-                }
-            }
+        	UtilityRequestHelper.doAuditEntry(AuditType.UPDATEARTICLE, userAccount, reqInfo, Boolean.TRUE, request.getApplicationId(), request.getApplicationName());
         }
 
         return response;
@@ -509,82 +283,19 @@ public class KnowledgeManagementProcessorImpl implements IKnowledgeManagementPro
 
         try
         {
-            // this will require admin and service authorization
-            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setServiceGuid(request.getServiceId());
-            accessRequest.setUserAccount(
-            		new ArrayList<Object>(
-            				Arrays.asList(
-            						userAccount.getGuid(),
-            						userAccount.getUserRole().toString(),
-            						userAccount.getUserGroups())));
+        	boolean isAuthorized = UtilityRequestHelper.checkForAppropriateAccess(request.getServiceId(), userAccount);
 
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
-            }
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("isAuhorized: {}", isAuthorized);
+        	}
 
-            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
-            }
-
-            if (!(accessResponse.getIsUserAuthorized()))
+            if (!(isAuthorized))
             {
                 // unauthorized
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
 
-                // audit
-                if (secConfig.getPerformAudit())
-                {
-                    // audit if a valid account. if not valid we cant audit much,
-                    // but we should try anyway. not sure how thats going to work
-                    try
-                    {
-                        AuditEntry auditEntry = new AuditEntry();
-                        auditEntry.setAuditType(AuditType.UPDATEARTICLESTATUS);
-                        auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
-                        auditEntry.setSessionId(userAccount.getSessionId());
-                        auditEntry.setUserGuid(userAccount.getGuid());
-                        auditEntry.setUserName(userAccount.getUsername());
-                        auditEntry.setUserRole(userAccount.getUserRole().toString());
-                        auditEntry.setAuthorized(Boolean.FALSE);
-                        auditEntry.setApplicationId(request.getApplicationId());
-                        auditEntry.setApplicationName(request.getApplicationName());
-        
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                        }
-        
-                        List<String> auditHostInfo = new ArrayList<String>(
-                        		Arrays.asList(
-                        				reqInfo.getHostAddress(),
-                        				reqInfo.getHostName()));
-
-                        if (DEBUG)
-                        {
-                        	DEBUGGER.debug("List<String>: {}", auditHostInfo);
-                        }
-
-                        AuditRequest auditRequest = new AuditRequest();
-                        auditRequest.setAuditEntry(auditEntry);
-                        auditRequest.setHostInfo(auditHostInfo);
-        
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                        }
-
-                        auditor.auditRequest(auditRequest);
-                    }
-                    catch (final AuditServiceException asx)
-                    {
-                        ERROR_RECORDER.error(asx.getMessage(), asx);
-                    }
-                }
+                UtilityRequestHelper.doAuditEntry(AuditType.UPDATEARTICLESTATUS, userAccount, reqInfo, isAuthorized, request.getApplicationId(), request.getApplicationName());
 
                 return response;
             }
@@ -624,55 +335,7 @@ public class KnowledgeManagementProcessorImpl implements IKnowledgeManagementPro
         }
         finally
         {
-            // audit
-            if (secConfig.getPerformAudit())
-            {
-                // audit if a valid account. if not valid we cant audit much,
-                // but we should try anyway. not sure how thats going to work
-                try
-                {
-                    AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setAuditType(AuditType.UPDATEARTICLESTATUS);
-                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
-                    auditEntry.setSessionId(userAccount.getSessionId());
-                    auditEntry.setUserGuid(userAccount.getGuid());
-                    auditEntry.setUserName(userAccount.getUsername());
-                    auditEntry.setUserRole(userAccount.getUserRole().toString());
-                    auditEntry.setAuthorized(Boolean.TRUE);
-                    auditEntry.setApplicationId(request.getApplicationId());
-                    auditEntry.setApplicationName(request.getApplicationName());
-    
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                    }
-    
-                    List<String> auditHostInfo = new ArrayList<String>(
-                    		Arrays.asList(
-                    				reqInfo.getHostAddress(),
-                    				reqInfo.getHostName()));
-
-                    if (DEBUG)
-                    {
-                    	DEBUGGER.debug("List<String>: {}", auditHostInfo);
-                    }
-
-                    AuditRequest auditRequest = new AuditRequest();
-                    auditRequest.setAuditEntry(auditEntry);
-                    auditRequest.setHostInfo(auditHostInfo);
-    
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                    }
-
-                    auditor.auditRequest(auditRequest);
-                }
-                catch (final AuditServiceException asx)
-                {
-                    ERROR_RECORDER.error(asx.getMessage(), asx);
-                }
-            }
+        	UtilityRequestHelper.doAuditEntry(AuditType.UPDATEARTICLESTATUS, userAccount, reqInfo, Boolean.TRUE, request.getApplicationId(), request.getApplicationName());
         }
 
         return response;
@@ -704,82 +367,19 @@ public class KnowledgeManagementProcessorImpl implements IKnowledgeManagementPro
 
         try
         {
-            // this will require admin and service authorization
-            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setServiceGuid(request.getServiceId());
-            accessRequest.setUserAccount(
-            		new ArrayList<Object>(
-            				Arrays.asList(
-            						userAccount.getGuid(),
-            						userAccount.getUserRole().toString(),
-            						userAccount.getUserGroups())));
+        	boolean isAuthorized = UtilityRequestHelper.checkForAppropriateAccess(request.getServiceId(), userAccount);
 
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
-            }
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("isAuhorized: {}", isAuthorized);
+        	}
 
-            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
-            }
-
-            if (!(accessResponse.getIsUserAuthorized()))
+            if (!(isAuthorized))
             {
                 // unauthorized
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
 
-                // audit
-                if (secConfig.getPerformAudit())
-                {
-                    // audit if a valid account. if not valid we cant audit much,
-                    // but we should try anyway. not sure how thats going to work
-                    try
-                    {
-                        AuditEntry auditEntry = new AuditEntry();
-                        auditEntry.setAuditType(AuditType.DELETEARTICLE);
-                        auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
-                        auditEntry.setSessionId(userAccount.getSessionId());
-                        auditEntry.setUserGuid(userAccount.getGuid());
-                        auditEntry.setUserName(userAccount.getUsername());
-                        auditEntry.setUserRole(userAccount.getUserRole().toString());
-                        auditEntry.setAuthorized(Boolean.FALSE);
-                        auditEntry.setApplicationId(request.getApplicationId());
-                        auditEntry.setApplicationName(request.getApplicationName());
-        
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                        }
-        
-                        List<String> auditHostInfo = new ArrayList<String>(
-                        		Arrays.asList(
-                        				reqInfo.getHostAddress(),
-                        				reqInfo.getHostName()));
-
-                        if (DEBUG)
-                        {
-                        	DEBUGGER.debug("List<String>: {}", auditHostInfo);
-                        }
-
-                        AuditRequest auditRequest = new AuditRequest();
-                        auditRequest.setAuditEntry(auditEntry);
-                        auditRequest.setHostInfo(auditHostInfo);
-        
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                        }
-
-                        auditor.auditRequest(auditRequest);
-                    }
-                    catch (final AuditServiceException asx)
-                    {
-                        ERROR_RECORDER.error(asx.getMessage(), asx);
-                    }
-                }
+                UtilityRequestHelper.doAuditEntry(AuditType.DELETEARTICLE, userAccount, reqInfo, isAuthorized, request.getApplicationId(), request.getApplicationName());
 
                 return response;
             }
@@ -819,55 +419,7 @@ public class KnowledgeManagementProcessorImpl implements IKnowledgeManagementPro
         }
         finally
         {
-            // audit
-            if (secConfig.getPerformAudit())
-            {
-                // audit if a valid account. if not valid we cant audit much,
-                // but we should try anyway. not sure how thats going to work
-                try
-                {
-                    AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setAuditType(AuditType.DELETEARTICLE);
-                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
-                    auditEntry.setSessionId(userAccount.getSessionId());
-                    auditEntry.setUserGuid(userAccount.getGuid());
-                    auditEntry.setUserName(userAccount.getUsername());
-                    auditEntry.setUserRole(userAccount.getUserRole().toString());
-                    auditEntry.setAuthorized(Boolean.TRUE);
-                    auditEntry.setApplicationId(request.getApplicationId());
-                    auditEntry.setApplicationName(request.getApplicationName());
-    
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                    }
-    
-                    List<String> auditHostInfo = new ArrayList<String>(
-                    		Arrays.asList(
-                    				reqInfo.getHostAddress(),
-                    				reqInfo.getHostName()));
-
-                    if (DEBUG)
-                    {
-                    	DEBUGGER.debug("List<String>: {}", auditHostInfo);
-                    }
-
-                    AuditRequest auditRequest = new AuditRequest();
-                    auditRequest.setAuditEntry(auditEntry);
-                    auditRequest.setHostInfo(auditHostInfo);
-    
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                    }
-
-                    auditor.auditRequest(auditRequest);
-                }
-                catch (final AuditServiceException asx)
-                {
-                    ERROR_RECORDER.error(asx.getMessage(), asx);
-                }
-            }
+        	UtilityRequestHelper.doAuditEntry(AuditType.DELETEARTICLE, userAccount, reqInfo, Boolean.TRUE, request.getApplicationId(), request.getApplicationName());
         }
 
         return response;
@@ -899,82 +451,19 @@ public class KnowledgeManagementProcessorImpl implements IKnowledgeManagementPro
 
         try
         {
-            // this will require admin and service authorization
-            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setServiceGuid(request.getServiceId());
-            accessRequest.setUserAccount(
-            		new ArrayList<Object>(
-            				Arrays.asList(
-            						userAccount.getGuid(),
-            						userAccount.getUserRole().toString(),
-            						userAccount.getUserGroups())));
+        	boolean isAuthorized = UtilityRequestHelper.checkForAppropriateAccess(request.getServiceId(), userAccount);
 
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
-            }
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("isAuhorized: {}", isAuthorized);
+        	}
 
-            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
-            }
-
-            if (!(accessResponse.getIsUserAuthorized()))
+            if (!(isAuthorized))
             {
                 // unauthorized
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
 
-                // audit
-                if (secConfig.getPerformAudit())
-                {
-                    // audit if a valid account. if not valid we cant audit much,
-                    // but we should try anyway. not sure how thats going to work
-                    try
-                    {
-                        AuditEntry auditEntry = new AuditEntry();
-                        auditEntry.setAuditType(AuditType.LISTARTICLES);
-                        auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
-                        auditEntry.setSessionId(userAccount.getSessionId());
-                        auditEntry.setUserGuid(userAccount.getGuid());
-                        auditEntry.setUserName(userAccount.getUsername());
-                        auditEntry.setUserRole(userAccount.getUserRole().toString());
-                        auditEntry.setAuthorized(Boolean.FALSE);
-                        auditEntry.setApplicationId(request.getApplicationId());
-                        auditEntry.setApplicationName(request.getApplicationName());
-        
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                        }
-        
-                        List<String> auditHostInfo = new ArrayList<String>(
-                        		Arrays.asList(
-                        				reqInfo.getHostAddress(),
-                        				reqInfo.getHostName()));
-
-                        if (DEBUG)
-                        {
-                        	DEBUGGER.debug("List<String>: {}", auditHostInfo);
-                        }
-
-                        AuditRequest auditRequest = new AuditRequest();
-                        auditRequest.setAuditEntry(auditEntry);
-                        auditRequest.setHostInfo(auditHostInfo);
-        
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                        }
-
-                        auditor.auditRequest(auditRequest);
-                    }
-                    catch (final AuditServiceException asx)
-                    {
-                        ERROR_RECORDER.error(asx.getMessage(), asx);
-                    }
-                }
+                UtilityRequestHelper.doAuditEntry(AuditType.LISTARTICLES, userAccount, reqInfo, isAuthorized, request.getApplicationId(), request.getApplicationName());
 
                 return response;
             }
@@ -1035,8 +524,6 @@ public class KnowledgeManagementProcessorImpl implements IKnowledgeManagementPro
             		catch (UserManagementException umx)
             		{
             			ERROR_RECORDER.error(umx.getMessage(), umx);
-
-            			continue;
             		}
             	}
 
@@ -1063,55 +550,7 @@ public class KnowledgeManagementProcessorImpl implements IKnowledgeManagementPro
         }
         finally
         {
-            // audit
-            if (secConfig.getPerformAudit())
-            {
-                // audit if a valid account. if not valid we cant audit much,
-                // but we should try anyway. not sure how thats going to work
-                try
-                {
-                    AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setAuditType(AuditType.LISTARTICLES);
-                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
-                    auditEntry.setSessionId(userAccount.getSessionId());
-                    auditEntry.setUserGuid(userAccount.getGuid());
-                    auditEntry.setUserName(userAccount.getUsername());
-                    auditEntry.setUserRole(userAccount.getUserRole().toString());
-                    auditEntry.setAuthorized(Boolean.TRUE);
-                    auditEntry.setApplicationId(request.getApplicationId());
-                    auditEntry.setApplicationName(request.getApplicationName());
-    
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                    }
-    
-                    List<String> auditHostInfo = new ArrayList<String>(
-                    		Arrays.asList(
-                    				reqInfo.getHostAddress(),
-                    				reqInfo.getHostName()));
-
-                    if (DEBUG)
-                    {
-                    	DEBUGGER.debug("List<String>: {}", auditHostInfo);
-                    }
-
-                    AuditRequest auditRequest = new AuditRequest();
-                    auditRequest.setAuditEntry(auditEntry);
-                    auditRequest.setHostInfo(auditHostInfo);
-    
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                    }
-
-                    auditor.auditRequest(auditRequest);
-                }
-                catch (final AuditServiceException asx)
-                {
-                    ERROR_RECORDER.error(asx.getMessage(), asx);
-                }
-            }
+        	UtilityRequestHelper.doAuditEntry(AuditType.LISTARTICLES, userAccount, reqInfo, Boolean.TRUE, request.getApplicationId(), request.getApplicationName());
         }
 
         return response;
@@ -1142,82 +581,19 @@ public class KnowledgeManagementProcessorImpl implements IKnowledgeManagementPro
 
         try
         {
-            // this will require admin and service authorization
-            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setServiceGuid(request.getServiceId());
-            accessRequest.setUserAccount(
-            		new ArrayList<Object>(
-            				Arrays.asList(
-            						userAccount.getGuid(),
-            						userAccount.getUserRole().toString(),
-            						userAccount.getUserGroups())));
+        	boolean isAuthorized = UtilityRequestHelper.checkForAppropriateAccess(request.getServiceId(), userAccount);
 
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
-            }
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("isAuhorized: {}", isAuthorized);
+        	}
 
-            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
-            }
-
-            if (!(accessResponse.getIsUserAuthorized()))
+            if (!(isAuthorized))
             {
                 // unauthorized
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
 
-                // audit
-                if (secConfig.getPerformAudit())
-                {
-                    // audit if a valid account. if not valid we cant audit much,
-                    // but we should try anyway. not sure how thats going to work
-                    try
-                    {
-                        AuditEntry auditEntry = new AuditEntry();
-                        auditEntry.setAuditType(AuditType.SEARCHARTICLES);
-                        auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
-                        auditEntry.setSessionId(userAccount.getSessionId());
-                        auditEntry.setUserGuid(userAccount.getGuid());
-                        auditEntry.setUserName(userAccount.getUsername());
-                        auditEntry.setUserRole(userAccount.getUserRole().toString());
-                        auditEntry.setAuthorized(Boolean.FALSE);
-                        auditEntry.setApplicationId(request.getApplicationId());
-                        auditEntry.setApplicationName(request.getApplicationName());
-        
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                        }
-        
-                        List<String> auditHostInfo = new ArrayList<String>(
-                        		Arrays.asList(
-                        				reqInfo.getHostAddress(),
-                        				reqInfo.getHostName()));
-
-                        if (DEBUG)
-                        {
-                        	DEBUGGER.debug("List<String>: {}", auditHostInfo);
-                        }
-
-                        AuditRequest auditRequest = new AuditRequest();
-                        auditRequest.setAuditEntry(auditEntry);
-                        auditRequest.setHostInfo(auditHostInfo);
-        
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                        }
-
-                        auditor.auditRequest(auditRequest);
-                    }
-                    catch (final AuditServiceException asx)
-                    {
-                        ERROR_RECORDER.error(asx.getMessage(), asx);
-                    }
-                }
+                UtilityRequestHelper.doAuditEntry(AuditType.SEARCHARTICLES, userAccount, reqInfo, isAuthorized, request.getApplicationId(), request.getApplicationName());
 
                 return response;
             }
@@ -1311,55 +687,7 @@ public class KnowledgeManagementProcessorImpl implements IKnowledgeManagementPro
         }
         finally
         {
-            // audit
-            if (secConfig.getPerformAudit())
-            {
-                // audit if a valid account. if not valid we cant audit much,
-                // but we should try anyway. not sure how thats going to work
-                try
-                {
-                    AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setAuditType(AuditType.SEARCHARTICLES);
-                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
-                    auditEntry.setSessionId(userAccount.getSessionId());
-                    auditEntry.setUserGuid(userAccount.getGuid());
-                    auditEntry.setUserName(userAccount.getUsername());
-                    auditEntry.setUserRole(userAccount.getUserRole().toString());
-                    auditEntry.setAuthorized(Boolean.TRUE);
-                    auditEntry.setApplicationId(request.getApplicationId());
-                    auditEntry.setApplicationName(request.getApplicationName());
-    
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                    }
-    
-                    List<String> auditHostInfo = new ArrayList<String>(
-                    		Arrays.asList(
-                    				reqInfo.getHostAddress(),
-                    				reqInfo.getHostName()));
-
-                    if (DEBUG)
-                    {
-                    	DEBUGGER.debug("List<String>: {}", auditHostInfo);
-                    }
-
-                    AuditRequest auditRequest = new AuditRequest();
-                    auditRequest.setAuditEntry(auditEntry);
-                    auditRequest.setHostInfo(auditHostInfo);
-    
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                    }
-
-                    auditor.auditRequest(auditRequest);
-                }
-                catch (final AuditServiceException asx)
-                {
-                    ERROR_RECORDER.error(asx.getMessage(), asx);
-                }
-            }
+        	UtilityRequestHelper.doAuditEntry(AuditType.SEARCHARTICLES, userAccount, reqInfo, Boolean.TRUE, request.getApplicationId(), request.getApplicationName());
         }
 
         return response;
@@ -1390,82 +718,19 @@ public class KnowledgeManagementProcessorImpl implements IKnowledgeManagementPro
 
         try
         {
-            // this will require admin and service authorization
-            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setServiceGuid(request.getServiceId());
-            accessRequest.setUserAccount(
-            		new ArrayList<Object>(
-            				Arrays.asList(
-            						userAccount.getGuid(),
-            						userAccount.getUserRole().toString(),
-            						userAccount.getUserGroups())));
+        	boolean isAuthorized = UtilityRequestHelper.checkForAppropriateAccess(request.getServiceId(), userAccount);
 
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
-            }
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("isAuhorized: {}", isAuthorized);
+        	}
 
-            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
-            }
-
-            if (!(accessResponse.getIsUserAuthorized()))
+            if (!(isAuthorized))
             {
                 // unauthorized
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
 
-                // audit
-                if (secConfig.getPerformAudit())
-                {
-                    // audit if a valid account. if not valid we cant audit much,
-                    // but we should try anyway. not sure how thats going to work
-                    try
-                    {
-                        AuditEntry auditEntry = new AuditEntry();
-                        auditEntry.setAuditType(AuditType.LISTPENDING);
-                        auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
-                        auditEntry.setSessionId(userAccount.getSessionId());
-                        auditEntry.setUserGuid(userAccount.getGuid());
-                        auditEntry.setUserName(userAccount.getUsername());
-                        auditEntry.setUserRole(userAccount.getUserRole().toString());
-                        auditEntry.setAuthorized(Boolean.FALSE);
-                        auditEntry.setApplicationId(request.getApplicationId());
-                        auditEntry.setApplicationName(request.getApplicationName());
-        
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                        }
-        
-                        List<String> auditHostInfo = new ArrayList<String>(
-                        		Arrays.asList(
-                        				reqInfo.getHostAddress(),
-                        				reqInfo.getHostName()));
-
-                        if (DEBUG)
-                        {
-                        	DEBUGGER.debug("List<String>: {}", auditHostInfo);
-                        }
-
-                        AuditRequest auditRequest = new AuditRequest();
-                        auditRequest.setAuditEntry(auditEntry);
-                        auditRequest.setHostInfo(auditHostInfo);
-        
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                        }
-
-                        auditor.auditRequest(auditRequest);
-                    }
-                    catch (final AuditServiceException asx)
-                    {
-                        ERROR_RECORDER.error(asx.getMessage(), asx);
-                    }
-                }
+                UtilityRequestHelper.doAuditEntry(AuditType.LISTPENDING, userAccount, reqInfo, isAuthorized, request.getApplicationId(), request.getApplicationName());
 
                 return response;
             }
@@ -1523,55 +788,7 @@ public class KnowledgeManagementProcessorImpl implements IKnowledgeManagementPro
         }
         finally
         {
-            // audit
-            if (secConfig.getPerformAudit())
-            {
-                // audit if a valid account. if not valid we cant audit much,
-                // but we should try anyway. not sure how thats going to work
-                try
-                {
-                    AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setAuditType(AuditType.LISTPENDING);
-                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
-                    auditEntry.setSessionId(userAccount.getSessionId());
-                    auditEntry.setUserGuid(userAccount.getGuid());
-                    auditEntry.setUserName(userAccount.getUsername());
-                    auditEntry.setUserRole(userAccount.getUserRole().toString());
-                    auditEntry.setAuthorized(Boolean.TRUE);
-                    auditEntry.setApplicationId(request.getApplicationId());
-                    auditEntry.setApplicationName(request.getApplicationName());
-    
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                    }
-    
-                    List<String> auditHostInfo = new ArrayList<String>(
-                    		Arrays.asList(
-                    				reqInfo.getHostAddress(),
-                    				reqInfo.getHostName()));
-
-                    if (DEBUG)
-                    {
-                    	DEBUGGER.debug("List<String>: {}", auditHostInfo);
-                    }
-
-                    AuditRequest auditRequest = new AuditRequest();
-                    auditRequest.setAuditEntry(auditEntry);
-                    auditRequest.setHostInfo(auditHostInfo);
-    
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                    }
-
-                    auditor.auditRequest(auditRequest);
-                }
-                catch (final AuditServiceException asx)
-                {
-                    ERROR_RECORDER.error(asx.getMessage(), asx);
-                }
-            }
+        	UtilityRequestHelper.doAuditEntry(AuditType.LISTPENDING, userAccount, reqInfo, Boolean.TRUE, request.getApplicationId(), request.getApplicationName());
         }
 
         return response;
@@ -1602,82 +819,19 @@ public class KnowledgeManagementProcessorImpl implements IKnowledgeManagementPro
 
         try
         {
-            // this will require admin and service authorization
-            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setServiceGuid(request.getServiceId());
-            accessRequest.setUserAccount(
-            		new ArrayList<Object>(
-            				Arrays.asList(
-            						userAccount.getGuid(),
-            						userAccount.getUserRole().toString(),
-            						userAccount.getUserGroups())));
+        	boolean isAuthorized = UtilityRequestHelper.checkForAppropriateAccess(request.getServiceId(), userAccount);
 
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
-            }
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("isAuhorized: {}", isAuthorized);
+        	}
 
-            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
-            }
-
-            if (!(accessResponse.getIsUserAuthorized()))
+            if (!(isAuthorized))
             {
                 // unauthorized
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
 
-                // audit
-                if (secConfig.getPerformAudit())
-                {
-                    // audit if a valid account. if not valid we cant audit much,
-                    // but we should try anyway. not sure how thats going to work
-                    try
-                    {
-                        AuditEntry auditEntry = new AuditEntry();
-                        auditEntry.setAuditType(AuditType.VIEWARTICLE);
-                        auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
-                        auditEntry.setSessionId(userAccount.getSessionId());
-                        auditEntry.setUserGuid(userAccount.getGuid());
-                        auditEntry.setUserName(userAccount.getUsername());
-                        auditEntry.setUserRole(userAccount.getUserRole().toString());
-                        auditEntry.setAuthorized(Boolean.FALSE);
-                        auditEntry.setApplicationId(request.getApplicationId());
-                        auditEntry.setApplicationName(request.getApplicationName());
-        
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                        }
-        
-                        List<String> auditHostInfo = new ArrayList<String>(
-                        		Arrays.asList(
-                        				reqInfo.getHostAddress(),
-                        				reqInfo.getHostName()));
-
-                        if (DEBUG)
-                        {
-                        	DEBUGGER.debug("List<String>: {}", auditHostInfo);
-                        }
-
-                        AuditRequest auditRequest = new AuditRequest();
-                        auditRequest.setAuditEntry(auditEntry);
-                        auditRequest.setHostInfo(auditHostInfo);
-        
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                        }
-
-                        auditor.auditRequest(auditRequest);
-                    }
-                    catch (final AuditServiceException asx)
-                    {
-                        ERROR_RECORDER.error(asx.getMessage(), asx);
-                    }
-                }
+                UtilityRequestHelper.doAuditEntry(AuditType.VIEWARTICLE, userAccount, reqInfo, isAuthorized, request.getApplicationId(), request.getApplicationName());
 
                 return response;
             }
@@ -1698,7 +852,7 @@ public class KnowledgeManagementProcessorImpl implements IKnowledgeManagementPro
             	DEBUGGER.debug("List<String>: {}", articleData);
             }
 
-            if ((Objects.isNull(articleData)) || (articleData.size() == 0))
+            if ((Objects.isNull(articleData)) || (articleData.isEmpty()))
             {
             	response.setRequestStatus(CoreServicesStatus.SUCCESS);
             }
@@ -1722,7 +876,7 @@ public class KnowledgeManagementProcessorImpl implements IKnowledgeManagementPro
             		DEBUGGER.debug("reviewData: {}", approveData);
             	}
 
-            	if (!(Objects.isNull(authorData) || (authorData.size() != 0)))
+            	if (!(Objects.isNull(authorData) || (!authorData.isEmpty())))
             	{
             		authorAccount = new UserAccount();
             		authorAccount.setGuid((String) authorData.get(1));
@@ -1735,7 +889,7 @@ public class KnowledgeManagementProcessorImpl implements IKnowledgeManagementPro
                 	}
             	}
 
-            	if (!(Objects.isNull(modifyData) || (modifyData.size() != 0)))
+            	if (!(Objects.isNull(modifyData) || (!modifyData.isEmpty())))
             	{
                 	modifiedAccount = new UserAccount();
                 	modifiedAccount.setGuid((String) modifyData.get(1));
@@ -1748,7 +902,7 @@ public class KnowledgeManagementProcessorImpl implements IKnowledgeManagementPro
                 	}
             	}
 
-            	if (!(Objects.isNull(approveData) || (approveData.size() != 0)))
+            	if (!(Objects.isNull(approveData) || (!approveData.isEmpty())))
             	{
                 	approveAccount = new UserAccount();
                 	approveAccount.setGuid((String) modifyData.get(1));
@@ -1761,7 +915,7 @@ public class KnowledgeManagementProcessorImpl implements IKnowledgeManagementPro
                 	}
             	}
 
-            	if (!(Objects.isNull(reviewData) || (reviewData.size() != 0)))
+            	if (!(Objects.isNull(reviewData) || (!reviewData.isEmpty())))
             	{
                 	reviewedBy = new UserAccount();
                 	reviewedBy.setGuid((String) reviewData.get(1));
@@ -1828,55 +982,7 @@ public class KnowledgeManagementProcessorImpl implements IKnowledgeManagementPro
 		}
         finally
         {
-            // audit
-            if (secConfig.getPerformAudit())
-            {
-                // audit if a valid account. if not valid we cant audit much,
-                // but we should try anyway. not sure how thats going to work
-                try
-                {
-                    AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setAuditType(AuditType.VIEWARTICLE);
-                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
-                    auditEntry.setSessionId(userAccount.getSessionId());
-                    auditEntry.setUserGuid(userAccount.getGuid());
-                    auditEntry.setUserName(userAccount.getUsername());
-                    auditEntry.setUserRole(userAccount.getUserRole().toString());
-                    auditEntry.setAuthorized(Boolean.TRUE);
-                    auditEntry.setApplicationId(request.getApplicationId());
-                    auditEntry.setApplicationName(request.getApplicationName());
-    
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                    }
-    
-                    List<String> auditHostInfo = new ArrayList<String>(
-                    		Arrays.asList(
-                    				reqInfo.getHostAddress(),
-                    				reqInfo.getHostName()));
-
-                    if (DEBUG)
-                    {
-                    	DEBUGGER.debug("List<String>: {}", auditHostInfo);
-                    }
-
-                    AuditRequest auditRequest = new AuditRequest();
-                    auditRequest.setAuditEntry(auditEntry);
-                    auditRequest.setHostInfo(auditHostInfo);
-    
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                    }
-
-                    auditor.auditRequest(auditRequest);
-                }
-                catch (final AuditServiceException asx)
-                {
-                    ERROR_RECORDER.error(asx.getMessage(), asx);
-                }
-            }
+        	UtilityRequestHelper.doAuditEntry(AuditType.VIEWARTICLE, userAccount, reqInfo, Boolean.TRUE, request.getApplicationId(), request.getApplicationName());
         }
 
         return response;
@@ -1907,82 +1013,19 @@ public class KnowledgeManagementProcessorImpl implements IKnowledgeManagementPro
 
         try
         {
-            // this will require admin and service authorization
-            AccessControlServiceRequest accessRequest = new AccessControlServiceRequest();
-            accessRequest.setServiceGuid(request.getServiceId());
-            accessRequest.setUserAccount(
-            		new ArrayList<Object>(
-            				Arrays.asList(
-            						userAccount.getGuid(),
-            						userAccount.getUserRole().toString(),
-            						userAccount.getUserGroups())));
+        	boolean isAuthorized = UtilityRequestHelper.checkForAppropriateAccess(request.getServiceId(), userAccount);
 
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AccessControlServiceRequest: {}", accessRequest);
-            }
+        	if (DEBUG)
+        	{
+        		DEBUGGER.debug("isAuhorized: {}", isAuthorized);
+        	}
 
-            AccessControlServiceResponse accessResponse = accessControl.isUserAuthorized(accessRequest);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AccessControlServiceResponse accessResponse: {}", accessResponse);
-            }
-
-            if (!(accessResponse.getIsUserAuthorized()))
+            if (!(isAuthorized))
             {
                 // unauthorized
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
 
-                // audit
-                if (secConfig.getPerformAudit())
-                {
-                    // audit if a valid account. if not valid we cant audit much,
-                    // but we should try anyway. not sure how thats going to work
-                    try
-                    {
-                        AuditEntry auditEntry = new AuditEntry();
-                        auditEntry.setAuditType(AuditType.VIEWARTICLE);
-                        auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
-                        auditEntry.setSessionId(userAccount.getSessionId());
-                        auditEntry.setUserGuid(userAccount.getGuid());
-                        auditEntry.setUserName(userAccount.getUsername());
-                        auditEntry.setUserRole(userAccount.getUserRole().toString());
-                        auditEntry.setAuthorized(Boolean.FALSE);
-                        auditEntry.setApplicationId(request.getApplicationId());
-                        auditEntry.setApplicationName(request.getApplicationName());
-        
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                        }
-        
-                        List<String> auditHostInfo = new ArrayList<String>(
-                        		Arrays.asList(
-                        				reqInfo.getHostAddress(),
-                        				reqInfo.getHostName()));
-
-                        if (DEBUG)
-                        {
-                        	DEBUGGER.debug("List<String>: {}", auditHostInfo);
-                        }
-
-                        AuditRequest auditRequest = new AuditRequest();
-                        auditRequest.setAuditEntry(auditEntry);
-                        auditRequest.setHostInfo(auditHostInfo);
-        
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                        }
-
-                        auditor.auditRequest(auditRequest);
-                    }
-                    catch (final AuditServiceException asx)
-                    {
-                        ERROR_RECORDER.error(asx.getMessage(), asx);
-                    }
-                }
+                UtilityRequestHelper.doAuditEntry(AuditType.VIEWFORAPPROVAL, userAccount, reqInfo, isAuthorized, request.getApplicationId(), request.getApplicationName());
 
                 return response;
             }
@@ -1996,7 +1039,7 @@ public class KnowledgeManagementProcessorImpl implements IKnowledgeManagementPro
             	DEBUGGER.debug("List<String>: {}", articleData);
             }
 
-            if ((Objects.isNull(articleData)) || (articleData.size() == 0))
+            if ((Objects.isNull(articleData)) || (articleData.isEmpty()))
             {
             	response.setRequestStatus(CoreServicesStatus.SUCCESS);
             }
@@ -2030,7 +1073,7 @@ public class KnowledgeManagementProcessorImpl implements IKnowledgeManagementPro
                 	}
             	}
 
-            	if (!(Objects.isNull(modifyData) || (modifyData.size() != 0)))
+            	if (!(Objects.isNull(modifyData) || (!modifyData.isEmpty())))
             	{
                 	modifiedAccount = new UserAccount();
                 	modifiedAccount.setGuid((String) modifyData.get(1));
@@ -2043,7 +1086,7 @@ public class KnowledgeManagementProcessorImpl implements IKnowledgeManagementPro
                 	}
             	}
 
-            	if (!(Objects.isNull(reviewData) || (reviewData.size() != 0)))
+            	if (!(Objects.isNull(reviewData) || (!reviewData.isEmpty())))
             	{
                 	reviewedBy = new UserAccount();
                 	reviewedBy.setGuid((String) reviewData.get(1));
@@ -2104,55 +1147,7 @@ public class KnowledgeManagementProcessorImpl implements IKnowledgeManagementPro
 		}
         finally
         {
-            // audit
-            if (secConfig.getPerformAudit())
-            {
-                // audit if a valid account. if not valid we cant audit much,
-                // but we should try anyway. not sure how thats going to work
-                try
-                {
-                    AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setAuditType(AuditType.VIEWARTICLE);
-                    auditEntry.setAuditDate(new Date(System.currentTimeMillis()));
-                    auditEntry.setSessionId(userAccount.getSessionId());
-                    auditEntry.setUserGuid(userAccount.getGuid());
-                    auditEntry.setUserName(userAccount.getUsername());
-                    auditEntry.setUserRole(userAccount.getUserRole().toString());
-                    auditEntry.setAuthorized(Boolean.TRUE);
-                    auditEntry.setApplicationId(request.getApplicationId());
-                    auditEntry.setApplicationName(request.getApplicationName());
-    
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                    }
-    
-                    List<String> auditHostInfo = new ArrayList<String>(
-                    		Arrays.asList(
-                    				reqInfo.getHostAddress(),
-                    				reqInfo.getHostName()));
-
-                    if (DEBUG)
-                    {
-                    	DEBUGGER.debug("List<String>: {}", auditHostInfo);
-                    }
-
-                    AuditRequest auditRequest = new AuditRequest();
-                    auditRequest.setAuditEntry(auditEntry);
-                    auditRequest.setHostInfo(auditHostInfo);
-    
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                    }
-
-                    auditor.auditRequest(auditRequest);
-                }
-                catch (final AuditServiceException asx)
-                {
-                    ERROR_RECORDER.error(asx.getMessage(), asx);
-                }
-            }
+        	UtilityRequestHelper.doAuditEntry(AuditType.VIEWFORAPPROVAL, userAccount, reqInfo, Boolean.TRUE, request.getApplicationId(), request.getApplicationName());
         }
 
         return response;

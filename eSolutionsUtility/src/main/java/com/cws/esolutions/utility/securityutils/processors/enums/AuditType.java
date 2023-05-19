@@ -157,6 +157,7 @@ public enum AuditType
     UPDATEARTICLESTATUS,
     DELETEARTICLE,
     LISTPENDING,
+    VIEWFORAPPROVAL,
 
     // added to satisfy service tests
     // DO NOT REMOVE
