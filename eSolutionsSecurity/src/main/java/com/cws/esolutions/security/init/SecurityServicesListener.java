@@ -30,16 +30,16 @@ import java.util.Map;
 import java.util.HashMap;
 import javax.sql.DataSource;
 import javax.naming.Context;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.Unmarshaller;
 import javax.naming.InitialContext;
-import javax.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXBException;
 import javax.naming.NamingException;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletContextEvent;
 import org.apache.commons.lang3.StringUtils;
-import javax.servlet.ServletContextListener;
-import javax.servlet.annotation.WebListener;
+import jakarta.servlet.ServletContextListener;
+import jakarta.servlet.annotation.WebListener;
 
 import com.cws.esolutions.security.SecurityServicesBean;
 import com.cws.esolutions.security.SecurityServicesConstants;
@@ -47,7 +47,7 @@ import com.cws.esolutions.security.config.xml.DataSourceManager;
 import com.cws.esolutions.security.exception.SecurityServiceException;
 import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
 /**
- * @see javax.servlet.ServletContextListener
+ * @see jakarta.servlet.ServletContextListener
  */
 @WebListener
 public class SecurityServicesListener implements ServletContextListener
@@ -56,7 +56,7 @@ public class SecurityServicesListener implements ServletContextListener
     private static final SecurityServicesBean svcBean = SecurityServicesBean.getInstance();
 
     /**
-     * @see javax.servlet.ServletContextListener#contextInitialized(javax.servlet.ServletContextEvent)
+     * @see jakarta.servlet.ServletContextListener#contextInitialized(jakarta.servlet.ServletContextEvent)
      */
     @Override
     public void contextInitialized(final ServletContextEvent sContextEvent)
@@ -126,7 +126,7 @@ public class SecurityServicesListener implements ServletContextListener
     }
 
     /**
-     * @see javax.servlet.ServletContextListener#contextDestroyed(javax.servlet.ServletContextEvent)
+     * @see jakarta.servlet.ServletContextListener#contextDestroyed(jakarta.servlet.ServletContextEvent)
      */
     @Override
     public void contextDestroyed(final ServletContextEvent sContextEvent)

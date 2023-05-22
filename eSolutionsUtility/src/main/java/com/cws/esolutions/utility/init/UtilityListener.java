@@ -25,9 +25,9 @@ package com.cws.esolutions.utility.init;
  * ----------------------------------------------------------------------------
  * cws-khuntly           11/23/2008 22:39:20             Created.
  */
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
-import javax.servlet.annotation.WebListener;
+import jakarta.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContextListener;
+import jakarta.servlet.annotation.WebListener;
 
 import com.cws.esolutions.utility.UtilityBean;
 import com.cws.esolutions.utility.coreutils.DAOInitializer;

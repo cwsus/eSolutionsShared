@@ -26,25 +26,25 @@ package com.cws.esolutions.core.filters;
  * cws-khuntly          11/23/2008 22:39:20             Created.
  */
 import java.io.IOException;
-import javax.servlet.Filter;
+import jakarta.servlet.Filter;
 import java.util.ResourceBundle;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpSession;
 import org.apache.logging.log4j.Logger;
-import javax.servlet.UnavailableException;
-import javax.servlet.annotation.WebFilter;
+import jakarta.servlet.UnavailableException;
+import jakarta.servlet.annotation.WebFilter;
 
 import java.util.Arrays;
 import java.util.MissingResourceException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.commons.lang3.StringUtils;
-import javax.servlet.annotation.WebInitParam;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.annotation.WebInitParam;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import com.cws.esolutions.core.CoreServicesConstants;
 import com.cws.esolutions.core.processors.dto.ApplicationEnablementRequest;
@@ -55,7 +55,7 @@ import com.cws.esolutions.core.processors.interfaces.IApplicationEnablementProce
 /**
  * @author cws-khuntly
  * @version 1.0
- * @see javax.servlet.Filter
+ * @see jakarta.servlet.Filter
  */
 @WebFilter(filterName = "ApplicationEnablementFilter", urlPatterns = {"/*"}, initParams = @WebInitParam(name = "filter-config", value = "eSolutionsCore/filters/ApplicationEnablementFilter"))
 public class ApplicationEnablementFilter implements Filter
